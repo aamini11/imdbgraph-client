@@ -35,9 +35,9 @@ const Home: NextPage = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by Spruce Technologies
           <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+            <Image src="/linkedin.svg" alt="LinkedIn Logo" width={24} height={24} />
           </span>
         </a>
       </footer>
