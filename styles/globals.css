@@ -1,5 +1,7 @@
 html,
 body {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #573aa8, #d9445f);
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
