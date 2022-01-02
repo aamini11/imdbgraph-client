@@ -1,9 +1,9 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import Searchbar from "../components/Searchbar";
 
-const Home: NextPage = () => {
+export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
@@ -17,9 +17,9 @@ const Home: NextPage = () => {
           Welcome to IMDB Graph
         </h1>
 
-        <p className={styles.description}>
-          Search for your favorite TV show.
-        </p>
+        <div className={styles.description}>
+          <Searchbar/>
+        </div>
 
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
@@ -37,12 +37,10 @@ const Home: NextPage = () => {
         >
           Powered by Spruce Technologies
           <span className={styles.logo}>
-            <Image src="/linkedin.svg" alt="LinkedIn Logo" width={24} height={24} />
+            <Image src="/linkedin.svg" alt="LinkedIn Logo" width={24} height={24}/>
           </span>
         </a>
       </footer>
     </div>
   )
 }
-
-export default Home
