@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>IMDB Graph</title>
         <meta name="description" content="Website to visualize IMDB TV show ratings as a graph"/>
         <link rel="icon" href="/favicon.ico"/>
       </Head>
@@ -22,7 +22,7 @@ export default function Home() {
           <Searchbar/>
         </div>
 
-        <Card/>
+        <Card title="Source Code &rarr;" body="IMDB Graph is 100% open source. Click here to see the GitLab page"/>
       </main>
 
       <footer className={styles.footer}>
