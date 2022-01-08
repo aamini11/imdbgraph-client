@@ -1,36 +1,17 @@
 import React from 'react'
-import style from './Searchbar.module.css'
+import Image from 'next/image'
+import styles from './Searchbar.module.css'
 
 export default function Searchbar() {
-  // const router = useRouter()
-  //
-  // useEffect(() => {
-  //   router.prefetch('/search')
-  // }, [router])
-  //
-  // const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   e.preventDefault()
-  //
-  //   if (e.key === 'Enter') {
-  //     const q = e.currentTarget.value
-  //
-  //     router.push(
-  //       {
-  //         pathname: `/search`,
-  //         query: q ? { q } : {},
-  //       },
-  //       undefined,
-  //       { shallow: true }
-  //     )
-  //   }
-  // }
-
-  return (
-    <div className={style.searchContainer}>
-      <input type="text"
-             className={style.searchBox}
-             placeholder="Search for your favorite TV show..."/>
-      <input className={style.searchButton} type="image" src="/search.svg" alt="Search icon" width={24} height={24}/>
-    </div>
-  )
+    return (
+        <form className={styles.root}>
+            <input className={styles.searchBar}
+                   type="text"
+                   placeholder="Search..."/>
+            <button className={styles.searchButton}>
+                <Image src="/search.svg" alt="Search Icon"
+                       width="20" height="20"/>
+            </button>
+        </form>
+    )
 }

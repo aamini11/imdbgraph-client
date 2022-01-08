@@ -1,29 +1,39 @@
-.search-container {
-    position: relative;
-    width: 300px;
+.root {
+    /* This bit sets up the horizontal layout */
+    display:flex;
+    flex-direction:row;
+
+    /* This bit draws the box around it */
+    border:2px solid grey;
+
+    /* I've used padding so you can see the edges of the elements. */
+    padding:2px;
+
+    background: white;
+    border-radius: 10px;
+    /*border-radius: 100%;*/
 }
 
-.search-box {
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 100px;
-    padding: 10px 100px 10px 20px;
-    line-height: 1;
-    box-sizing: border-box;
+.searchBar {
+    /* Tell the input to use all the available space */
+    flex-grow:2;
+    /* And hide the input's outline, so the form looks like the outline */
+    border:none;
+
+    border-radius: 10px;
+    padding: 4px 10px;
+}
+
+.searchBar:focus {
+    /* removing the input focus blue box. Put this on the form if you like. */
     outline: none;
 }
 
-.search-button {
-    position: absolute;
-    right: 3px;
-    top: 3px;
-    bottom: 3px;
-    border: 0;
-    background: #d1095e;
-    color: #fff;
-    outline: none;
-    margin: 0;
-    padding: 0 10px;
-    border-radius: 100px;
-    z-index: 2;
+.searchButton {
+    /* Just a little styling to make it pretty */
+    border:none;
+    background: none;
+    color:white;
+    /*padding-left: 10px;*/
+    padding-right: 10px;
 }

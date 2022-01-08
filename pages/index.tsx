@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Searchbar from "../components/Searchbar";
+import Card from "../components/Card";
 
 export default function Home() {
   return (
@@ -21,12 +22,7 @@ export default function Home() {
           <Searchbar/>
         </div>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Source code &rarr;</h2>
-            <p>IMDB Graph is 100% open source. Click here to see the GitLab page</p>
-          </a>
-        </div>
+        <Card/>
       </main>
 
       <footer className={styles.footer}>
