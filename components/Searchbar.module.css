@@ -1,4 +1,9 @@
-.root {
+.container {
+    position: relative;
+    font-size: 1.5rem;
+}
+
+.searchBar {
     /* This bit sets up the horizontal layout */
     display:flex;
     flex-direction:row;
@@ -11,12 +16,12 @@
 
     background: white;
     border-radius: 10px;
-    /*border-radius: 100%;*/
 }
 
-.searchBar {
+.searchText {
     /* Tell the input to use all the available space */
     flex-grow:2;
+
     /* And hide the input's outline, so the form looks like the outline */
     border:none;
 
@@ -24,16 +29,27 @@
     padding: 4px 10px;
 }
 
-.searchBar:focus {
+.searchText:focus {
     /* removing the input focus blue box. Put this on the form if you like. */
     outline: none;
 }
 
 .searchButton {
-    /* Just a little styling to make it pretty */
     border:none;
     background: none;
     color:white;
-    /*padding-left: 10px;*/
     padding-right: 10px;
 }
+
+.dropDown {
+    width: 100%;
+    background: white;
+    border: 2px solid lightgray;
+    position: absolute;
+    margin-top: 5px;
+    border-radius: 12px;
+
+    /* Hides extra background color clipping against rounded corners when an dropdown entry is selected */
+    overflow: hidden;
+}
+
