@@ -1,18 +1,19 @@
 .container {
     position: relative;
-    font-size: 1.5rem;
+    font-size: 1.0rem;
+    width: 600px;
 }
 
 .searchBar {
     /* This bit sets up the horizontal layout */
-    display:flex;
-    flex-direction:row;
+    display: flex;
+    flex-direction: row;
 
     /* This bit draws the box around it */
-    border:2px solid grey;
+    border: 2px solid grey;
 
     /* I've used padding so you can see the edges of the elements. */
-    padding:2px;
+    padding: 2px;
 
     background: white;
     border-radius: 10px;
@@ -20,10 +21,10 @@
 
 .searchText {
     /* Tell the input to use all the available space */
-    flex-grow:2;
+    flex-grow: 1;
 
     /* And hide the input's outline, so the form looks like the outline */
-    border:none;
+    border: none;
 
     border-radius: 10px;
     padding: 4px 10px;
@@ -35,9 +36,9 @@
 }
 
 .searchButton {
-    border:none;
+    border: none;
     background: none;
-    color:white;
+    color: white;
     padding-right: 10px;
 }
 
