@@ -1,11 +1,11 @@
-import {useRouter} from "next/router";
-import React, {FormEvent, useCallback, useMemo, useState} from 'react'
+import {debounce} from "lodash"
 import Image from 'next/image'
 import Link from 'next/link'
+import {useRouter} from "next/router";
+import React, {useMemo, useState} from 'react'
+import {Show} from "../models/Show";
 
 import styles from './Searchbar.module.css'
-import {Show} from "../models/Show";
-import {debounce} from "lodash"
 
 export default function Searchbar() {
     const router = useRouter()
@@ -16,7 +16,7 @@ export default function Searchbar() {
         if (!query || !/\S/.test(query)) {
             setSuggestions([]);
         } else {
-            const response = await fetch(`http://localhost:3000/api/search?q=${query}`)
+            const response = await fetch(`api/search?q=${query}`)
             const suggestions = await response.json();
             setSuggestions(suggestions);
         }

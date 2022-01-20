@@ -6,7 +6,7 @@ import styles from "../styles/Home.module.css";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     // Fetch data from external API
-    const response = await fetch(`http://localhost:3000/api/search?${context.query.id}`)
+    const response = await fetch(`api/search?${context.query.id}`)
     if (response.ok) {
         const searchResults: Show[] = await response.json();
         return {props: {searchResults: searchResults}}
