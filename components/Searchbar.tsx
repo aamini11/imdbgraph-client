@@ -1,3 +1,4 @@
+import {useRouter} from "next/router";
 import React, {FormEvent, useCallback, useMemo, useState} from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -7,6 +8,7 @@ import {Show} from "../models/Show";
 import {debounce} from "lodash"
 
 export default function Searchbar() {
+    const router = useRouter()
     const [text, setText] = useState("");
     const [suggestions, setSuggestions] = useState<Show[]>([]);
 
@@ -27,13 +29,13 @@ export default function Searchbar() {
 
     return (
         <div className={styles.container}>
-            <form className={styles.searchBar}>
+            <form className={styles.searchBar} onSubmit={() => router.push({pathname: "/search", query: {"q": "abc"}})}>
                 <input className={styles.searchText}
                        type="text"
                        placeholder="Search..."
                        value={text} onInput={e => onChange(e.currentTarget.value)}
                 />
-                <button className={styles.searchButton}>
+                <button className={styles.searchButton} type="submit">
                     <Image src="/search.svg" alt="Search Icon"
                            width="20" height="20"/>
                 </button>
