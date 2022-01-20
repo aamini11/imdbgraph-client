@@ -34,8 +34,7 @@ export default function Ratings(props: {ratings: Ratings}) {
                     {router.query.ratings}
                 </h1>
 
-                {props.ratings !== undefined ? <Graph ratings={props.ratings}/> :
-                    <h1 className={styles.title}>No ratings found for show</h1>}
+                {hasRatings(props.ratings) ? <Graph ratings={props.ratings}/> : <h1 className={styles.title}>No ratings found for show</h1>}
             </main>
             <Footer/>
         </div>
@@ -69,6 +68,18 @@ function Graph(props: { ratings: Ratings }) {
     });
 
     return root;
+}
+
+function hasRatings(ratings: Ratings): boolean {
+    let i = 0;
+    for (const seasonRatings of Object.values(ratings.allEpisodeRatings)) {
+        for (const episode of Object.values(seasonRatings)) {
+            if (episode.numVotes != 0) { // ignore episodes without ratings
+                i++;
+            }
+        }
+    }
+    return i > 0;
 }
 
 /**
