@@ -1,13 +1,24 @@
-import Head from 'next/head'
-import styles from '../../styles/Search.module.css'
-import {useRouter} from 'next/router'
 import Highcharts, {SeriesSplineOptions} from 'highcharts'
+import {GetServerSidePropsContext} from "next";
+import Head from 'next/head'
+import {useRouter} from 'next/router'
 import {useEffect, useRef} from "react";
 import Footer from "../../components/Footer";
-import {GetServerSideProps, GetServerSidePropsContext} from "next";
 import {Episode, Show} from "../../models/Show";
+import styles from '../../styles/Search.module.css'
 
-export default function Ratings(props: {data: Ratings}) { // props: {data: ShowRatings}
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    // Fetch data from external API
+    const res = await fetch(`http://localhost:8080/ratings/${context.query.id}`)
+    if (res.ok) {
+        const ratings: Ratings = await res.json();
+        return {props: {ratings: ratings}}
+    } else {
+        throw "Show not found";
+    }
+}
+
+export default function Ratings(props: {ratings: Ratings}) {
     const router = useRouter();
 
     return (
@@ -23,14 +34,15 @@ export default function Ratings(props: {data: Ratings}) { // props: {data: ShowR
                     {router.query.ratings}
                 </h1>
 
-                <Graph data={props.data}/>
+                {props.ratings !== undefined ? <Graph ratings={props.ratings}/> :
+                    <h1 className={styles.title}>No ratings found for show</h1>}
             </main>
             <Footer/>
         </div>
     )
 }
 
-export type Ratings = {
+type Ratings = {
     show: Show,
     allEpisodeRatings: {
         [season: number]: {
@@ -44,16 +56,16 @@ interface Series extends SeriesSplineOptions {
     data: {
         x: number,
         y: number,
-        custom: {episode: Episode},
+        custom: { episode: Episode },
     }[]
 }
 
-function Graph(props: {data: Ratings}) {
+function Graph(props: { ratings: Ratings }) {
     const ref = useRef(null);
     const root = <div id="graph" ref={ref}/>
 
     useEffect(() => {
-        renderHighcharts(root.props.id, props.data);
+        renderHighcharts(root.props.id, props.ratings);
     });
 
     return root;
@@ -143,15 +155,4 @@ function renderHighcharts(id: string, ratings: Ratings) {
 
         series: parseRatings(ratings)
     });
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-    // Fetch data from external API
-    const res = await fetch(`http://localhost:8080/ratings/${context.query.id}`)
-    if (res.ok) {
-        const data = await res.json()
-        return {props: {data}};
-    } else {
-        throw "Show not found";
-    }
 }
