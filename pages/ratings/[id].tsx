@@ -9,7 +9,7 @@ import styles from '../../styles/Search.module.css'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     // Fetch data from external API
-    const res = await fetch(`http://localhost:8080/ratings/${context.query.id}`)
+    const res = await fetch(`http://localhost:3000/api/ratings/${context.query.id}`)
     if (res.ok) {
         const ratings: Ratings = await res.json();
         return {props: {ratings: ratings}}

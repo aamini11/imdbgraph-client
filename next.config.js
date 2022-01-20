@@ -4,7 +4,7 @@ module.exports = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8080/:path*' // Proxy to Backend
+        destination: `https://imdbgraph.org/api/:path*`,
       }
     ]
   },
