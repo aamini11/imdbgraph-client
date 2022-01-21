@@ -5,7 +5,7 @@ import {useRouter} from 'next/router'
 import {useEffect, useRef} from "react";
 import Footer from "../../components/Footer";
 import {Episode, Show} from "../../models/Show";
-import styles from '../../styles/Search.module.css'
+import styles from '../../styles/Home.module.css'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     // Fetch data from external API
@@ -29,7 +29,7 @@ export default function Ratings(props: {ratings: Ratings}) {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
 
-            <main className={styles.main}>
+            <main>
                 <h1 className={styles.title}>
                     {router.query.ratings}
                 </h1>
