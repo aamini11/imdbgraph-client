@@ -4,7 +4,7 @@ import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {useEffect, useRef} from "react";
 import Footer from "../../components/Footer";
-import {Episode, Show} from "../../models/Show";
+import {Episode, formatTitle, Show} from "../../models/Show";
 import styles from '../../styles/Home.module.css'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -118,12 +118,6 @@ function parseRatings(ratings: Ratings): SeriesSplineOptions[] {
 }
 
 function renderHighcharts(id: string, ratings: Ratings) {
-    function formatTitle(show: Show) {
-        const endDate = show.endYear ?? "Present"
-        const ratings = "" ?? `(rating: ${show.showRating}, votes: ${show.numVotes})`;
-        return `${show.title} (${show.startYear} - ${endDate}) ${ratings}`;
-    }
-
     Highcharts.chart(id, {
         title: {
             text: formatTitle(ratings.show)
