@@ -6,7 +6,7 @@ export default function Card(props: {
 }) {
     return (
         <div className={styles.grid}>
-            <a href="https://nextjs.org/docs" className={styles.card}>
+            <a href="https://gitlab.com/aamini11/imdbgraph" className={styles.card}>
                 <h2>{props.title}</h2>
                 <p>{props.body}</p>
             </a>

@@ -38,7 +38,7 @@ export default function Searchbar() {
             }}>
                 <input className={styles.searchText}
                        type="text"
-                       placeholder="Search..."
+                       placeholder="Search for any TV show..."
                        value={text} onInput={e => onChange(e.currentTarget.value)}
                 />
                 <button className={styles.searchButton} type="submit">
