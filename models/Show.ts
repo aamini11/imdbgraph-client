@@ -1,10 +1,18 @@
 export type Show = {
     imdbId: string,
     title: string,
+    image?: StaticImageData,
     startYear: string,
     endYear?: string,
+    runtime?: string,
+    rating?: string,
+
     showRating: number,
-    numVotes: number
+    numVotes: number,
+
+    cast?: string,
+    genre?: string,
+}
 
 export function formatTitle(show: Show): string {
     const endDate = show.endYear ?? "Present"
