@@ -29,7 +29,13 @@ export default function Searchbar() {
 
     return (
         <div className={styles.container}>
-            <form className={styles.searchBar} onSubmit={() => router.push({pathname: "/search", query: {"q": "abc"}})}>
+            <form className={styles.searchBar} onSubmit={e => {
+                e.preventDefault();
+                router.push({
+                    pathname: "/search",
+                    query: {"q": "abc"}}
+                )
+            }}>
                 <input className={styles.searchText}
                        type="text"
                        placeholder="Search..."
