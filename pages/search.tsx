@@ -7,7 +7,7 @@ import styles from "../styles/Home.module.css";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     // Fetch data from external API
-    const response = await fetch(`http://localhost:3000/api/search?q=${context.query.q}`)
+    const response = await fetch(`https://imdbgraph.org/api/search?q=${context.query.q}`)
     if (response.ok) {
         const searchResults: Show[] = await response.json();
         return {props: {searchResults: searchResults}}
