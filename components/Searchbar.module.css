@@ -1,7 +1,8 @@
 .container {
     position: relative;
     font-size: 1.0rem;
-    width: 600px;
+    max-width: 600px;
+    width: 100%;
 }
 
 .searchBar {
