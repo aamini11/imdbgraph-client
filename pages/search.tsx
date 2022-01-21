@@ -1,10 +1,9 @@
 import {GetServerSidePropsContext} from "next";
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
 import React, {ReactNode} from "react";
 import Footer from "../components/Footer";
-import {formatTitle, Show} from "../models/Show";
+import {Show} from "../models/Show";
 import image from "../public/movie.png"
 import styles from "../styles/Home.module.css";
 
@@ -29,17 +28,14 @@ export default function Search(props: {searchResults: Show[]}) {
             </Head>
 
             <main className={styles.main}>
-                <Movies movies={sampleMovies}/>
-                <ul>
-                    {props.searchResults.map(show => <ListOption key={show.imdbId} show={show}/>)}
-                </ul>
+                <ShowList shows={sampleMovies}/>
             </main>
             <Footer/>
         </div>
     )
 }
 
-function Movies({movies}: {movies: Show[]}) {
+function ShowList({shows}: {shows: Show[]}) {
     return (
         <div className="divide-y divide-slate-100">
             <Nav>
@@ -48,7 +44,7 @@ function Movies({movies}: {movies: Show[]}) {
                 <NavItem href="/picks" isActive={false}>Vincent’s Picks</NavItem>
             </Nav>
             <List>
-                {movies.map((movie) => (
+                {shows.map((movie) => (
                     <ListItem key={movie.imdbId} show={movie} />
                 ))}
             </List>
@@ -168,13 +164,3 @@ const sampleMovies: Show[] = [
         genre: "Action",
     }
 ];
-
-function ListOption(props: {show: Show}) {
-    return (
-        <Link href={`/ratings/${props.show.imdbId}`} passHref>
-            <li>
-                <a>{formatTitle(props.show)}</a>
-            </li>
-        </Link>
-    );
-}
