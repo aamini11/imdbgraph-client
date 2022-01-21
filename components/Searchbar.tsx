@@ -33,7 +33,7 @@ export default function Searchbar() {
                 e.preventDefault();
                 router.push({
                     pathname: "/search",
-                    query: {"q": router.query['q']}}
+                    query: {"q": text}}
                 )
             }}>
                 <input className={styles.searchText}
