@@ -1,31 +1,35 @@
 export type Show = {
-    imdbId: string,
-    title: string,
-    image?: StaticImageData,
-    startYear: string,
-    endYear?: string,
-    runtime?: string,
-    rating?: string,
+    readonly imdbId: string,
+    readonly title: string,
+    readonly image?: StaticImageData,
+    readonly startYear: string,
+    readonly endYear?: string,
+    readonly runtime?: string,
+    readonly rating?: string,
 
-    showRating: number,
-    numVotes: number,
+    readonly showRating: number,
+    readonly numVotes: number,
 
-    cast?: string,
-    genre?: string,
+    readonly cast?: string,
+    readonly genre?: string,
 }
 
 export function formatTitle(show: Show): string {
-    const endDate = show.endYear ?? "Present"
     const ratings = `(rating: ${show.showRating}, votes: ${show.numVotes})`;
-    return `${show.title} (${show.startYear} - ${endDate}) ${ratings}`;
+    return `${show.title} (${formatYears(show)}) ${ratings}`;
+}
+
+export function formatYears(show: Show): string {
+    const endDate = show.endYear ?? "Present";
+    return `${show.startYear} - ${endDate}`;
 }
 
 export type Episode = {
-    episodeTitle: string,
+    readonly episodeTitle: string,
 
-    season: number,
-    episodeNumber: number,
+    readonly season: number,
+    readonly episodeNumber: number,
 
-    imdbRating: number,
-    numVotes: number
+    readonly imdbRating: number,
+    readonly numVotes: number
 }
