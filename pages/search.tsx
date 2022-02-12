@@ -70,7 +70,7 @@ function NavItem(props: { isActive: boolean, children: ReactNode }) {
 
 function List({children}: { children: ReactNode }) {
     return (
-        <ul className="divide-y divide-slate-100">
+        <ul className="divide-slate-100">
             {children}
         </ul>
     )
