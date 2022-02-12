@@ -78,8 +78,8 @@ function List({children}: { children: ReactNode }) {
 
 function ListItem({show}: { show: Show }) {
     return (
-        <div className="relative max-w-2xl">
-            <article className="flex items-start space-x-6 p-6 drop-shadow-xl rounded-xl my-3 bg-gray-100">
+        <div className="relative max-w-2xl group">
+            <article className="flex items-start space-x-6 p-6 drop-shadow-xl rounded-xl my-3 bg-gray-100 group-hover:bg-gray-200">
                 <div className="min-w-0 relative flex-auto">
                     <h2 className="text-2xl font-semibold text-slate-900 truncate pr-20">{show.title}</h2>
                     <dl className="mt-2 flex flex-wrap text-sm leading-6 font-medium">
