@@ -48,7 +48,7 @@ export default function Searchbar() {
                            width="20" height="20"/>
                 </button>
             </form>
-            {text.length > 0 && suggestions.length > 0 ? <DropDown suggestions={suggestions}/> : null}
+            {text.length > 0 && suggestions.length > 0 && <DropDown suggestions={suggestions}/>}
         </div>
     );
 }
