@@ -68,7 +68,7 @@ function ListItem({show}: { show: Show }) {
     );
 
     return (
-        <article className="p-6 drop-shadow-xl rounded-xl bg-gray-100">
+        <article className="p-6 relative drop-shadow-xl rounded-xl bg-gray-100 hover:bg-slate-200">
             <div className="min-w-0 relative">
                 {title}
                 <dl className="mt-2 text-sm leading-6 font-medium">
@@ -77,7 +77,7 @@ function ListItem({show}: { show: Show }) {
                 </dl>
             </div>
             <Link href={`/ratings/${show.imdbId}`}>
-                <a className="absolute w-full h-full top-0 left-0"/>
+                <a className="absolute w-full h-full top-0 left-0 z-[1]"/>
             </Link>
         </article>
     );
