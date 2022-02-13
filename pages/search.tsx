@@ -1,7 +1,7 @@
 import {GetServerSidePropsContext} from "next";
 import Head from "next/head";
 import Link from "next/link";
-import React, {ReactNode} from "react";
+import React from "react";
 import Searchbar from "../components/Searchbar";
 import {formatYears, Show} from "../models/Show";
 
@@ -28,22 +28,23 @@ export default function Search(props: { searchResults: Show[], searchTerm: strin
 
             <main className="max-w-screen-sm p-6">
                 <Searchbar/>
-                <List>
-                    {props.searchResults.map((movie) => (
-                        <ListItem key={movie.imdbId} show={movie}/>
-                    ))}
-                </List>
+                {props.searchResults.length > 0
+                    ? <List searchResults={props.searchResults}/>
+                    : `No results found for : ${props.searchTerm}`
+                }
             </main>
         </body>
-    )
+    );
 }
 
-function List({children}: { children: ReactNode }) {
+function List(props: { searchResults: Show[] }) {
     return (
         <ul className="space-y-5 pt-6">
-            {children}
+            {props.searchResults.map(movie =>
+                <ListItem key={movie.imdbId} show={movie}/>
+            )}
         </ul>
-    )
+    );
 }
 
 function ListItem({show}: { show: Show }) {
