@@ -13,18 +13,18 @@ export default function Searchbar() {
     const [isFocused, setIsFocused] = React.useState(false);
 
     const fetchSuggestions = useMemo(() => debounce(async (query) => {
-        if (!query || !/\S/.test(query)) {
-            setSuggestions([]);
-        } else {
-            const response = await fetch(`api/search?q=${query}`)
-            const suggestions = await response.json();
-            setSuggestions(suggestions);
-        }
+         const response = await fetch(`api/search?q=${query}`);
+         const suggestions = await response.json();
+         setSuggestions(suggestions);
     }, 300), []);
 
     const onChange = (input: string) => {
         setText(input);
-        fetchSuggestions(input);
+        if (!input || !/\S/.test(input)) {
+            setSuggestions([]);
+        } else {
+            fetchSuggestions(input);
+        }
     }
 
     return (
