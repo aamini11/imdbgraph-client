@@ -24,7 +24,7 @@ export default function Ratings(props: {ratings: Ratings}) {
     return (
         <div className={styles.container}>
             <Head>
-                <title>IMDB Graph</title>
+                <title>IMDB Graph Ratings - {props.ratings.show.title}</title>
                 <meta name="description" content="Website to visualize IMDB TV show ratings as a graph"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>

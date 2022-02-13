@@ -7,20 +7,21 @@ import {formatYears, Show} from "../models/Show";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     // Fetch data from external API
-    const response = await fetch(`https://imdbgraph.org/api/search?q=${context.query.q}`)
+    const response = await fetch(`https://imdbgraph.org/api/search?q=${context.query.q}`);
     if (response.ok) {
         const searchResults: Show[] = await response.json();
-        return {props: {searchResults: searchResults}}
+        const props = {searchResults: searchResults, searchTerm: context.query.q};
+        return {props: props};
     } else {
         throw "Show not found";
     }
 }
 
-export default function Search(props: { searchResults: Show[] }) {
+export default function Search(props: { searchResults: Show[], searchTerm: string }) {
     return (
         <body>
             <Head>
-                <title>IMDB Graph</title>
+                <title>IMDB Graph Search - {props.searchTerm}</title>
                 <meta name="description" content="Website to visualize IMDB TV show ratings as a graph"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
