@@ -8,11 +8,11 @@ import {Show} from "../models/Show";
 import styles from './Searchbar.module.css'
 
 export default function Searchbar() {
-    const router = useRouter()
+    const router = useRouter();
     const [text, setText] = useState("");
     const [suggestions, setSuggestions] = useState<Show[]>([]);
 
-    const handler = useMemo(() => debounce(async (query) => {
+    const fetchSuggestions = useMemo(() => debounce(async (query) => {
         if (!query || !/\S/.test(query)) {
             setSuggestions([]);
         } else {
@@ -22,19 +22,21 @@ export default function Searchbar() {
         }
     }, 300), []);
 
-    const onChange = (query: string) => {
-        setText(query);
-        handler(query);
+    const onChange = (input: string) => {
+        setText(input);
+        fetchSuggestions(input);
     }
 
     return (
         <div className={styles.container}>
-            <form className={styles.searchBar} onSubmit={e => {
+            <form className={styles.searchBar} onSubmit={async e => {
                 e.preventDefault();
-                router.push({
-                    pathname: "/search",
-                    query: {"q": text}}
-                )
+                await router.push({
+                        pathname: "/search",
+                        query: {"q": text}
+                    }
+                );
+                setText("");
             }}>
                 <input className={styles.searchText}
                        type="text"
@@ -48,7 +50,7 @@ export default function Searchbar() {
             </form>
             {text.length > 0 && suggestions.length > 0 ? <DropDown suggestions={suggestions}/> : null}
         </div>
-    )
+    );
 }
 
 function DropDown(props: {suggestions: Show[]}) {
@@ -59,7 +61,7 @@ function DropDown(props: {suggestions: Show[]}) {
         <ul className={styles.dropDown}>
             {allDropDownOptions.slice(0, 5)}
         </ul>
-    )
+    );
 }
 
 function DropDownOption(props: {show: Show}) {
@@ -69,5 +71,5 @@ function DropDownOption(props: {show: Show}) {
                 <a>{props.show.title}</a>
             </li>
         </Link>
-    )
+    );
 }
