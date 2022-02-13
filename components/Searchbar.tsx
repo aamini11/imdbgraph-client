@@ -1,5 +1,4 @@
 import {debounce} from "lodash"
-import Image from 'next/image'
 import Link from 'next/link'
 import {useRouter} from "next/router";
 import React, {useMemo, useState} from 'react'
@@ -11,6 +10,7 @@ export default function Searchbar() {
     const router = useRouter();
     const [text, setText] = useState("");
     const [suggestions, setSuggestions] = useState<Show[]>([]);
+    const [isFocused, setIsFocused] = React.useState(false);
 
     const fetchSuggestions = useMemo(() => debounce(async (query) => {
         if (!query || !/\S/.test(query)) {
@@ -41,15 +41,33 @@ export default function Searchbar() {
                 <input className={styles.searchText}
                        type="text"
                        placeholder="Search for any TV show..."
-                       value={text} onInput={e => onChange(e.currentTarget.value)}
+                       value={text}
+                       onInput={e => onChange(e.currentTarget.value)}
+                       onFocus={() => setIsFocused(true)}
+                       onBlur={() => setIsFocused(false)}
                 />
                 <button className={styles.searchButton} type="submit">
-                    <Image src="/search.svg" alt="Search Icon"
-                           width="20" height="20"/>
+                    <SearchIcon/>
                 </button>
             </form>
-            {text.length > 0 && suggestions.length > 0 && <DropDown suggestions={suggestions}/>}
+            {isFocused && text.length > 0 && suggestions.length > 0 && <DropDown suggestions={suggestions}/>}
         </div>
+    );
+}
+
+function SearchIcon() {
+    return (
+        <svg
+            width={24}
+            height={24}
+            className={styles.searchIcon}
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <title>Search Icon</title>
+            <path
+                d="m21.172 24-7.387-7.387A8.945 8.945 0 0 1 9 18c-4.971 0-9-4.029-9-9s4.029-9 9-9 9 4.029 9 9a8.951 8.951 0 0 1-1.387 4.785L24 21.172 21.172 24zM9 16c3.859 0 7-3.14 7-7s-3.141-7-7-7-7 3.14-7 7 3.141 7 7 7z"
+            />
+        </svg>
     );
 }
 

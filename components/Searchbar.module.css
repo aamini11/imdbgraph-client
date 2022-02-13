@@ -19,6 +19,18 @@
     border-radius: 10px;
 }
 
+.searchBar:focus-within {
+    @apply transition duration-300 border-blue-300;
+}
+
+.searchIcon:hover {
+    @apply transition fill-blue-500;
+}
+
+.searchBar:focus-within .searchIcon {
+    @apply transition fill-blue-500;
+}
+
 .searchText {
     /* Tell the input to use all the available space */
     flex-grow: 1;
