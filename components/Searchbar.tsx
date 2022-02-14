@@ -6,6 +6,10 @@ import {Show} from "../models/Show";
 
 import styles from './Searchbar.module.css'
 
+function isEmpty(s: string) {
+    return !s || !/\S/.test(s);
+}
+
 export default function Searchbar() {
     const router = useRouter();
     const [text, setText] = useState("");
@@ -20,7 +24,7 @@ export default function Searchbar() {
 
     const onChange = (input: string) => {
         setText(input);
-        if (!input || !/\S/.test(input)) {
+        if (isEmpty(input)) {
             setSuggestions([]);
         } else {
             fetchSuggestions(input);
@@ -31,6 +35,9 @@ export default function Searchbar() {
         <div className={styles.container}>
             <form className={styles.searchBar} onSubmit={async e => {
                 e.preventDefault();
+                if (isEmpty(text)) {
+                    return;
+                }
                 await router.push({
                         pathname: "/search",
                         query: {"q": text}
