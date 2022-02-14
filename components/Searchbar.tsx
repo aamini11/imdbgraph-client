@@ -1,9 +1,8 @@
 import {debounce} from "lodash"
 import Link from 'next/link'
 import {useRouter} from "next/router";
-import React, {useMemo, useState} from 'react'
+import {useMemo, useState} from 'react'
 import {Show} from "../models/Show";
-
 import styles from './Searchbar.module.css'
 
 function isEmpty(s: string) {
@@ -14,12 +13,12 @@ export default function Searchbar() {
     const router = useRouter();
     const [text, setText] = useState("");
     const [suggestions, setSuggestions] = useState<Show[]>([]);
-    const [isFocused, setIsFocused] = React.useState(false);
+    const [isFocused, setIsFocused] = useState(false);
 
-    const fetchSuggestions = useMemo(() => debounce(async (query) => {
-         const response = await fetch(`api/search?q=${query}`);
-         const suggestions = await response.json();
-         setSuggestions(suggestions);
+    const fetchSuggestions = useMemo(() => debounce(async (query: string) => {
+        const response = await fetch(`api/search?q=${query}`);
+        const suggestions = await response.json();
+        setSuggestions(suggestions);
     }, 300), []);
 
     const onChange = (input: string) => {
@@ -39,10 +38,9 @@ export default function Searchbar() {
                     return;
                 }
                 await router.push({
-                        pathname: "/search",
-                        query: {"q": text}
-                    }
-                );
+                    pathname: "/search",
+                    query: {"q": text}
+                });
                 setText("");
             }}>
                 <input className={styles.searchText}
@@ -89,7 +87,7 @@ function DropDown(props: { suggestions: Show[] }) {
     );
 }
 
-function DropDownOption(props: {show: Show}) {
+function DropDownOption(props: { show: Show }) {
     return (
         <Link href={`/ratings/${props.show.imdbId}`} passHref>
             <li className="text-left p-1 hover:bg-gray-100">
