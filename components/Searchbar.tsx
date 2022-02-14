@@ -71,13 +71,13 @@ function SearchIcon() {
     );
 }
 
-function DropDown(props: {suggestions: Show[]}) {
-    // const options = props.suggestions.map(suggestion=> <DropDownOption key="" text={suggestion}/>);
-    const allDropDownOptions = props.suggestions.map(show => <DropDownOption key={show.imdbId} show={show}/>);
-    console.log(props.suggestions);
+function DropDown(props: { suggestions: Show[] }) {
+    const allDropDownOptions = props.suggestions
+        .slice(0, 5)
+        .map(show => <DropDownOption key={show.imdbId} show={show}/>);
     return (
-        <ul className={styles.dropDown}>
-            {allDropDownOptions.slice(0, 5)}
+        <ul className={styles.dropDown} onMouseDown={e => e.preventDefault()}>
+            {allDropDownOptions}
         </ul>
     );
 }
