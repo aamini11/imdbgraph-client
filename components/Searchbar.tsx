@@ -90,7 +90,7 @@ function DropDown(props: { suggestions: Show[] }) {
 function DropDownOption(props: { show: Show }) {
     return (
         <Link href={`/ratings/${props.show.imdbId}`} passHref>
-            <li className="text-left p-1 hover:bg-gray-100">
+            <li className="text-left p-1 hover:bg-gray-100 select-none">
                 <a>{props.show.title}</a>
             </li>
         </Link>
