@@ -14,11 +14,6 @@ export type Show = {
     readonly genre?: string,
 }
 
-export function formatTitle(show: Show): string {
-    const ratings = `(rating: ${show.showRating}, votes: ${show.numVotes})`;
-    return `${show.title} (${formatYears(show)}) ${ratings}`;
-}
-
 export function formatYears(show: Show): string {
     const endDate = show.endYear ?? "Present";
     return `${show.startYear} - ${endDate}`;

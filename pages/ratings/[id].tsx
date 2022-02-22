@@ -1,10 +1,12 @@
-import Highcharts, {SeriesSplineOptions} from 'highcharts'
+import Highcharts, {PointOptionsObject, SeriesSplineOptions} from 'highcharts'
 import {GetServerSidePropsContext} from "next";
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {useEffect, useRef} from "react";
+import ReactDOMServer, {renderToStaticMarkup} from 'react-dom/server';
 import Footer from "../../components/Footer";
-import {Episode, formatTitle, Show} from "../../models/Show";
+import Navigation from '../../components/Navigation';
+import {Episode, formatYears, Show} from "../../models/Show";
 import styles from '../../styles/Home.module.css'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -12,21 +14,21 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const res = await fetch(`https://www.imdbgraph.org/api/ratings/${context.query.id}`)
     if (res.ok) {
         const ratings: Ratings = await res.json();
-        return {props: {ratings: ratings}}
+        return { props: { ratings: ratings } }
     } else {
         throw "Show not found";
     }
 }
 
-export default function Ratings(props: {ratings: Ratings}) {
+export default function Ratings(props: { ratings: Ratings }) {
     const router = useRouter();
 
     return (
         <div className={styles.container}>
             <Head>
                 <title>IMDB Graph Ratings - {props.ratings.show.title}</title>
-                <meta name="description" content="Website to visualize IMDB TV show ratings as a graph"/>
-                <link rel="icon" href="/favicon.ico"/>
+                <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
+                <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <main>
@@ -34,9 +36,9 @@ export default function Ratings(props: {ratings: Ratings}) {
                     {router.query.ratings}
                 </h1>
 
-                {hasRatings(props.ratings) ? <Graph ratings={props.ratings}/> : <h1 className={styles.title}>No ratings found for show</h1>}
+                {hasRatings(props.ratings) ? <Graph ratings={props.ratings} /> : <h1 className={styles.title}>No ratings found for show</h1>}
             </main>
-            <Footer/>
+            <Footer />
         </div>
     )
 }
@@ -59,9 +61,38 @@ interface Series extends SeriesSplineOptions {
     }[]
 }
 
+function ShowTitle({ show }: { show: Show }) {
+    return (
+        <>
+            <h1 className="text-center text-xl">{show.title} ({formatYears(show)})</h1>
+            <h2 className="text-center text-sm">Show rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})</h2>
+        </>
+    );
+}
+
+function ToolTip({ episode }: { episode: Episode }) {
+    return (
+        <table>
+            <tr>
+                <th>
+                    {episode.episodeTitle} (s{episode.season}e{episode.episodeNumber}):
+                </th>
+            </tr>
+            <tr>
+                <td style={{ textAlign: "left" }}>
+                    Rating: {episode.imdbRating.toFixed(1)} ({episode.numVotes.toLocaleString()} votes)
+                </td>
+            </tr>
+        </table>
+    );
+}
+
+/**
+ * Wrap the Hicharts graph in a react component.
+ */
 function Graph(props: { ratings: Ratings }) {
     const ref = useRef(null);
-    const root = <div id="graph" ref={ref}/>
+    const root = <div id="graph" ref={ref} />
 
     useEffect(() => {
         renderHighcharts(root.props.id, props.ratings);
@@ -70,20 +101,25 @@ function Graph(props: { ratings: Ratings }) {
     return root;
 }
 
+/**
+ * Helper function to check if a show has any ratings on any of their episodes. This
+ * function is used to know whether a graph should be displayed or just an empty
+ * banner letting the user know the show had no ratings.
+ */
 function hasRatings(ratings: Ratings): boolean {
-    let i = 0;
     for (const seasonRatings of Object.values(ratings.allEpisodeRatings)) {
         for (const episode of Object.values(seasonRatings)) {
-            if (episode.numVotes != 0) { // ignore episodes without ratings
-                i++;
+            if (episode.numVotes > 0) {
+                return true;
             }
         }
     }
-    return i > 0;
+    return false;
 }
 
 /**
- * Transform data into a format that Highcharts understands
+ * Transform data into a format that Highcharts understands. 
+ * {@link SeriesSplineOptions}
  */
 function parseRatings(ratings: Ratings): SeriesSplineOptions[] {
     let i = 1;
@@ -120,7 +156,8 @@ function parseRatings(ratings: Ratings): SeriesSplineOptions[] {
 function renderHighcharts(id: string, ratings: Ratings) {
     Highcharts.chart(id, {
         title: {
-            text: formatTitle(ratings.show)
+            text: renderToStaticMarkup(<ShowTitle show={ratings.show} />),
+            useHTML: true
         },
 
         plotOptions: {
@@ -144,12 +181,13 @@ function renderHighcharts(id: string, ratings: Ratings) {
         },
 
         tooltip: {
-            shared: true,
+            shared: false,
             useHTML: true,
             headerFormat: '',
-            pointFormat:
-                '<tr><td style="color: {series.color}">s{point.season}e{point.episode} ({point.title}): </td>' +
-                '<td style="text-align: right"><b>{point.y} ({point.numVotes} votes)</b></td></tr>',
+            pointFormatter: function (this: PointOptionsObject) {
+                const episode = this.custom?.episode as Episode;
+                return ReactDOMServer.renderToStaticMarkup(<ToolTip episode={episode}/>);
+            },
             footerFormat: '',
             valueDecimals: 2
         },
