@@ -1,28 +1,46 @@
 import {debounce} from "lodash"
 import Link from 'next/link'
 import {useRouter} from "next/router";
-import {useMemo, useState} from 'react'
+import {FormEvent, KeyboardEvent, useCallback, useState} from 'react'
 import {Show} from "../models/Show";
-import styles from './Searchbar.module.css'
 
-function isEmpty(s: string) {
-    return !s || !/\S/.test(s);
-}
+const DROPDOWN_SIZE_LIMIT = 5;
 
 export default function Searchbar() {
     const router = useRouter();
+    
     const [text, setText] = useState("");
     const [suggestions, setSuggestions] = useState<Show[]>([]);
     const [isFocused, setIsFocused] = useState(false);
+    const [selected, setSelected] = useState<number | null>(null);
 
-    const fetchSuggestions = useMemo(() => debounce(async (query: string) => {
-        const response = await fetch(`api/search?q=${query}`);
+    function handleKeyDown(e: KeyboardEvent) {        
+        const dropdownSize = Math.min(suggestions.length, DROPDOWN_SIZE_LIMIT);
+        if (e.key == "ArrowUp" || e.key == "ArrowDown") {
+            e.preventDefault();
+
+            if (selected === null) {
+                setSelected(e.key == "ArrowDown" ? 0 : dropdownSize - 1);
+            } else if ((selected === 0 && e.key == "ArrowUp") || (selected === dropdownSize - 1 && e.key == "ArrowDown")) {
+                setSelected(null);
+            } else {
+                const dir = e.key == "ArrowDown" ? 1 : -1;
+                setSelected(selected + dir);
+            }
+        }
+    }
+
+    const delayedSearch = debounce(async (query: string) => {
+        const response = await fetch(`/api/search?q=${query}`);
         const suggestions = await response.json();
         setSuggestions(suggestions);
-    }, 300), []);
+    }, 300);
+    const fetchSuggestions = useCallback(delayedSearch, [delayedSearch]);
 
-    const onChange = (input: string) => {
+    const onInput = (input: string) => {
+        setSelected(null);
         setText(input);
+        
         if (isEmpty(input)) {
             setSuggestions([]);
         } else {
@@ -30,32 +48,47 @@ export default function Searchbar() {
         }
     }
 
+    const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (isEmpty(text)) {
+            return;
+        }
+
+        if (selected !== null) {
+            const show = suggestions[selected];
+            await router.push({
+                pathname: `/ratings/${show.imdbId}`
+            });
+        } else {
+            await router.push({
+                pathname: "/search",
+                query: {"q": text}
+            });
+        }
+    }
+
     return (
-        <div className={styles.container}>
-            <form className={styles.searchBar} onSubmit={async e => {
-                e.preventDefault();
-                if (isEmpty(text)) {
-                    return;
-                }
-                await router.push({
-                    pathname: "/search",
-                    query: {"q": text}
-                });
-                setText("");
-            }}>
-                <input className={styles.searchText}
+        <div className="relative text-base w-full">
+            <form className="flex flex-row p-1 bg-white border-gray-500 border rounded-md transition duration-300 focus-within:border-blue-300" 
+                  onSubmit={onSubmit}
+            >
+                <input className="flex-grow border-none px-2 focus:outline-none"
                        type="text"
                        placeholder="Search for any TV show..."
-                       value={text}
-                       onInput={e => onChange(e.currentTarget.value)}
+                       value={selected === null ? text : suggestions[selected].title}
+                       onInput={e => onInput(e.currentTarget.value)}
                        onFocus={() => setIsFocused(true)}
-                       onBlur={() => setIsFocused(false)}
+                       onBlur={() => {
+                           setIsFocused(false);
+                           setSelected(null);
+                       }}
+                       onKeyDown={handleKeyDown}
                 />
-                <button className={styles.searchButton} type="submit">
+                <button className="pr-2" type="submit">
                     <SearchIcon/>
                 </button>
             </form>
-            {isFocused && text.length > 0 && suggestions.length > 0 && <DropDown suggestions={suggestions}/>}
+            {isFocused && text.length > 0 && suggestions.length > 0 && <DropDown suggestions={suggestions} activeOption={selected}/>}
         </div>
     );
 }
@@ -65,7 +98,7 @@ function SearchIcon() {
         <svg
             width={24}
             height={24}
-            className={styles.searchIcon}
+            className="transition hover:fill-blue-500"
             xmlns="http://www.w3.org/2000/svg"
         >
             <title>Search Icon</title>
@@ -76,23 +109,28 @@ function SearchIcon() {
     );
 }
 
-function DropDown(props: { suggestions: Show[] }) {
-    const allDropDownOptions = props.suggestions
-        .slice(0, 5)
-        .map(show => <DropDownOption key={show.imdbId} show={show}/>);
+function DropDown(props: { suggestions: Show[], activeOption: number | null}) {
     return (
-        <ul className={styles.dropDown} onMouseDown={e => e.preventDefault()}>
-            {allDropDownOptions}
+        <ul className="w-full bg-white absolute z-[1] border-gray-500 border"
+            onMouseDown={e => e.preventDefault()}
+        >
+            {props.suggestions.slice(0, DROPDOWN_SIZE_LIMIT).map((show, i) =>
+                <DropDownOption key={show.imdbId} show={show} isSelected={i === props.activeOption}/>
+            )}
         </ul>
     );
 }
 
-function DropDownOption(props: { show: Show }) {
+function DropDownOption(props: { show: Show, isSelected: boolean }) {
     return (
         <Link href={`/ratings/${props.show.imdbId}`} passHref>
-            <li className="text-left p-1 hover:bg-gray-100 select-none">
+            <li className={`text-left px-2 p-1 hover:bg-gray-100 select-none hover:cursor-pointer ${props.isSelected ? "bg-gray-100" : ""}`}>
                 <a>{props.show.title}</a>
             </li>
         </Link>
     );
+}
+
+function isEmpty(s: string) {
+    return !s || !/\S/.test(s);
 }
