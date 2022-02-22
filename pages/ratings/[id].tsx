@@ -32,6 +32,7 @@ export default function Ratings(props: { ratings: Ratings }) {
             </Head>
 
             <main>
+                <Navigation />
                 <h1 className={styles.title}>
                     {router.query.ratings}
                 </h1>
