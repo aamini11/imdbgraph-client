@@ -1,5 +1,5 @@
-import styles from "./Footer.module.css";
 import Image from "next/image";
+import styles from "./Footer.module.css";
 
 export default function Footer() {
     return (
@@ -8,7 +8,7 @@ export default function Footer() {
                    target="_blank"
                    rel="noopener noreferrer"
                 >
-                    <span className={styles.footerText}>Powered by Spruce Technologies</span>
+                    <span className={styles.footerText}>Developed by Aria Amini</span>
                     <Image className={styles.logo} src="/linkedin.svg" alt="LinkedIn Logo" width={24} height={24}/>
                 </a>
         </footer>
