@@ -31,7 +31,7 @@ export default function Searchbar() {
     }
 
     const delayedSearch = debounce(async (query: string) => {
-        const response = await fetch(`/api/search?q=${query}`);
+        const response = await fetch(`https://api.imdbgraph.org/api/search?q=${query}`);
         const suggestions = await response.json();
         setSuggestions(suggestions);
     }, 300);

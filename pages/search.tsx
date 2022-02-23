@@ -7,7 +7,7 @@ import {formatYears, Show} from "../models/Show";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     // Fetch data from external API
-    const response = await fetch(`https://imdbgraph.org/api/search?q=${context.query.q}`);
+    const response = await fetch(`https://api.imdbgraph.org/api/search?q=${context.query.q}`);
     if (response.ok) {
         const searchResults: Show[] = await response.json();
         const props = {searchResults: searchResults, searchTerm: context.query.q};
