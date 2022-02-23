@@ -1,7 +1,7 @@
 import {debounce} from "lodash"
 import Link from 'next/link'
 import {useRouter} from "next/router";
-import {FormEvent, KeyboardEvent, useCallback, useState} from 'react'
+import {FormEvent, KeyboardEvent, useMemo, useState} from 'react'
 import {Show} from "../models/Show";
 
 const DROPDOWN_SIZE_LIMIT = 5;
@@ -30,12 +30,12 @@ export default function Searchbar() {
         }
     }
 
-    const delayedSearch = debounce(async (query: string) => {
-        const response = await fetch(`https://api.imdbgraph.org/api/search?q=${query}`);
+
+    const fetchSuggestions = useMemo(() => debounce(async (query: string) => {
+        const response = await fetch(`/api/search?q=${query}`);
         const suggestions = await response.json();
         setSuggestions(suggestions);
-    }, 300);
-    const fetchSuggestions = useCallback(delayedSearch, [delayedSearch]);
+    }, 300), []);
 
     const onInput = (input: string) => {
         setSelected(null);
