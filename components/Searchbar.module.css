@@ -1,3 +1,0 @@
-.searchBar:focus-within .searchIcon {
-    @apply transition fill-blue-500;
-}
