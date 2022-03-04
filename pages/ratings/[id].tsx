@@ -3,7 +3,7 @@ import {GetServerSidePropsContext} from "next";
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {useEffect, useRef} from "react";
-import ReactDOMServer, {renderToStaticMarkup} from 'react-dom/server';
+import ReactDOMServer from 'react-dom/server';
 import Footer from "../../components/Footer";
 import Navigation from '../../components/Navigation';
 import {Episode, formatYears, Show} from "../../models/Show";
@@ -14,7 +14,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const res = await fetch(`https://api.imdbgraph.org/api/ratings/${context.query.id}`)
     if (res.ok) {
         const ratings: Ratings = await res.json();
-        return { props: { ratings: ratings } }
+        return {props: {ratings: ratings}}
     } else {
         throw "Show not found";
     }
@@ -27,19 +27,25 @@ export default function Ratings(props: { ratings: Ratings }) {
         <div className={styles.container}>
             <Head>
                 <title>IMDB Graph Ratings - {props.ratings.show.title}</title>
-                <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
-                <link rel="icon" href="/favicon.ico" />
+                <meta name="description" content="Website to visualize IMDB TV show ratings as a graph"/>
+                <link rel="icon" href="/favicon.ico"/>
             </Head>
 
             <main>
-                <Navigation />
+                <Navigation/>
                 <h1 className={styles.title}>
                     {router.query.ratings}
                 </h1>
 
-                {hasRatings(props.ratings) ? <Graph ratings={props.ratings} /> : <h1 className={styles.title}>No ratings found for show</h1>}
+                {!hasRatings(props.ratings)
+                    ? <h1 className={styles.title}>No ratings found for show</h1>
+                    : <>
+                        <ShowTitle show={props.ratings.show}/>
+                        <Graph ratings={props.ratings}/>
+                    </>
+                }
             </main>
-            <Footer />
+            <Footer/>
         </div>
     )
 }
@@ -62,38 +68,32 @@ interface Series extends SeriesSplineOptions {
     }[]
 }
 
-function ShowTitle({ show }: { show: Show }) {
+function ShowTitle({show}: { show: Show }) {
     return (
-        <>
+        <div className="p-3">
             <h1 className="text-center text-xl">{show.title} ({formatYears(show)})</h1>
-            <h2 className="text-center text-sm">Show rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})</h2>
-        </>
+            <h2 className="text-center text-sm">Show
+                rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})</h2>
+        </div>
     );
 }
 
-function ToolTip({ episode }: { episode: Episode }) {
+function ToolTip({episode}: { episode: Episode }) {
     return (
-        <table>
-            <tr>
-                <th>
-                    {episode.episodeTitle} (s{episode.season}e{episode.episodeNumber}):
-                </th>
-            </tr>
-            <tr>
-                <td style={{ textAlign: "left" }}>
-                    Rating: {episode.imdbRating.toFixed(1)} ({episode.numVotes.toLocaleString()} votes)
-                </td>
-            </tr>
-        </table>
+        <span>
+            {episode.episodeTitle} (s{episode.season}e{episode.episodeNumber}):
+            <br/>
+            Rating: {episode.imdbRating.toFixed(1)} ({episode.numVotes.toLocaleString()} votes)
+        </span>
     );
 }
 
 /**
- * Wrap the Hicharts graph in a react component.
+ * Wrap the Hicharts graph in a React component.
  */
 function Graph(props: { ratings: Ratings }) {
     const ref = useRef(null);
-    const root = <div id="graph" ref={ref} />
+    const root = <div id="graph" ref={ref}/>
 
     useEffect(() => {
         renderHighcharts(root.props.id, props.ratings);
@@ -119,7 +119,7 @@ function hasRatings(ratings: Ratings): boolean {
 }
 
 /**
- * Transform data into a format that Highcharts understands. 
+ * Transform data into a format that Highcharts understands.
  * {@link SeriesSplineOptions}
  */
 function parseRatings(ratings: Ratings): SeriesSplineOptions[] {
@@ -157,8 +157,7 @@ function parseRatings(ratings: Ratings): SeriesSplineOptions[] {
 function renderHighcharts(id: string, ratings: Ratings) {
     Highcharts.chart(id, {
         title: {
-            text: renderToStaticMarkup(<ShowTitle show={ratings.show} />),
-            useHTML: true
+            text: "",
         },
 
         plotOptions: {
@@ -183,7 +182,6 @@ function renderHighcharts(id: string, ratings: Ratings) {
 
         tooltip: {
             shared: false,
-            useHTML: true,
             headerFormat: '',
             pointFormatter: function (this: PointOptionsObject) {
                 const episode = this.custom?.episode as Episode;
