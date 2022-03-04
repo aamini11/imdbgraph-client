@@ -19,17 +19,24 @@ export default function Searchbar() {
         if (e.key == "ArrowUp" || e.key == "ArrowDown") {
             e.preventDefault();
 
-            if (selected === null) {
-                setSelected(e.key == "ArrowDown" ? 0 : dropdownSize - 1);
-            } else if ((selected === 0 && e.key == "ArrowUp") || (selected === dropdownSize - 1 && e.key == "ArrowDown")) {
-                setSelected(null);
+            let newSelected;
+            if (selected == null) {
+                newSelected = e.key == "ArrowDown" ? 0 : dropdownSize - 1;
+                setSelected(newSelected);
+            } else if ((selected === 0 && e.key === "ArrowUp") || (selected === dropdownSize - 1 && e.key === "ArrowDown")) {
+                newSelected = null;
+                setSelected(newSelected);
             } else {
-                const dir = e.key == "ArrowDown" ? 1 : -1;
-                setSelected(selected + dir);
+                const dir = e.key === "ArrowDown" ? 1 : -1;
+                newSelected = selected + dir;
+                setSelected(newSelected);
+            }
+
+            if (newSelected !== null) {
+                setText("" ? text : suggestions[newSelected].title);
             }
         }
     }
-
 
     const fetchSuggestions = useMemo(() => debounce(async (query: string) => {
         const response = await fetch(`/api/search?q=${query}`);
@@ -54,12 +61,13 @@ export default function Searchbar() {
             return;
         }
 
-        if (selected !== null) {
+        setText("");
+        if (selected !== null) { // Go directly to selected dropdown option
             const show = suggestions[selected];
             await router.push({
                 pathname: `/ratings/${show.imdbId}`
             });
-        } else {
+        } else { // Do a search with whatever query is in the search box
             await router.push({
                 pathname: "/search",
                 query: {"q": text}
@@ -75,7 +83,7 @@ export default function Searchbar() {
                 <input className="flex-grow border-none px-2 focus:outline-none"
                        type="text"
                        placeholder="Search for any TV show..."
-                       value={selected === null ? text : suggestions[selected].title}
+                       value={text}
                        onInput={e => onInput(e.currentTarget.value)}
                        onFocus={() => setIsFocused(true)}
                        onBlur={() => {
