@@ -39,7 +39,7 @@ export default function Searchbar() {
     }
 
     const fetchSuggestions = useMemo(() => debounce(async (query: string) => {
-        const response = await fetch(`/api/search?q=${query}`);
+        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
         const suggestions = await response.json();
         setSuggestions(suggestions);
     }, 300), []);
@@ -65,7 +65,7 @@ export default function Searchbar() {
         if (selected !== null) { // Go directly to selected dropdown option
             const show = suggestions[selected];
             await router.push({
-                pathname: `/ratings/${show.imdbId}`
+                pathname: `/ratings/${encodeURIComponent(show.imdbId)}`
             });
         } else { // Do a search with whatever query is in the search box
             await router.push({
@@ -131,7 +131,7 @@ function DropDown(props: { suggestions: Show[], activeOption: number | null}) {
 
 function DropDownOption(props: { show: Show, isSelected: boolean }) {
     return (
-        <Link href={`/ratings/${props.show.imdbId}`} passHref>
+        <Link href={`/ratings/${encodeURIComponent(props.show.imdbId)}`} passHref>
             <li className={`text-left px-2 p-1 hover:bg-gray-100 select-none hover:cursor-pointer ${props.isSelected ? "bg-gray-100" : ""}`}>
                 <a>{props.show.title}</a>
             </li>
