@@ -1,0 +1,38 @@
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+image: node:16.14.0-alpine3.14
+
+stages:
+  - build
+  - test
+
+cache:
+  - key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+
+  # Cache NextJS files: https://nextjs.org/docs/messages/no-cache#gitlab-ci
+  - key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .next/cache/
+
+build-project:
+  stage: build
+  script:
+    - npm -v
+    - npm install
+    - npm run build
+
+lint-project:
+  stage: test
+  script:
+    - npm run lint
+    - npm run check-format
+
+unit-test-job:
+  stage: test
+  script:
+    - npx jest
