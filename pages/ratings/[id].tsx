@@ -1,5 +1,5 @@
 import Highcharts, { PointOptionsObject, SeriesSplineOptions } from "highcharts";
-import { GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useEffect, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
@@ -17,14 +17,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // Fetch data from external API
     const res = await fetch(`https://api.imdbgraph.org/api/ratings/${encodeURIComponent(showId)}`);
     if (res.ok) {
-        const ratings: Ratings = (await res.json()) as Ratings;
-        return { props: { ratings: ratings, showId: showId } };
+        const ratings = (await res.json()) as Ratings;
+        return { props: { ratings: ratings } };
     } else {
         throw "Show not found";
     }
 }
 
-export default function Ratings(props: { ratings: Ratings }) {
+export default function Ratings(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
         <div className="px-8 py-0">
             <Head>

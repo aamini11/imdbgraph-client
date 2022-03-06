@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
@@ -22,7 +22,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 }
 
-export default function Search(props: { searchResults: Show[]; searchTerm: string }) {
+export default function Search(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
         <body>
             <Head>
