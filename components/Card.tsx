@@ -1,8 +1,8 @@
 import styles from "./Card.module.css";
 
 export default function Card(props: {
-    title: String,
-    body: String
+    title: string,
+    body: string
 }) {
     return (
         <div className={styles.grid}>
@@ -11,5 +11,5 @@ export default function Card(props: {
                 <p>{props.body}</p>
             </a>
         </div>
-    )
+    );
 }

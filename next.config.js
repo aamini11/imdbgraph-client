@@ -6,7 +6,7 @@ module.exports = {
         source: '/api/:path*',
         destination: `https://api.imdbgraph.org/api/:path*`,
       }
-    ]
+    ];
   },
   reactStrictMode: true,
-}
+};

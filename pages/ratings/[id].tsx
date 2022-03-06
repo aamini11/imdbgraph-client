@@ -1,20 +1,24 @@
-import Highcharts, {PointOptionsObject, SeriesSplineOptions} from 'highcharts'
-import {GetServerSidePropsContext} from "next";
-import Head from 'next/head'
-import {useRouter} from 'next/router'
-import {useEffect, useRef} from "react";
-import ReactDOMServer from 'react-dom/server';
+import Highcharts, { PointOptionsObject, SeriesSplineOptions } from "highcharts";
+import { GetServerSidePropsContext } from "next";
+import Head from "next/head";
+import { useEffect, useRef } from "react";
+import ReactDOMServer from "react-dom/server";
 import Footer from "../../components/Footer";
-import Navigation from '../../components/Navigation';
-import {Episode, formatYears, Show} from "../../models/Show";
-import styles from '../../styles/Home.module.css'
+import Navigation from "../../components/Navigation";
+import Title from "../../components/Title";
+import { Episode, formatYears, Show } from "../../models/Show";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const showId = context.query.id;
+    if (typeof showId !== "string") {
+        throw "Invalid query parameter";
+    }
+
     // Fetch data from external API
-    const res = await fetch(`https://api.imdbgraph.org/api/ratings/${context.query.id}`)
+    const res = await fetch(`https://api.imdbgraph.org/api/ratings/${encodeURIComponent(showId)}`);
     if (res.ok) {
-        const ratings: Ratings = await res.json();
-        return {props: {ratings: ratings}}
+        const ratings: Ratings = await res.json() as Ratings;
+        return {props: {ratings: ratings, showId: showId}};
     } else {
         throw "Show not found";
     }
@@ -47,7 +51,7 @@ export default function Ratings(props: { ratings: Ratings }) {
             </main>
             <Footer/>
         </div>
-    )
+    );
 }
 
 type Ratings = {
@@ -93,10 +97,11 @@ function ToolTip({episode}: { episode: Episode }) {
  */
 function Graph(props: { ratings: Ratings }) {
     const ref = useRef(null);
-    const root = <div id="graph" ref={ref}/>
+    const id = "graph";
+    const root = <div id={id} ref={ref}/>;
 
     useEffect(() => {
-        renderHighcharts(root.props.id, props.ratings);
+        renderHighcharts(id, props.ratings);
     });
 
     return root;

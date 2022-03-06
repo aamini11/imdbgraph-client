@@ -1,16 +1,21 @@
-import {GetServerSidePropsContext} from "next";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import Navigation from "../components/Navigation";
-import {formatYears, Show} from "../models/Show";
+import { formatYears, Show } from "../models/Show";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const query = context.query.q;
+    if (typeof query !== "string") {
+        throw "Invalid query parameter";
+    }
+
     // Fetch data from external API
-    const response = await fetch(`https://api.imdbgraph.org/api/search?q=${context.query.q}`);
+    const response = await fetch(`https://api.imdbgraph.org/api/search?q=${encodeURIComponent(query)}`);
     if (response.ok) {
-        const searchResults: Show[] = await response.json();
-        const props = {searchResults: searchResults, searchTerm: context.query.q};
+        const searchResults: Show[] = await response.json() as Show[];
+        const props = {searchResults: searchResults, searchTerm: query};
         return {props: props};
     } else {
         throw "Show not found";

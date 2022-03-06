@@ -1,8 +1,8 @@
-import Head from 'next/head'
+import Head from "next/head";
 import Card from "../components/Card";
 import Footer from "../components/Footer";
 import Searchbar from "../components/Searchbar";
-import styles from '../styles/Home.module.css'
+import Title from "../components/Title";
 
 export default function Home() {
     return (
@@ -27,5 +27,5 @@ export default function Home() {
             </main>
             <Footer/>
         </div>
-    )
+    );
 }
