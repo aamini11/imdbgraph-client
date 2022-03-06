@@ -23,7 +23,8 @@ build-project:
   stage: build
   script:
     - npm -v
-    - npm install
+    # Use instead of install for CI/CD: https://docs.npmjs.com/cli/v8/commands/npm-ci
+    - npm ci
     - npm run build
 
 lint-project:
