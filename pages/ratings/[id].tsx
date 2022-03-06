@@ -25,8 +25,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export default function Ratings(props: { ratings: Ratings }) {
-    const router = useRouter();
-
     return (
         <div className={styles.container}>
             <Head>
@@ -37,9 +35,6 @@ export default function Ratings(props: { ratings: Ratings }) {
 
             <main>
                 <Navigation/>
-                <h1 className={styles.title}>
-                    {router.query.ratings}
-                </h1>
 
                 {!hasRatings(props.ratings)
                     ? <h1 className={styles.title}>No ratings found for show</h1>
