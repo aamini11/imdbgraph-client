@@ -17,8 +17,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // Fetch data from external API
     const res = await fetch(`https://api.imdbgraph.org/api/ratings/${encodeURIComponent(showId)}`);
     if (res.ok) {
-        const ratings: Ratings = await res.json() as Ratings;
-        return {props: {ratings: ratings, showId: showId}};
+        const ratings: Ratings = (await res.json()) as Ratings;
+        return { props: { ratings: ratings, showId: showId } };
     } else {
         throw "Show not found";
     }
@@ -29,59 +29,63 @@ export default function Ratings(props: { ratings: Ratings }) {
         <div className="px-8 py-0">
             <Head>
                 <title>IMDB Graph Ratings - {props.ratings.show.title}</title>
-                <meta name="description" content="Website to visualize IMDB TV show ratings as a graph"/>
-                <link rel="icon" href="/favicon.ico"/>
+                <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
+                <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <main>
-                <Navigation/>
+                <Navigation />
 
-                {!hasRatings(props.ratings)
-                    ? <Title text="No ratings found for show"/>
-                    : <>
-                        <ShowTitle show={props.ratings.show}/>
-                        <Graph ratings={props.ratings}/>
+                {!hasRatings(props.ratings) ? (
+                    <Title text="No ratings found for show" />
+                ) : (
+                    <>
+                        <ShowTitle show={props.ratings.show} />
+                        <Graph ratings={props.ratings} />
                     </>
-                }
+                )}
             </main>
-            <Footer/>
+            <Footer />
         </div>
     );
 }
 
 type Ratings = {
-    show: Show,
+    show: Show;
     allEpisodeRatings: {
         [season: number]: {
-            [episode: number]: Episode
-        }
-    },
-}
+            [episode: number]: Episode;
+        };
+    };
+};
 
 interface Series extends SeriesSplineOptions {
-    type: "spline"
+    type: "spline";
     data: {
-        x: number,
-        y: number,
-        custom: { episode: Episode },
-    }[]
+        x: number;
+        y: number;
+        custom: { episode: Episode };
+    }[];
 }
 
-function ShowTitle({show}: { show: Show }) {
+function ShowTitle({ show }: { show: Show }) {
     return (
         <div className="p-3">
-            <h1 className="text-center text-xl">{show.title} ({formatYears(show)})</h1>
-            <h2 className="text-center text-sm">Show
-                rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})</h2>
+            <h1 className="text-center text-xl">
+                {show.title} ({formatYears(show)})
+            </h1>
+            <h2 className="text-center text-sm">
+                Show rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})
+            </h2>
         </div>
     );
 }
 
-function ToolTip({episode}: { episode: Episode }) {
+function ToolTip({ episode }: { episode: Episode }) {
     return (
         <span>
             {episode.episodeTitle} (s{episode.season}e{episode.episodeNumber}):
-            <br/>
+            <br />
             Rating: {episode.imdbRating.toFixed(1)} ({episode.numVotes.toLocaleString()} votes)
         </span>
     );
@@ -93,7 +97,7 @@ function ToolTip({episode}: { episode: Episode }) {
 function Graph(props: { ratings: Ratings }) {
     const ref = useRef(null);
     const id = "graph";
-    const root = <div id={id} ref={ref}/>;
+    const root = <div id={id} ref={ref} />;
 
     useEffect(() => {
         renderHighcharts(id, props.ratings);
@@ -128,7 +132,8 @@ function parseRatings(ratings: Ratings): SeriesSplineOptions[] {
     for (const [seasonNumber, seasonRatings] of Object.entries(ratings.allEpisodeRatings)) {
         const data = [];
         for (const episode of Object.values(seasonRatings)) {
-            if (episode.numVotes == 0) { // ignore episodes without ratings
+            if (episode.numVotes == 0) {
+                // ignore episodes without ratings
                 continue;
             }
 
@@ -136,8 +141,8 @@ function parseRatings(ratings: Ratings): SeriesSplineOptions[] {
                 x: i,
                 y: episode.imdbRating,
                 custom: {
-                    episode: episode
-                }
+                    episode: episode,
+                },
             });
             i++;
         }
@@ -145,7 +150,7 @@ function parseRatings(ratings: Ratings): SeriesSplineOptions[] {
         const series: Series = {
             name: "Season " + seasonNumber,
             type: "spline",
-            data: data
+            data: data,
         };
         if (data.length > 0) {
             allSeries.push(series);
@@ -163,38 +168,38 @@ function renderHighcharts(id: string, ratings: Ratings) {
         plotOptions: {
             spline: {
                 dataLabels: {
-                    enabled: true
-                }
-            }
+                    enabled: true,
+                },
+            },
         },
 
         xAxis: {
-            visible: false
+            visible: false,
         },
 
         yAxis: {
             title: {
-                text: 'IMDB Rating'
+                text: "IMDB Rating",
             },
             max: 10,
-            tickInterval: 1
+            tickInterval: 1,
         },
 
         tooltip: {
             shared: false,
-            headerFormat: '',
+            headerFormat: "",
             pointFormatter: function (this: PointOptionsObject) {
                 const episode = this.custom?.episode as Episode;
-                return ReactDOMServer.renderToStaticMarkup(<ToolTip episode={episode}/>);
+                return ReactDOMServer.renderToStaticMarkup(<ToolTip episode={episode} />);
             },
-            footerFormat: '',
-            valueDecimals: 2
+            footerFormat: "",
+            valueDecimals: 2,
         },
 
         credits: {
-            enabled: false
+            enabled: false,
         },
 
-        series: parseRatings(ratings)
+        series: parseRatings(ratings),
     });
 }
