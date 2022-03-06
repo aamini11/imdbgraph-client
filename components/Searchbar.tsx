@@ -1,10 +1,11 @@
-import {debounce} from "lodash"
-import Link from 'next/link'
-import {useRouter} from "next/router";
-import {FormEvent, KeyboardEvent, useMemo, useState} from 'react'
-import {Show} from "../models/Show";
+import { debounce } from "lodash";
+import { useRouter } from "next/router";
+import { useMemo, useState } from "react";
+import { Show } from "../models/Show";
 
 const DROPDOWN_SIZE_LIMIT = 5;
+
+type SearchCallback = (show?: Show) => void;
 
 export default function Searchbar() {
     const router = useRouter();
@@ -14,61 +15,69 @@ export default function Searchbar() {
     const [isFocused, setIsFocused] = useState(false);
     const [selected, setSelected] = useState<number | null>(null);
 
-    function handleKeyDown(e: KeyboardEvent) {        
+    const isDropdownVisible = isFocused && text.length > 0 && suggestions.length > 0;
+
+    function navigateDropdown(direction: "ArrowUp" | "ArrowDown") {
+        if (!isDropdownVisible) {
+            return;
+        }
+
         const dropdownSize = Math.min(suggestions.length, DROPDOWN_SIZE_LIMIT);
-        if (e.key == "ArrowUp" || e.key == "ArrowDown") {
-            e.preventDefault();
 
-            let newSelected;
-            if (selected == null) {
-                newSelected = e.key == "ArrowDown" ? 0 : dropdownSize - 1;
-                setSelected(newSelected);
-            } else if ((selected === 0 && e.key === "ArrowUp") || (selected === dropdownSize - 1 && e.key === "ArrowDown")) {
-                newSelected = null;
-                setSelected(newSelected);
-            } else {
-                const dir = e.key === "ArrowDown" ? 1 : -1;
-                newSelected = selected + dir;
-                setSelected(newSelected);
-            }
+        let newSelected;
+        if (selected == null) {
+            newSelected = direction == "ArrowDown" ? 0 : dropdownSize - 1;
+            setSelected(newSelected);
+        } else if ((selected === 0 && direction === "ArrowUp") || (selected === dropdownSize - 1 && direction === "ArrowDown")) {
+            newSelected = null;
+            setSelected(newSelected);
+        } else {
+            newSelected = direction === "ArrowDown" ? selected + 1 : selected - 1;
+            setSelected(newSelected);
+        }
 
-            if (newSelected !== null) {
-                setText("" ? text : suggestions[newSelected].title);
-            }
+        if (newSelected !== null) {
+            setText(suggestions[newSelected].title);
         }
     }
 
     const fetchSuggestions = useMemo(() => debounce(async (query: string) => {
         const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-        const suggestions = await response.json();
+        const suggestions: Show[] = await response.json() as Show[];
         setSuggestions(suggestions);
     }, 300), []);
 
-    const onInput = (input: string) => {
+    const onUserTyping = (input: string) => {
         setSelected(null);
         setText(input);
         
         if (isEmpty(input)) {
             setSuggestions([]);
         } else {
-            fetchSuggestions(input);
+            void fetchSuggestions(input);
         }
-    }
+    };
 
-    const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    function onSubmitSearch(show?: Show) {
+        const goToShowRatings = (show: Show) => void router.push({
+            pathname: `/ratings/${encodeURIComponent(show.imdbId)}`
+        });
+
         if (isEmpty(text)) {
             return;
         }
 
         setText("");
-        if (selected !== null) { // Go directly to selected dropdown option
-            const show = suggestions[selected];
-            await router.push({
-                pathname: `/ratings/${encodeURIComponent(show.imdbId)}`
-            });
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
+
+        if (show) {
+            goToShowRatings(show);
+        } else if (selected !== null) { // If show selected in dropdown, go directly to selected dropdown option
+            goToShowRatings(suggestions[selected]);
         } else { // Do a search with whatever query is in the search box
-            await router.push({
+            void router.push({
                 pathname: "/search",
                 query: {"q": text}
             });
@@ -78,25 +87,33 @@ export default function Searchbar() {
     return (
         <div className="relative text-base w-full">
             <form className="flex flex-row p-1 bg-white border-gray-500 border rounded-md transition duration-300 focus-within:border-blue-300" 
-                  onSubmit={onSubmit}
+                  onSubmit={e => {
+                      e.preventDefault();
+                      onSubmitSearch();
+                  }}
             >
                 <input className="flex-grow border-none px-2 focus:outline-none"
                        type="text"
                        placeholder="Search for any TV show..."
                        value={text}
-                       onInput={e => onInput(e.currentTarget.value)}
+                       onInput={e => onUserTyping(e.currentTarget.value)}
                        onFocus={() => setIsFocused(true)}
                        onBlur={() => {
                            setIsFocused(false);
                            setSelected(null);
                        }}
-                       onKeyDown={handleKeyDown}
+                       onKeyDown={e => {
+                           if (e.key == "ArrowUp" || e.key == "ArrowDown") {
+                               e.preventDefault();
+                               navigateDropdown(e.key);
+                           }
+                       }}
                 />
                 <button className="pr-2" type="submit">
                     <SearchIcon/>
                 </button>
             </form>
-            {isFocused && text.length > 0 && suggestions.length > 0 && <DropDown suggestions={suggestions} activeOption={selected}/>}
+            {isDropdownVisible && <DropDown suggestions={suggestions} activeOption={selected} onSubmitSearch={onSubmitSearch}/>}
         </div>
     );
 }
@@ -117,25 +134,26 @@ function SearchIcon() {
     );
 }
 
-function DropDown(props: { suggestions: Show[], activeOption: number | null}) {
+function DropDown(props: { suggestions: Show[], activeOption: number | null, onSubmitSearch: SearchCallback}) {
     return (
         <ul className="w-full bg-white absolute z-[1] border-gray-500 border"
             onMouseDown={e => e.preventDefault()}
         >
             {props.suggestions.slice(0, DROPDOWN_SIZE_LIMIT).map((show, i) =>
-                <DropDownOption key={show.imdbId} show={show} isSelected={i === props.activeOption}/>
+                <DropDownOption key={show.imdbId}
+                                show={show}
+                                isSelected={i === props.activeOption}
+                                onSubmitSearch={props.onSubmitSearch}/>
             )}
         </ul>
     );
 }
 
-function DropDownOption(props: { show: Show, isSelected: boolean }) {
+function DropDownOption(props: { show: Show, isSelected: boolean, onSubmitSearch: SearchCallback}) {
     return (
-        <Link href={`/ratings/${encodeURIComponent(props.show.imdbId)}`} passHref>
-            <li className={`text-left px-2 p-1 hover:bg-gray-100 select-none hover:cursor-pointer ${props.isSelected ? "bg-gray-100" : ""}`}>
-                <a>{props.show.title}</a>
-            </li>
-        </Link>
+        <li onClick={() => props.onSubmitSearch(props.show)} className={`text-left px-2 p-1 hover:bg-gray-100 select-none hover:cursor-pointer ${props.isSelected ? "bg-gray-100" : ""}`}>
+            <a>{props.show.title}</a>
+        </li>
     );
 }
 
