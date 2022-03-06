@@ -36,4 +36,4 @@ lint-project:
 unit-test-job:
   stage: test
   script:
-    - npx jest
+    - npm test
