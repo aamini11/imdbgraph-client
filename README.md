@@ -1,8 +1,12 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Welcome to IMDB Graph's frontend
 
-## Getting Started
+This Repo contains all the code for the frontend of [https://www.imdbgraph.org](https://www.imdbgraph.org). The website
+is written in React/Typescript and uses NextJS as the frontend framework.
 
-First, run the development server:
+## How to run locally
+
+To run the website locally, npm/yarn and Node.js are required. Once you've installed them, run the development server
+using the following commands:
 
 ```bash
 npm run dev
@@ -10,25 +14,50 @@ npm run dev
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the website.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+You can start editing any of the pages. It will auto-update as you edit the file without having to restart the server or
+refresh the browser page. To learn more about this feature look at
+the [NextJS documentation](https://nextjs.org/docs/basic-features/fast-refresh)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## API Routes
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+All API requests that start with /api are routed to the IMDB Graph backend server at https://api.imdbgraph.org. The
+source code for the backend is hosted on a separate repo [here](https://gitlab.com/aamini11/imdbgraph).
 
-## Learn More
+## Linting and Formatting
+
+All linting for this project is done through [ESLint](https://eslint.org/) and all formatting checked
+using [Prettier](https://prettier.io/). These rules are also checked through the CI/CD whenever changes are pushed to
+Gitlab. To run the checks locally use the following commands:
+
+```bash
+# Run ESLint
+npm run lint
+
+# Check for which files require formatting
+npm run check-format
+
+# Format all the files in the project
+npm run format
+```
+
+## Unit Testing
+
+To run tests use the command `npm test`
+
+All unit tests are located in the [\_\_tests__](./__tests__) directory. Tests are written
+using [Jest](https://jestjs.io/) as the test runner and [React Testing Library](https://testing-library.com/)
+as the testing framework.
+
+## Deployment
+
+All changes pushed to master are automatically deployed to production using Vercel. Any changes to a
+branch other than master are deployed to a staging URL for previewing changes before production. 
+
+## Learn More About NextJS
 
 To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
