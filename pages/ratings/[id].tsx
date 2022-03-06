@@ -26,7 +26,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function Ratings(props: { ratings: Ratings }) {
     return (
-        <div className={styles.container}>
+        <div className="px-8 py-0">
             <Head>
                 <title>IMDB Graph Ratings - {props.ratings.show.title}</title>
                 <meta name="description" content="Website to visualize IMDB TV show ratings as a graph"/>
@@ -37,7 +37,7 @@ export default function Ratings(props: { ratings: Ratings }) {
                 <Navigation/>
 
                 {!hasRatings(props.ratings)
-                    ? <h1 className={styles.title}>No ratings found for show</h1>
+                    ? <Title text="No ratings found for show"/>
                     : <>
                         <ShowTitle show={props.ratings.show}/>
                         <Graph ratings={props.ratings}/>
