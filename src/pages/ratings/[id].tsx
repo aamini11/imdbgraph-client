@@ -15,7 +15,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 
     // Fetch data from external API
-    const res = await fetch(`https://api.imdbgraph.org/api/ratings/${encodeURIComponent(showId)}`);
+    const res = await fetch(`https://api.imdbgraph.org/ratings/${encodeURIComponent(showId)}`);
     if (res.ok) {
         const ratings = (await res.json()) as Ratings;
         return { props: { ratings: ratings } };

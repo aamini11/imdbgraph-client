@@ -12,7 +12,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 
     // Fetch data from external API
-    const response = await fetch(`https://api.imdbgraph.org/api/search?q=${encodeURIComponent(query)}`);
+    const response = await fetch(`https://api.imdbgraph.org/search?q=${encodeURIComponent(query)}`);
     if (response.ok) {
         const searchResults: Show[] = (await response.json()) as Show[];
         const props = { searchResults: searchResults, searchTerm: query };
