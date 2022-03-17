@@ -2,6 +2,13 @@
  * @type {import('next').NextConfig}
  */
 module.exports = {
+    swcMinify: true,
+    reactStrictMode: true,
+    i18n: {
+        locales: ["en"],
+        defaultLocale: "en",
+    },
+
     async rewrites() {
         return [
             {
@@ -9,10 +16,5 @@ module.exports = {
                 destination: `https://api.imdbgraph.org/:path*`,
             },
         ];
-    },
-    reactStrictMode: true,
-    i18n: {
-        locales: ["en"],
-        defaultLocale: "en",
     },
 };
