@@ -5,6 +5,7 @@ module.exports = {
     overrides: [
         {
             files: ["*.ts", "*.tsx"], // Your TypeScript files extension
+            plugins: ["@typescript-eslint"],
 
             // As mentioned in the comments, you should extend TypeScript plugins here,
             // instead of extending them outside the `overrides`.
@@ -19,14 +20,13 @@ module.exports = {
                 project: ["./tsconfig.json"], // Specify it only for TypeScript files
             },
         },
+
+        {
+            files: ["__tests__/**"],
+            plugins: ["jest"],
+            extends: ["plugin:jest/recommended", "plugin:testing-library/react"],
+        },
     ],
 
-    plugins: ["@typescript-eslint", "jest"],
-    extends: [
-        "eslint:recommended",
-        "plugin:jest/recommended",
-        "plugin:testing-library/react",
-        "next/core-web-vitals",
-        "prettier",
-    ],
+    extends: ["eslint:recommended", "next/core-web-vitals", "prettier"],
 };
