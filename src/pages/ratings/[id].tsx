@@ -1,49 +1,31 @@
 import Highcharts, { PointOptionsObject, SeriesSplineOptions } from "highcharts";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
-import { useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 import ReactDOMServer from "react-dom/server";
 import Footer from "../../components/Footer";
 import Navigation from "../../components/Navigation";
 import Title from "../../components/Title";
 import { Episode, formatYears, Show } from "../../models/Show";
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const showId = context.query.id;
+export default function Ratings() {
+    const router = useRouter();
+    const showId = router.query["id"];
     if (typeof showId !== "string") {
-        throw "Invalid query parameter";
+        throw "Show ID not found";
     }
 
-    // Fetch data from external API
-    const res = await fetch(`https://api.imdbgraph.org/ratings/${encodeURIComponent(showId)}`);
-    if (res.ok) {
-        const ratings = (await res.json()) as Ratings;
-        return { props: { ratings: ratings } };
-    } else {
-        throw "Show not found";
-    }
-}
-
-export default function Ratings(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
         <div className="px-8 py-0">
             <Head>
-                <title>IMDB Graph Ratings - {props.ratings.show.title}</title>
+                <title>IMDB Graph Ratings</title>
                 <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <main>
                 <Navigation />
-
-                {!hasRatings(props.ratings) ? (
-                    <Title text="No ratings found for show" />
-                ) : (
-                    <>
-                        <ShowTitle show={props.ratings.show} />
-                        <Graph ratings={props.ratings} />
-                    </>
-                )}
+                <Graph key={showId} showId={showId} />
             </main>
             <Footer />
         </div>
@@ -94,16 +76,53 @@ function ToolTip({ episode }: { episode: Episode }) {
 /**
  * Wrap the Hicharts graph in a React component.
  */
-function Graph(props: { ratings: Ratings }) {
+function Graph({ showId }: { showId: string }) {
     const ref = useRef(null);
+    const ratings = useRatings(showId);
+
     const id = "graph";
-    const root = <div id={id} ref={ref} />;
 
     useEffect(() => {
-        renderHighcharts(id, props.ratings);
-    });
+        const chart = renderHighcharts(id);
+        if (ratings === undefined) {
+            chart.showLoading();
+        } else {
+            chart.hideLoading();
+            for (const series of parseRatings(ratings)) {
+                chart.addSeries(series);
+            }
+        }
+    }, [ratings]);
 
-    return root;
+    return (
+        <>
+            {ratings !== undefined && !hasRatings(ratings) ? (
+                <Title text="No ratings found for show" />
+            ) : (
+                ratings && <ShowTitle show={ratings.show} />
+            )}
+            <div id={id} ref={ref} />
+        </>
+    );
+}
+
+function useRatings(showId: string): Ratings | undefined {
+    const [ratings, setRatings] = useState<Ratings | undefined>(undefined);
+
+    useEffect(() => {
+        async function load() {
+            const res = await fetch(`/api/ratings/${encodeURIComponent(showId)}`);
+            if (res.ok) {
+                setRatings((await res.json()) as Ratings);
+            } else {
+                throw "Show not found";
+            }
+        }
+
+        void load();
+    }, [showId]);
+
+    return ratings;
 }
 
 /**
@@ -124,9 +143,8 @@ function hasRatings(ratings: Ratings): boolean {
 
 /**
  * Transform data into a format that Highcharts understands.
- * {@link SeriesSplineOptions}
  */
-function parseRatings(ratings: Ratings): SeriesSplineOptions[] {
+function parseRatings(ratings: Ratings): Series[] {
     let i = 1;
     const allSeries: Series[] = [];
     for (const [seasonNumber, seasonRatings] of Object.entries(ratings.allEpisodeRatings)) {
@@ -159,8 +177,8 @@ function parseRatings(ratings: Ratings): SeriesSplineOptions[] {
     return allSeries;
 }
 
-function renderHighcharts(id: string, ratings: Ratings) {
-    Highcharts.chart(id, {
+function renderHighcharts(id: string) {
+    return Highcharts.chart(id, {
         title: {
             text: "",
         },
@@ -199,7 +217,5 @@ function renderHighcharts(id: string, ratings: Ratings) {
         credits: {
             enabled: false,
         },
-
-        series: parseRatings(ratings),
     });
 }
