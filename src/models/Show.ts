@@ -1,7 +1,6 @@
 export type Show = {
     readonly imdbId: string;
     readonly title: string;
-    readonly image?: StaticImageData;
     readonly startYear: string;
     readonly endYear?: string;
     readonly runtime?: string;
