@@ -17,7 +17,6 @@ export default function Ratings() {
         return null;
     }
 
-
     return (
         <div className="px-8 py-0">
             <Head>
@@ -28,7 +27,7 @@ export default function Ratings() {
 
             <main>
                 <Navigation />
-                <Graph showId={showId} setTitle={setTitle}/>
+                <Graph showId={showId} setTitle={setTitle} />
             </main>
             <Footer />
         </div>
@@ -79,7 +78,7 @@ function ToolTip({ episode }: { episode: Episode }) {
 /**
  * Wrap the Hicharts graph in a React component.
  */
-function Graph({ showId, setTitle }: { showId: string, setTitle: (title: string) => void }) {
+function Graph({ showId, setTitle }: { showId: string; setTitle: (title: string) => void }) {
     const ref = useRef(null);
     const ratings = useRatings(showId);
 
