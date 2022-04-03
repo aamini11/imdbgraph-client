@@ -12,7 +12,7 @@ export default function Ratings() {
     const router = useRouter();
     const showId = router.query["id"];
     if (typeof showId !== "string") {
-        throw "Show ID not found";
+        return null;
     }
 
     return (
