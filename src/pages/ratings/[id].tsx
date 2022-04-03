@@ -96,7 +96,7 @@ function Graph({ showId, setTitle }: { showId: string; setTitle: (title: string)
             chart.redraw();
             chart.hideLoading();
         }
-    }, [ratings]);
+    }, [ratings, setTitle]);
 
     return (
         <>
