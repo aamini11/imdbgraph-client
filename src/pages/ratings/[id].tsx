@@ -11,21 +11,24 @@ import { Episode, formatYears, Show } from "../../models/Show";
 export default function Ratings() {
     const router = useRouter();
     const showId = router.query["id"];
+    const [title, setTitle] = useState("");
+
     if (typeof showId !== "string") {
         return null;
     }
 
+
     return (
         <div className="px-8 py-0">
             <Head>
-                <title>IMDB Graph Ratings</title>
+                <title>IMDB Graph Ratings: {title}</title>
                 <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <main>
                 <Navigation />
-                <Graph key={showId} showId={showId} />
+                <Graph showId={showId} setTitle={setTitle}/>
             </main>
             <Footer />
         </div>
@@ -76,7 +79,7 @@ function ToolTip({ episode }: { episode: Episode }) {
 /**
  * Wrap the Hicharts graph in a React component.
  */
-function Graph({ showId }: { showId: string }) {
+function Graph({ showId, setTitle }: { showId: string, setTitle: (title: string) => void }) {
     const ref = useRef(null);
     const ratings = useRatings(showId);
 
@@ -84,19 +87,21 @@ function Graph({ showId }: { showId: string }) {
 
     useEffect(() => {
         const chart = renderHighcharts(id);
-        if (ratings === undefined) {
+        if (ratings === null) {
             chart.showLoading();
         } else {
-            chart.hideLoading();
+            setTitle(ratings.show.title);
             for (const series of parseRatings(ratings)) {
-                chart.addSeries(series);
+                chart.addSeries(series, false);
             }
+            chart.redraw();
+            chart.hideLoading();
         }
     }, [ratings]);
 
     return (
         <>
-            {ratings !== undefined && !hasRatings(ratings) ? (
+            {ratings !== null && !hasRatings(ratings) ? (
                 <Title text="No ratings found for show" />
             ) : (
                 ratings && <ShowTitle show={ratings.show} />
@@ -106,11 +111,16 @@ function Graph({ showId }: { showId: string }) {
     );
 }
 
-function useRatings(showId: string): Ratings | undefined {
-    const [ratings, setRatings] = useState<Ratings | undefined>(undefined);
+function useRatings(showId: string | string[] | undefined): Ratings | null {
+    const [ratings, setRatings] = useState<Ratings | null>(null);
 
     useEffect(() => {
         async function load() {
+            if (typeof showId !== "string") {
+                setRatings(null);
+                return;
+            }
+
             const res = await fetch(`/api/ratings/${encodeURIComponent(showId)}`);
             if (res.ok) {
                 setRatings((await res.json()) as Ratings);
