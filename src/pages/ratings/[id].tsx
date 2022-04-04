@@ -27,7 +27,7 @@ export default function Ratings() {
 
             <main>
                 <Navigation />
-                <Graph showId={showId} setTitle={setTitle} />
+                <Graph key={showId} showId={showId} setTitle={setTitle} />
             </main>
             <Footer />
         </div>
