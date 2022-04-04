@@ -17,6 +17,16 @@ export default function Ratings() {
         return null;
     }
 
+    /*
+     * Because of a quirk in NextJS the Graph component needs a key set so that
+     * it doesn't render with stale props between pages. For some reason, the
+     * useRatings hook call also has to be within the Graph component instead of
+     * here at the root. That's why a setTitle callback is passed because the
+     * root component needs to know the title of the show but can't know it
+     * until the useRatings hook made the API call.
+     *
+     * Issue: https://github.com/vercel/next.js/issues/9992
+     */
     return (
         <div className="px-8 py-0">
             <Head>
