@@ -10,7 +10,7 @@ stages:
 cache:
   - key:
       files:
-        - package-lock.json
+        - yarn.lock
     paths:
       - node_modules/
 
@@ -22,18 +22,18 @@ cache:
 build-project:
   stage: build
   script:
-    - npm -v
+    - yarn -v
     # Use instead of install for CI/CD: https://docs.npmjs.com/cli/v8/commands/npm-ci
-    - npm ci
-    - npm run build
+    - yarn install --frozen-lockfile
+    - yarn run build
 
 lint-project:
   stage: test
   script:
-    - npm run lint
-    - npm run check-format
+    - yarn run lint
+    - yarn run check-format
 
 unit-test-job:
   stage: test
   script:
-    - npm test
+    - yarn test
