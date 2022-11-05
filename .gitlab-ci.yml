@@ -10,7 +10,7 @@ stages:
 cache:
   - key:
       files:
-        - yarn.lock
+        - pnpm-lock.yaml
     paths:
       - node_modules/
 
