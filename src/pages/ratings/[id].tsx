@@ -3,8 +3,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import ReactDOMServer from "react-dom/server";
-import Footer from "../../components/Footer";
 import Navigation from "../../components/Navigation";
+import Page from "../../components/Page";
 import Title from "../../components/Title";
 import { Episode, formatYears, Show } from "../../models/Show";
 
@@ -28,19 +28,18 @@ export default function Ratings() {
      * Issue: https://github.com/vercel/next.js/issues/9992
      */
     return (
-        <div className="px-8 py-0">
+        <Page>
             <Head>
                 <title>IMDB Graph Ratings: {title}</title>
                 <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <main>
+            <div className="px-8 py-0">
                 <Navigation />
                 <Graph key={showId} showId={showId} setTitle={setTitle} />
-            </main>
-            <Footer />
-        </div>
+            </div>
+        </Page>
     );
 }
 

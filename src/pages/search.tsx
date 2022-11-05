@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import Navigation from "../components/Navigation";
+import Page from "../components/Page";
 import { formatYears, Show } from "../models/Show";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -24,22 +25,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function Search(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
-        <body>
+        <Page>
             <Head>
                 <title>IMDB Graph Search - {props.searchTerm}</title>
                 <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <main className="max-w-screen-sm p-6">
+            <div className="max-w-screen-sm p-6">
                 <Navigation />
                 {props.searchResults.length > 0 ? (
                     <List searchResults={props.searchResults} />
                 ) : (
                     `No results found for : ${props.searchTerm}`
                 )}
-            </main>
-        </body>
+            </div>
+        </Page>
     );
 }
 
@@ -82,7 +83,7 @@ function ListItem({ show }: { show: Show }) {
                     {rating}
                 </dl>
             </div>
-            <Link href={`/ratings/${show.imdbId}`}>
+            <Link href={`/ratings/${show.imdbId}`} legacyBehavior >
                 <a className="absolute w-full h-full top-0 left-0 z-[1]" />
             </Link>
         </article>
