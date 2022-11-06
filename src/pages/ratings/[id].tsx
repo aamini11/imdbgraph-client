@@ -123,6 +123,8 @@ function useRatings(showId: string | string[] | undefined): Ratings | null {
     const [ratings, setRatings] = useState<Ratings | null>(null);
 
     useEffect(() => {
+        let active = true;
+
         async function load() {
             if (typeof showId !== "string") {
                 setRatings(null);
@@ -130,14 +132,18 @@ function useRatings(showId: string | string[] | undefined): Ratings | null {
             }
 
             const res = await fetch(`/api/ratings/${encodeURIComponent(showId)}`);
-            if (res.ok) {
-                setRatings((await res.json()) as Ratings);
+            if (active && res.ok) {
+                const ratings = await res.json() as Ratings;
+                setRatings(ratings);
             } else {
                 throw "Show not found";
             }
         }
 
         void load();
+        return () => {
+            active = false;
+        };
     }, [showId]);
 
     return ratings;
