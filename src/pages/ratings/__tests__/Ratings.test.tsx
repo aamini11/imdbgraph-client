@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
-import Ratings from "../src/pages/ratings/[id]";
+import Ratings from "../[id]";
 
 global.fetch = jest.fn(() =>
     Promise.resolve({
