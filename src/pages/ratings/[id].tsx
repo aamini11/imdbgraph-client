@@ -6,7 +6,7 @@ import ReactDOMServer from "react-dom/server";
 import Navigation from "../../components/Navigation";
 import Page from "../../components/Page";
 import Title from "../../components/Title";
-import { Episode, formatYears, Show } from "../../models/Show";
+import { Episode, formatYears, RatingsData, Show } from "../../models/Show";
 
 export default function Ratings() {
     const router = useRouter();
@@ -42,15 +42,6 @@ export default function Ratings() {
         </Page>
     );
 }
-
-type Ratings = {
-    show: Show;
-    allEpisodeRatings: {
-        [season: number]: {
-            [episode: number]: Episode;
-        };
-    };
-};
 
 interface Series extends SeriesSplineOptions {
     type: "spline";
@@ -119,8 +110,8 @@ function Graph({ showId, setTitle }: { showId: string; setTitle: (title: string)
     );
 }
 
-function useRatings(showId: string | string[] | undefined): Ratings | null {
-    const [ratings, setRatings] = useState<Ratings | null>(null);
+function useRatings(showId: string | string[] | undefined): RatingsData | null {
+    const [ratings, setRatings] = useState<RatingsData | null>(null);
 
     useEffect(() => {
         let active = true;
@@ -133,7 +124,7 @@ function useRatings(showId: string | string[] | undefined): Ratings | null {
 
             const res = await fetch(`/api/ratings/${encodeURIComponent(showId)}`);
             if (active && res.ok) {
-                const ratings = await res.json() as Ratings;
+                const ratings = await res.json() as RatingsData;
                 setRatings(ratings);
             } else {
                 throw "Show not found";
@@ -154,7 +145,7 @@ function useRatings(showId: string | string[] | undefined): Ratings | null {
  * function is used to know whether a graph should be displayed or just an empty
  * banner letting the user know the show had no ratings.
  */
-function hasRatings(ratings: Ratings): boolean {
+function hasRatings(ratings: RatingsData): boolean {
     for (const seasonRatings of Object.values(ratings.allEpisodeRatings)) {
         for (const episode of Object.values(seasonRatings)) {
             if (episode.numVotes > 0) {
@@ -168,7 +159,7 @@ function hasRatings(ratings: Ratings): boolean {
 /**
  * Transform data into a format that Highcharts understands.
  */
-function parseRatings(ratings: Ratings): Series[] {
+function parseRatings(ratings: RatingsData): Series[] {
     let i = 1;
     const allSeries: Series[] = [];
     for (const [seasonNumber, seasonRatings] of Object.entries(ratings.allEpisodeRatings)) {

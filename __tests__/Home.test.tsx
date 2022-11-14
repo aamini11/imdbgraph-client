@@ -2,6 +2,12 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import Home from "../src/pages";
 
+jest.mock("next/router", () => ({
+    useRouter() {
+        // NO-OP
+    }
+}));
+
 describe("Home page tests", () => {
     it("Renders title correctly", () => {
         render(<Home />);

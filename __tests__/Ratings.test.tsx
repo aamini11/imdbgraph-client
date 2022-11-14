@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import Ratings from "../src/pages/ratings/[id]";
 
 global.fetch = jest.fn(() =>
@@ -8,12 +8,12 @@ global.fetch = jest.fn(() =>
         json: () =>
             Promise.resolve({
                 show: {
-                    imdbId: "tt5175444",
-                    title: "Empty show",
-                    startYear: "2014",
-                    endYear: null,
-                    showRating: 7.7,
-                    numVotes: 197,
+                    imdbId: "tt0417299",
+                    title: "Avatar: The Last Airbender",
+                    startYear: "2005",
+                    endYear: "2008",
+                    showRating: 9.3,
+                    numVotes: 312232,
                 },
                 allEpisodeRatings: {},
             }),
@@ -23,7 +23,7 @@ global.fetch = jest.fn(() =>
 jest.mock("next/router", () => ({
     useRouter() {
         return {
-            query: { id: "tt1234567" },
+            query: { id: "tt0417299" },
         };
     },
 }));
@@ -31,6 +31,11 @@ jest.mock("next/router", () => ({
 describe("Ratings page tests", () => {
     it("Test show with not ratings", async () => {
         render(<Ratings />);
-        expect(await screen.findByText("No ratings found for show")).toBeInTheDocument();
+        await waitForElementToBeRemoved(() => screen.queryByText('Loading...'));
+
+        const noShowMessage = screen.getByRole('heading', {
+            name: /no ratings found for show/i
+        });
+        expect(noShowMessage).toBeInTheDocument();
     });
 });

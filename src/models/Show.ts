@@ -27,3 +27,12 @@ export type Episode = {
     readonly imdbRating: number;
     readonly numVotes: number;
 };
+
+export type RatingsData = {
+    show: Show;
+    allEpisodeRatings: {
+        [season: number]: {
+            [episode: number]: Episode;
+        };
+    };
+};
