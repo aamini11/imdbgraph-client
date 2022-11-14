@@ -83,7 +83,7 @@ function ListItem({ show }: { show: Show }) {
                     {rating}
                 </dl>
             </div>
-            <Link href={`/ratings/${show.imdbId}`} legacyBehavior >
+            <Link href={`/ratings/${show.imdbId}`} legacyBehavior>
                 <a className="absolute w-full h-full top-0 left-0 z-[1]" />
             </Link>
         </article>

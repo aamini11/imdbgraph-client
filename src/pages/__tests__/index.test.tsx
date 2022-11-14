@@ -5,7 +5,7 @@ import Home from "../index";
 jest.mock("next/router", () => ({
     useRouter() {
         // NO-OP
-    }
+    },
 }));
 
 describe("Home page tests", () => {

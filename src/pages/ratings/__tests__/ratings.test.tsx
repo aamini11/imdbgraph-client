@@ -31,10 +31,10 @@ jest.mock("next/router", () => ({
 describe("Ratings page tests", () => {
     it("Test show with not ratings", async () => {
         render(<Ratings />);
-        await waitForElementToBeRemoved(() => screen.queryByText('Loading...'));
+        await waitForElementToBeRemoved(() => screen.queryByText("Loading..."));
 
-        const noShowMessage = screen.getByRole('heading', {
-            name: /no ratings found for show/i
+        const noShowMessage = screen.getByRole("heading", {
+            name: /no ratings found for show/i,
         });
         expect(noShowMessage).toBeInTheDocument();
     });

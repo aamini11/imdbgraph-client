@@ -124,7 +124,7 @@ function useRatings(showId: string | string[] | undefined): RatingsData | null {
 
             const res = await fetch(`/api/ratings/${encodeURIComponent(showId)}`);
             if (active && res.ok) {
-                const ratings = await res.json() as RatingsData;
+                const ratings = (await res.json()) as RatingsData;
                 setRatings(ratings);
             } else {
                 throw "Show not found";

@@ -13,17 +13,17 @@ export default function Home() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Page>
-              <div className="pt-16 px-8 flex flex-col items-center">
-                <Title text="Welcome to IMDB Graph" />
-                <div className="max-w-[600px] my-16 mx-0">
-                    <Searchbar />
-                </div>
+                <div className="pt-16 px-8 flex flex-col items-center">
+                    <Title text="Welcome to IMDB Graph" />
+                    <div className="max-w-[600px] my-16 mx-0">
+                        <Searchbar />
+                    </div>
 
-                <Card
-                  title="Source Code &rarr;"
-                  body="IMDB Graph is 100% open source. Click here to see the GitLab page"
-                />
-              </div>
+                    <Card
+                        title="Source Code &rarr;"
+                        body="IMDB Graph is 100% open source. Click here to see the GitLab page"
+                    />
+                </div>
             </Page>
         </div>
     );
