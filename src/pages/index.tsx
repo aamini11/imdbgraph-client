@@ -15,8 +15,8 @@ export default function Home() {
             <Page>
               <div className="pt-16 px-8 flex flex-col items-center">
                 <Title text="Welcome to IMDB Graph" />
-                <div className="max-w-[600px] w-full my-16 mx-0">
-                  <Searchbar />
+                <div className="max-w-[600px] my-16 mx-0">
+                    <Searchbar />
                 </div>
 
                 <Card

@@ -53,11 +53,4 @@ as the testing framework.
 ## Deployment
 
 All changes pushed to master are automatically deployed to production using Vercel. Any changes to a
-branch other than master are deployed to a staging URL for previewing changes before production. 
-
-## Learn More About NextJS
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+branch other than master are deployed to a staging URL for previewing changes before production.
