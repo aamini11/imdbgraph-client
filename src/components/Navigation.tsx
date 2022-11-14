@@ -3,9 +3,11 @@ import Searchbar from "./Searchbar";
 
 export default function Navigation() {
     return (
-        <div className="flex items-center">
+        <div className="flex items-center justify-center">
             <HomeIcon />
-            <Searchbar />
+            <div className="w-[600px]">
+                <Searchbar />
+            </div>
         </div>
     );
 }
