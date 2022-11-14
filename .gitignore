@@ -38,3 +38,6 @@ yarn-error.log*
 
 # IntelliJ
 .idea
+
+# Recommened by NextJS to be ignored: https://nextjs.org/docs/basic-features/typescript
+next-env.d.ts
