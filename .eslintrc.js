@@ -1,32 +1,51 @@
 module.exports = {
-    root: true,
-    parser: "@typescript-eslint/parser",
+    extends: [
+        "eslint:recommended",
+        "plugin:import/recommended",
+        "plugin:import/typescript",
+        "next/core-web-vitals",
+        "prettier"
+    ],
 
     overrides: [
         {
-            files: ["*.ts", "*.tsx"], // Your TypeScript files extension
-            plugins: ["@typescript-eslint"],
-
-            // As mentioned in the comments, you should extend TypeScript plugins here,
-            // instead of extending them outside the `overrides`.
-            // If you don't want to extend any rules, you don't need an `extends` attribute.
-            extends: [
-                "plugin:@typescript-eslint/recommended",
-                "plugin:@typescript-eslint/recommended-requiring-type-checking",
+            files: [
+                "**/__tests__/**/*.[jt]s?(x)",
+                "**/?(*.)+(spec|test).[jt]s?(x)"
             ],
-
+            env: {
+                "jest/globals": true // now **/*.test.js files' env has both es6 *and* jest
+            },
+            extends: [
+                "plugin:jest/recommended",
+                "plugin:jest/style",
+                "plugin:testing-library/react"
+            ]
+        },
+        {
+            files: [
+                "**/*.{ts,tsx}"
+            ],
+            parser: "@typescript-eslint/parser",
             parserOptions: {
                 tsconfigRootDir: __dirname,
-                project: ["./tsconfig.json"], // Specify it only for TypeScript files
+                project: ["./tsconfig.json"]
             },
-        },
-
-        {
-            files: ["__tests__/**"],
-            plugins: ["jest"],
-            extends: ["plugin:jest/recommended", "plugin:testing-library/react"],
-        },
+            extends: [
+                "plugin:@typescript-eslint/recommended",
+                "plugin:@typescript-eslint/recommended-requiring-type-checking"
+            ]
+        }
     ],
 
-    extends: ["eslint:recommended", "next/core-web-vitals", "prettier"],
+    rules: {
+        semi: "error",
+        "import/order": ["warn", {
+            alphabetize: {
+                order: "asc", /* sort in ascending order. Options: ['ignore', 'asc', 'desc'] */
+                caseInsensitive: true /* ignore case. Options: [true, false] */
+            },
+            "newlines-between": "never"
+        }]
+    }
 };
