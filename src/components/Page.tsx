@@ -3,9 +3,9 @@ import React from "react";
 
 export default function Page(props: { children: React.ReactNode }) {
     return (
-        <div className="flex flex-col min-h-screen">
-            <div className="flex-1">{props.children}</div>
-            <footer className="py-5 px-0 border-t border-solid border-t-[#eaeaea] bg-white mx-4">
+        <div className="flex flex-col min-h-screen min-w-fit items-center">
+            <div className="w-full flex-1">{props.children}</div>
+            <footer className="w-[calc(100%-4rem)] py-5 border-t">
                 <a
                     href="https://www.linkedin.com/in/aria-amini/"
                     target="_blank"

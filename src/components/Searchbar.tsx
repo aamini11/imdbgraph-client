@@ -104,7 +104,7 @@ export default function Searchbar() {
                 }}
             >
                 <input
-                    className="flex-grow border-none px-2 focus:outline-none"
+                    className="flex-grow border-none pl-2 focus:outline-none"
                     type="text"
                     placeholder="Search for any TV show..."
                     value={text}

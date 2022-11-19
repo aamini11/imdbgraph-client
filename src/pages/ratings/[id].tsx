@@ -35,7 +35,7 @@ export default function Ratings() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <div className="px-8 py-0">
+            <div className="flex flex-col">
                 <Navigation />
                 <Graph key={showId} showId={showId} setTitle={setTitle} />
             </div>
@@ -105,7 +105,7 @@ function Graph({ showId, setTitle }: { showId: string; setTitle: (title: string)
             ) : (
                 ratings && <ShowTitle show={ratings.show} />
             )}
-            <div id={id} ref={ref} />
+            <div className="px-8 w-screen" id={id} ref={ref} />
         </>
     );
 }
