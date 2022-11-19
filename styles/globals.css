@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+main {
+    min-height: 100vh;
+}
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+}
+
+/* https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model#the_alternative_css_box_model */
+* {
+    box-sizing: border-box;
+}
