@@ -36,7 +36,9 @@ export default function Ratings() {
             </Head>
 
             <div className="flex flex-col">
-                <Navigation />
+                <div className="px-8">
+                    <Navigation />
+                </div>
                 <Graph key={showId} showId={showId} setTitle={setTitle} />
             </div>
         </Page>
