@@ -97,7 +97,7 @@ export default function Searchbar() {
     return (
         <div className="relative text-base w-full">
             <form
-                className="flex flex-row p-1 bg-white border-gray-500 border rounded-md transition duration-300 focus-within:border-blue-300"
+                className="flex p-1 bg-white border-gray-500 border rounded-md transition duration-300 focus-within:border-blue-300"
                 onSubmit={(e) => {
                     e.preventDefault();
                     onSubmitSearch();
