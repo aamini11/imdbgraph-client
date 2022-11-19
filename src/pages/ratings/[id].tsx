@@ -194,6 +194,15 @@ function parseRatings(ratings: RatingsData): Series[] {
 
 function renderHighcharts(id: string) {
     return Highcharts.chart(id, {
+        chart: {
+            zooming: {
+                type: "x",
+            },
+            panning: {
+                enabled: true,
+                type: "xy",
+            },
+        },
         title: {
             text: "",
         },
@@ -221,6 +230,7 @@ function renderHighcharts(id: string) {
         tooltip: {
             shared: false,
             headerFormat: "",
+            followTouchMove: false, // Allow panning on mobile
             pointFormatter: function (this: PointOptionsObject) {
                 const episode = this.custom?.episode as Episode;
                 return ReactDOMServer.renderToStaticMarkup(<ToolTip episode={episode} />);
