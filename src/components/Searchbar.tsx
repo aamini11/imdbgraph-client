@@ -97,7 +97,7 @@ export default function Searchbar() {
     return (
         <div className="relative text-base w-full">
             <form
-                className="flex p-1 bg-white border-gray-500 border rounded-md transition duration-300 focus-within:border-blue-300"
+                className="min-w-fit flex p-1 bg-white border-gray-400 border-2 rounded-xl transition duration-300 focus-within:border-blue-600"
                 onSubmit={(e) => {
                     e.preventDefault();
                     onSubmitSearch();
@@ -134,7 +134,7 @@ export default function Searchbar() {
 
 function SearchIcon() {
     return (
-        <svg width={24} height={24} className="transition hover:fill-blue-500" xmlns="http://www.w3.org/2000/svg">
+        <svg width={24} height={24} className="transition hover:fill-blue-600" xmlns="http://www.w3.org/2000/svg">
             <title>Search Icon</title>
             <path d="m21.172 24-7.387-7.387A8.945 8.945 0 0 1 9 18c-4.971 0-9-4.029-9-9s4.029-9 9-9 9 4.029 9 9a8.951 8.951 0 0 1-1.387 4.785L24 21.172 21.172 24zM9 16c3.859 0 7-3.14 7-7s-3.141-7-7-7-7 3.14-7 7 3.141 7 7 7z" />
         </svg>
