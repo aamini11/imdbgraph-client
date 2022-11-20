@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Card from "../components/Card";
+import Header from "../components/Header";
 import Page from "../components/Page";
 import Searchbar from "../components/Searchbar";
-import Title from "../components/Title";
 
 export default function Home() {
     return (
@@ -14,7 +14,7 @@ export default function Home() {
             </Head>
             <Page>
                 <div className="pt-16 px-8 flex flex-col items-center">
-                    <Title text="Welcome to IMDB Graph" />
+                    <Header text="Welcome to IMDB Graph" />
                     <div className="max-w-md w-full my-16 mx-0">
                         <Searchbar />
                     </div>

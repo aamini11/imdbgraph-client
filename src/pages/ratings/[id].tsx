@@ -3,34 +3,20 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import ReactDOMServer from "react-dom/server";
+import Header from "../../components/Header";
 import Navigation from "../../components/Navigation";
 import Page from "../../components/Page";
-import Title from "../../components/Title";
 import { Episode, formatYears, RatingsData, Show } from "../../models/Show";
 
-export default function Ratings() {
+export default function RatingsPage() {
     const router = useRouter();
     const showId = router.query["id"];
-    const [title, setTitle] = useState("");
+    const { isLoading, ratings } = useRatings(showId);
 
-    if (typeof showId !== "string") {
-        return null;
-    }
-
-    /*
-     * Because of a quirk in NextJS the Graph component needs a key set so that
-     * it doesn't render with stale props between pages. For some reason, the
-     * useRatings hook call also has to be within the Graph component instead of
-     * here at the root. That's why a setTitle callback is passed because the
-     * root component needs to know the title of the show but can't know it
-     * until the useRatings hook made the API call.
-     *
-     * Issue: https://github.com/vercel/next.js/issues/9992
-     */
     return (
         <Page>
             <Head>
-                <title>IMDB Graph Ratings: {title}</title>
+                <title>IMDB Graph Ratings: {ratings?.show.title ?? `Loading`}</title>
                 <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -39,22 +25,48 @@ export default function Ratings() {
                 <div className="px-8">
                     <Navigation />
                 </div>
-                <Graph key={showId} showId={showId} setTitle={setTitle} />
+                <Graph ratings={ratings} isLoading={isLoading} />
             </div>
         </Page>
     );
 }
 
-interface Series extends SeriesSplineOptions {
-    type: "spline";
-    data: {
-        x: number;
-        y: number;
-        custom: { episode: Episode };
-    }[];
+function Graph({ ratings, isLoading }: { ratings?: RatingsData, isLoading: boolean }) {
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (ref.current === null) {
+            return;
+        }
+
+        const chart = renderHighcharts(ref.current.id);
+        chart.showLoading();
+
+        if (ratings !== undefined) {
+            for (const series of parseRatings(ratings)) {
+                chart.addSeries(series, false);
+            }
+            chart.redraw();
+            chart.hideLoading();
+        }
+    }, [ratings]);
+
+    if (!isLoading && (ratings === undefined || !hasRatings(ratings))) {
+        return <Header text="No Ratings found for TV show"/>;
+    } else {
+        return (
+          <>
+              <ShowTitle show={ratings?.show}/>
+              <div className="px-8 w-screen" id="graph" ref={ref} />
+          </>
+        );
+    }
 }
 
-function ShowTitle({ show }: { show: Show }) {
+function ShowTitle({ show }: { show?: Show }) {
+    if (show === undefined) {
+        return null;
+    }
     return (
         <div className="p-3">
             <h1 className="text-center text-xl">
@@ -77,59 +89,28 @@ function ToolTip({ episode }: { episode: Episode }) {
     );
 }
 
-/**
- * Wrap the Hicharts graph in a React component.
- */
-function Graph({ showId, setTitle }: { showId: string; setTitle: (title: string) => void }) {
-    const ref = useRef(null);
-    const ratings = useRatings(showId);
-
-    const id = "graph";
-
-    useEffect(() => {
-        const chart = renderHighcharts(id);
-        if (ratings === null) {
-            chart.showLoading();
-        } else {
-            setTitle(ratings.show.title);
-            for (const series of parseRatings(ratings)) {
-                chart.addSeries(series, false);
-            }
-            chart.redraw();
-            chart.hideLoading();
-        }
-    }, [ratings, setTitle]);
-
-    return (
-        <>
-            {ratings !== null && !hasRatings(ratings) ? (
-                <Title text="No ratings found for show" />
-            ) : (
-                ratings && <ShowTitle show={ratings.show} />
-            )}
-            <div className="px-8 w-screen" id={id} ref={ref} />
-        </>
-    );
-}
-
-function useRatings(showId: string | string[] | undefined): RatingsData | null {
-    const [ratings, setRatings] = useState<RatingsData | null>(null);
+function useRatings(showId: string | string[] | undefined): { isLoading: boolean, ratings: RatingsData | undefined } {
+    const [ratings, setRatings] = useState<RatingsData>();
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         let active = true;
 
         async function load() {
-            if (typeof showId !== "string") {
-                setRatings(null);
+            if (showId === undefined || Array.isArray(showId)) {
                 return;
             }
 
             const res = await fetch(`/api/ratings/${encodeURIComponent(showId)}`);
             if (active && res.ok) {
                 const ratings = (await res.json()) as RatingsData;
-                setRatings(ratings);
+                if (active) {
+                    setIsLoading(false);
+                    setRatings(ratings);
+                }
             } else {
-                throw "Show not found";
+                setIsLoading(false);
+                setRatings(undefined);
             }
         }
 
@@ -139,7 +120,7 @@ function useRatings(showId: string | string[] | undefined): RatingsData | null {
         };
     }, [showId]);
 
-    return ratings;
+    return { isLoading, ratings };
 }
 
 /**
@@ -156,6 +137,15 @@ function hasRatings(ratings: RatingsData): boolean {
         }
     }
     return false;
+}
+
+interface Series extends SeriesSplineOptions {
+    type: "spline";
+    data: {
+        x: number;
+        y: number;
+        custom: { episode: Episode };
+    }[];
 }
 
 /**
