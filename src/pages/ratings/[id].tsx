@@ -1,11 +1,13 @@
 import Highcharts, { PointOptionsObject, SeriesSplineOptions } from "highcharts";
+import _ from "lodash";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ReactDOMServer from "react-dom/server";
 import Header from "../../components/Header";
 import Navigation from "../../components/Navigation";
 import Page from "../../components/Page";
+import { ThemeButton, ThemeContext } from "../../components/ThemeButton";
 import { Episode, formatYears, RatingsData, Show } from "../../models/Show";
 
 export default function RatingsPage() {
@@ -21,9 +23,14 @@ export default function RatingsPage() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <div className="flex flex-col">
-                <div className="px-8">
-                    <Navigation />
+            <div>
+                <div className="grid grid-cols-[1fr,minmax(auto,600px),1fr]">
+                    <div className="w-full col-start-2">
+                        <Navigation/>
+                    </div>
+                    <div className="ml-auto p-3">
+                        <ThemeButton/>
+                    </div>
                 </div>
                 <Graph ratings={ratings} isLoading={isLoading} />
             </div>
@@ -31,34 +38,43 @@ export default function RatingsPage() {
     );
 }
 
-function Graph({ ratings, isLoading }: { ratings?: RatingsData, isLoading: boolean }) {
-    const ref = useRef<HTMLDivElement>(null);
+function Graph({ ratings, isLoading }: { ratings?: RatingsData; isLoading: boolean }) {
+    const rootRef = useRef<HTMLDivElement>(null);
+    const { theme } = useContext(ThemeContext);
 
     useEffect(() => {
-        if (ref.current === null) {
+        const id = rootRef.current?.id;
+        if (id === undefined) {
             return;
         }
 
-        const chart = renderHighcharts(ref.current.id);
-        chart.showLoading();
+        const options = theme === "dark" ? _.merge(defaultOptions(), darkTheme()) : defaultOptions();
+        const chart = Highcharts.chart(id, options);
 
+        chart.showLoading();
         if (ratings !== undefined) {
+            chart.series = [];
             for (const series of parseRatings(ratings)) {
                 chart.addSeries(series, false);
             }
             chart.redraw();
             chart.hideLoading();
         }
-    }, [ratings]);
+    }, [ratings, theme]);
+
+    // Prevent white flash
+    if (theme === undefined) {
+        return null;
+    }
 
     if (!isLoading && (ratings === undefined || !hasRatings(ratings))) {
-        return <Header text="No Ratings found for TV show"/>;
+        return <Header text="No Ratings found for TV show" />;
     } else {
         return (
-          <>
-              <ShowTitle show={ratings?.show}/>
-              <div className="px-8 w-screen" id="graph" ref={ref} />
-          </>
+            <>
+                <ShowTitle show={ratings?.show} />
+                <div className="min-w-[400px] max-w-[100vw] w-full" id="graph" ref={rootRef} />
+            </>
         );
     }
 }
@@ -89,7 +105,7 @@ function ToolTip({ episode }: { episode: Episode }) {
     );
 }
 
-function useRatings(showId: string | string[] | undefined): { isLoading: boolean, ratings: RatingsData | undefined } {
+function useRatings(showId: string | string[] | undefined): { isLoading: boolean; ratings: RatingsData | undefined } {
     const [ratings, setRatings] = useState<RatingsData>();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -184,55 +200,93 @@ function parseRatings(ratings: RatingsData): Series[] {
     return allSeries;
 }
 
-function renderHighcharts(id: string) {
-    return Highcharts.chart(id, {
-        chart: {
-            zooming: {
-                type: "x",
-            },
-            panning: {
+const defaultOptions = () => ({
+    chart: {
+        zooming: {
+            type: "x",
+        },
+        panning: {
+            enabled: true,
+            type: "xy",
+        },
+    },
+
+    title: {
+        text: "",
+    },
+
+    plotOptions: {
+        spline: {
+            dataLabels: {
                 enabled: true,
-                type: "xy",
             },
         },
+    },
+
+    xAxis: {
+        visible: false,
+    },
+
+    yAxis: {
         title: {
             text: "",
         },
+        max: 10,
+        tickInterval: 1,
+    },
 
-        plotOptions: {
-            spline: {
-                dataLabels: {
-                    enabled: true,
-                },
-            },
+    tooltip: {
+        shared: false,
+        headerFormat: "",
+        followTouchMove: false, // Allow panning on mobile
+        pointFormatter: function (this: PointOptionsObject) {
+            const episode = this.custom?.episode as Episode;
+            return ReactDOMServer.renderToStaticMarkup(<ToolTip episode={episode} />);
         },
+        footerFormat: "",
+        valueDecimals: 2,
+    },
 
-        xAxis: {
-            visible: false,
-        },
+    credits: {
+        enabled: false,
+    },
+});
 
-        yAxis: {
-            title: {
-                text: "IMDB Rating",
-            },
-            max: 10,
-            tickInterval: 1,
-        },
+const darkTheme = () => ({
+    colors: [
+        "#2b908f",
+        "#90ee7e",
+        "#f45b5b",
+        "#7798BF",
+        "#aaeeee",
+        "#ff0066",
+        "#eeaaee",
+        "#55BF3B",
+        "#DF5353",
+        "#7798BF",
+        "#aaeeee",
+    ],
 
-        tooltip: {
-            shared: false,
-            headerFormat: "",
-            followTouchMove: false, // Allow panning on mobile
-            pointFormatter: function (this: PointOptionsObject) {
-                const episode = this.custom?.episode as Episode;
-                return ReactDOMServer.renderToStaticMarkup(<ToolTip episode={episode} />);
-            },
-            footerFormat: "",
-            valueDecimals: 2,
-        },
+    // Transparent background to match background of page
+    chart: {
+        backgroundColor: "rgba(0,0,0,0)"
+    },
 
-        credits: {
-            enabled: false,
+    legend: {
+        itemStyle: {
+            color: "#ffffff",
         },
-    });
-}
+        itemHoverStyle: {
+            color: "LightGray",
+        },
+    },
+
+    loading: {
+        style: {
+            backgroundColor: "rgba(0, 0, 0, 0.0)"
+        },
+        labelStyle: {
+            color: "white"
+        }
+    },
+});

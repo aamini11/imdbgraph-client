@@ -97,14 +97,14 @@ export default function Searchbar() {
     return (
         <div className="relative text-base w-full">
             <form
-                className="min-w-fit flex p-1 bg-white border-gray-400 border-2 rounded-xl transition duration-300 focus-within:border-blue-600"
+                className="min-w-fit flex p-1 dark:bg-neutral-900 border-gray-400 border-2 rounded-xl transition duration-300 focus-within:border-blue-600"
                 onSubmit={(e) => {
                     e.preventDefault();
                     onSubmitSearch();
                 }}
             >
                 <input
-                    className="flex-grow border-none pl-2 focus:outline-none"
+                    className="bg-transparent border-r border-black dark:border-white mr-4 flex-grow pl-2 focus:outline-none"
                     type="text"
                     placeholder="Search for any TV show..."
                     value={text}
@@ -134,7 +134,7 @@ export default function Searchbar() {
 
 function SearchIcon() {
     return (
-        <svg width={24} height={24} className="transition hover:fill-blue-600" xmlns="http://www.w3.org/2000/svg">
+        <svg width={24} height={24} className="dark:fill-white transition hover:fill-blue-600" xmlns="http://www.w3.org/2000/svg">
             <title>Search Icon</title>
             <path d="m21.172 24-7.387-7.387A8.945 8.945 0 0 1 9 18c-4.971 0-9-4.029-9-9s4.029-9 9-9 9 4.029 9 9a8.951 8.951 0 0 1-1.387 4.785L24 21.172 21.172 24zM9 16c3.859 0 7-3.14 7-7s-3.141-7-7-7-7 3.14-7 7 3.141 7 7 7z" />
         </svg>
@@ -143,7 +143,7 @@ function SearchIcon() {
 
 function DropDown(props: { suggestions: Show[]; activeOption: number | null; onSubmitSearch: SearchCallback }) {
     return (
-        <ul className="w-full bg-white absolute z-[1] border-gray-500 border" onMouseDown={(e) => e.preventDefault()}>
+        <ul className="mt-2 bg-white dark:bg-neutral-900 w-full absolute z-[1] border-gray-500 border" onMouseDown={(e) => e.preventDefault()}>
             {props.suggestions.slice(0, DROPDOWN_SIZE_LIMIT).map((show, i) => (
                 <DropDownOption
                     key={show.imdbId}
@@ -160,8 +160,8 @@ function DropDownOption(props: { show: Show; isSelected: boolean; onSubmitSearch
     return (
         <li
             onClick={() => props.onSubmitSearch(props.show)}
-            className={`text-left px-2 p-1 hover:bg-gray-100 select-none hover:cursor-pointer ${
-                props.isSelected ? "bg-gray-100" : ""
+            className={`text-left px-2 p-1 select-none hover:cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-100 ${
+                props.isSelected ? "bg-gray-100 dark:bg-neutral-700 border-l-2 border-blue-700" : ""
             }`}
         >
             <a>{props.show.title}</a>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import Navigation from "../components/Navigation";
 import Page from "../components/Page";
+import { ThemeButton } from "../components/ThemeButton";
 import { formatYears, Show } from "../models/Show";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -19,34 +20,40 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         const props = { searchResults: searchResults, searchTerm: query };
         return { props: props };
     } else {
-        throw "Show not found";
+        throw "API Failed";
     }
 }
 
 export default function Search(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
-        <Page>
+        <div>
             <Head>
                 <title>IMDB Graph Search - {props.searchTerm}</title>
                 <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-
-            <div className="max-w-screen-sm p-6">
-                <Navigation />
-                {props.searchResults.length > 0 ? (
-                    <List searchResults={props.searchResults} />
-                ) : (
-                    <div className="pt-8">No results found for : {props.searchTerm}</div>
-                )}
-            </div>
-        </Page>
+            <Page>
+                <div className="p-6 w-full flex items-center max-w-screen-sm">
+                    <div className="w-full max-w-screen-sm">
+                        <Navigation />
+                    </div>
+                    <ThemeButton />
+                </div>
+                <div className="max-w-screen-sm px-6">
+                    {props.searchResults.length > 0 ? (
+                        <List searchResults={props.searchResults} />
+                    ) : (
+                        <div className="pt-8">No results found for : {props.searchTerm}</div>
+                    )}
+                </div>
+            </Page>
+        </div>
     );
 }
 
 function List(props: { searchResults: Show[] }) {
     return (
-        <ul className="space-y-5 pt-6">
+        <ul className="space-y-5">
             {props.searchResults.map((movie) => (
                 <ListItem key={movie.imdbId} show={movie} />
             ))}
@@ -55,7 +62,7 @@ function List(props: { searchResults: Show[] }) {
 }
 
 function ListItem({ show }: { show: Show }) {
-    const title = <h2 className="text-2xl font-semibold text-slate-900 truncate pr-20">{show.title}</h2>;
+    const title = <h2 className="text-2xl font-semibold truncate pr-20">{show.title}</h2>;
     const year = (
         <div className="ml-2">
             <dt className="sr-only">Year</dt>
@@ -75,7 +82,7 @@ function ListItem({ show }: { show: Show }) {
     );
 
     return (
-        <article className="p-6 relative drop-shadow-xl rounded-xl bg-gray-100 hover:bg-slate-200">
+        <article className="p-6 relative drop-shadow-xl rounded-xl bg-gray-100 hover:bg-slate-200 dark:bg-neutral-900 dark:hover:bg-neutral-700">
             <div className="min-w-0 relative">
                 {title}
                 <dl className="mt-2 text-sm leading-6 font-medium">
