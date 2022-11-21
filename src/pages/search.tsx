@@ -37,7 +37,7 @@ export default function Search(props: InferGetServerSidePropsType<typeof getServ
                 {props.searchResults.length > 0 ? (
                     <List searchResults={props.searchResults} />
                 ) : (
-                    `No results found for : ${props.searchTerm}`
+                    <div className="pt-8">No results found for : {props.searchTerm}</div>
                 )}
             </div>
         </Page>
