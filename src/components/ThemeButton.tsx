@@ -3,8 +3,13 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 type Theme = "dark" | "light";
 const defaultTheme: Theme = "light";
 
-type ThemeHook = { theme?: Theme, setTheme: (theme: Theme) => void };
-export const ThemeContext = createContext<ThemeHook>({ theme: defaultTheme, setTheme: () => { /* NO-OP */} });
+type ThemeHook = { theme?: Theme; setTheme: (theme: Theme) => void };
+export const ThemeContext = createContext<ThemeHook>({
+    theme: defaultTheme,
+    setTheme: () => {
+        /* NO-OP */
+    },
+});
 
 const storageKey = "theme";
 
@@ -17,18 +22,14 @@ export function getTheme() {
     }
 }
 
-export function ThemedPage({ children } : { children: React.ReactNode }) {
+export function ThemedPage({ children }: { children: React.ReactNode }) {
     const [theme, setTheme] = useState<Theme | undefined>(undefined);
 
     useEffect(() => {
         setTheme(getTheme());
     }, []);
 
-    return (
-      <ThemeContext.Provider value={{ theme, setTheme }}>
-          {children}
-      </ThemeContext.Provider>
-    );
+    return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
 }
 
 export function ThemeButton() {

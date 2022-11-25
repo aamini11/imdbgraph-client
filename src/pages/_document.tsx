@@ -12,32 +12,33 @@ export default function Document() {
     return (
         <Html>
             <Head>
-                <script dangerouslySetInnerHTML={{
-                  __html: `
-                  (function () {
-                        const storageKey = "theme";
-                        const defaultTheme = "light";
-                        const coalesceTheme = (theme) => theme === "dark" ? "dark" : defaultTheme;
-                      
-                        function setClassOnDocumentBody(theme) {
-                          document.documentElement.classList.add(theme);
-                          document.documentElement.classList.remove(theme === "dark" ? "light" : "dark");
-                        }
-                      
-                        function getTheme() {
-                          const localTheme = localStorage.getItem(storageKey);
-                          if (localTheme === undefined) {
-                            return defaultTheme;
-                          } else {
-                            return coalesceTheme(localTheme);
-                          }
-                        }
-                      
-                        const theme = getTheme();
-                        setClassOnDocumentBody(coalesceTheme(theme));
-                  })();
-                `
-                }}/>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                        (function () {
+                              const storageKey = "theme";
+                              const defaultTheme = "light";
+                              const coalesceTheme = (theme) => theme === "dark" ? "dark" : defaultTheme;
+                            
+                              function setClassOnDocumentBody(theme) {
+                                document.documentElement.classList.add(theme);
+                                document.documentElement.classList.remove(theme === "dark" ? "light" : "dark");
+                              }
+                            
+                              function getTheme() {
+                                const localTheme = localStorage.getItem(storageKey);
+                                if (localTheme === undefined) {
+                                  return defaultTheme;
+                                } else {
+                                  return coalesceTheme(localTheme);
+                                }
+                              }
+                            
+                              const theme = getTheme();
+                              setClassOnDocumentBody(coalesceTheme(theme));
+                        })();`,
+                    }}
+                />
             </Head>
             <body>
                 <Main />

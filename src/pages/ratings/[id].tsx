@@ -26,10 +26,10 @@ export default function RatingsPage() {
             <div>
                 <div className="grid grid-cols-[1fr,minmax(auto,600px),1fr]">
                     <div className="w-full col-start-2">
-                        <Navigation/>
+                        <Navigation />
                     </div>
                     <div className="ml-auto p-3">
-                        <ThemeButton/>
+                        <ThemeButton />
                     </div>
                 </div>
                 <Graph ratings={ratings} isLoading={isLoading} />
@@ -269,7 +269,7 @@ const darkTheme = () => ({
 
     // Transparent background to match background of page
     chart: {
-        backgroundColor: "rgba(0,0,0,0)"
+        backgroundColor: "rgba(0,0,0,0)",
     },
 
     legend: {
@@ -283,10 +283,10 @@ const darkTheme = () => ({
 
     loading: {
         style: {
-            backgroundColor: "rgba(0, 0, 0, 0.0)"
+            backgroundColor: "rgba(0, 0, 0, 0.0)",
         },
         labelStyle: {
-            color: "white"
-        }
+            color: "white",
+        },
     },
 });

@@ -134,7 +134,12 @@ export default function Searchbar() {
 
 function SearchIcon() {
     return (
-        <svg width={24} height={24} className="dark:fill-white transition hover:fill-blue-600" xmlns="http://www.w3.org/2000/svg">
+        <svg
+            width={24}
+            height={24}
+            className="dark:fill-white transition hover:fill-blue-600"
+            xmlns="http://www.w3.org/2000/svg"
+        >
             <title>Search Icon</title>
             <path d="m21.172 24-7.387-7.387A8.945 8.945 0 0 1 9 18c-4.971 0-9-4.029-9-9s4.029-9 9-9 9 4.029 9 9a8.951 8.951 0 0 1-1.387 4.785L24 21.172 21.172 24zM9 16c3.859 0 7-3.14 7-7s-3.141-7-7-7-7 3.14-7 7 3.141 7 7 7z" />
         </svg>
@@ -143,7 +148,10 @@ function SearchIcon() {
 
 function DropDown(props: { suggestions: Show[]; activeOption: number | null; onSubmitSearch: SearchCallback }) {
     return (
-        <ul className="mt-2 bg-white dark:bg-neutral-900 w-full absolute z-[1] border-gray-500 border" onMouseDown={(e) => e.preventDefault()}>
+        <ul
+            className="mt-2 bg-white dark:bg-neutral-900 w-full absolute z-[1] border-gray-500 border"
+            onMouseDown={(e) => e.preventDefault()}
+        >
             {props.suggestions.slice(0, DROPDOWN_SIZE_LIMIT).map((show, i) => (
                 <DropDownOption
                     key={show.imdbId}

@@ -16,7 +16,7 @@ export default function Home() {
             <Page>
                 <div className="flex flex-col items-center">
                     <div className="ml-auto p-3">
-                      <ThemeButton/>
+                        <ThemeButton />
                     </div>
                     <Header text="Welcome to IMDB Graph" />
                     <div className="max-w-md w-full my-16 mx-0">
