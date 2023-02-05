@@ -2,8 +2,9 @@ import Highcharts, { PointOptionsObject, SeriesSplineOptions } from "highcharts"
 import _ from "lodash";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
+import useSWR from "swr";
 import Header from "../../components/Header";
 import Navigation from "../../components/Navigation";
 import Page from "../../components/Page";
@@ -106,37 +107,18 @@ function ToolTip({ episode }: { episode: Episode }) {
 }
 
 function useRatings(showId: string | string[] | undefined): { isLoading: boolean; ratings: RatingsData | undefined } {
-    const [ratings, setRatings] = useState<RatingsData>();
-    const [isLoading, setIsLoading] = useState(true);
+    if (Array.isArray(showId)) {
+        throw "Invalid show ID";
+    }
 
-    useEffect(() => {
-        let active = true;
+    const url = showId && `/api/ratings/${encodeURIComponent(showId)}`;
+    const fetcher = (url: string) => fetch(url).then((res) => res.json()) as Promise<RatingsData>;
+    const { data, error, isLoading } = useSWR(url, fetcher);
+    if (error) {
+        throw "Could not load data";
+    }
 
-        async function load() {
-            if (showId === undefined || Array.isArray(showId)) {
-                return;
-            }
-
-            const res = await fetch(`/api/ratings/${encodeURIComponent(showId)}`);
-            if (active && res.ok) {
-                const ratings = (await res.json()) as RatingsData;
-                if (active) {
-                    setIsLoading(false);
-                    setRatings(ratings);
-                }
-            } else {
-                setIsLoading(false);
-                setRatings(undefined);
-            }
-        }
-
-        void load();
-        return () => {
-            active = false;
-        };
-    }, [showId]);
-
-    return { isLoading, ratings };
+    return { isLoading: showId === undefined || isLoading, ratings: data };
 }
 
 /**
