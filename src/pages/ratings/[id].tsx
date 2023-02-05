@@ -182,7 +182,7 @@ function parseRatings(ratings: RatingsData): Series[] {
     return allSeries;
 }
 
-const defaultOptions = () => ({
+const defaultOptions: () => Highcharts.Options = () => ({
     chart: {
         zooming: {
             type: "x",
