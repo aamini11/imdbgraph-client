@@ -113,7 +113,7 @@ function useRatings(showId: string | string[] | undefined): { isLoading: boolean
 
     const url = showId && `/api/ratings/${encodeURIComponent(showId)}`;
     const fetcher = (url: string) => fetch(url).then((res) => res.json()) as Promise<RatingsData>;
-    const { data, error, isLoading } = useSWR(url, fetcher);
+    const { data, error, isLoading } = useSWR<RatingsData, unknown>(url, fetcher);
     if (error) {
         throw "Could not load data";
     }
