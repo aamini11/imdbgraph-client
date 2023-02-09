@@ -65,7 +65,7 @@ export function ThemeButton() {
                 type="checkbox"
                 className="react-toggle-screenreader-only"
                 aria-label="Switch between dark and light mode"
-                checked={isChecked}
+                defaultChecked={isChecked}
             />
         </div>
     );

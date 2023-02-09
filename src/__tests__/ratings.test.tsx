@@ -34,7 +34,7 @@ describe("Ratings page tests", () => {
         await waitForElementToBeRemoved(() => screen.queryByText("Loading..."));
 
         const noShowMessage = screen.getByRole("heading", {
-            name: /no ratings found for show/i,
+            name: /No Ratings found for TV show/i,
         });
         expect(noShowMessage).toBeInTheDocument();
     });
