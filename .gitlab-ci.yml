@@ -7,18 +7,14 @@ stages:
   - build
   - test
 
-cache:
-  - key:
-      files:
-        - yarn.lock
-    paths:
-      - node_modules
-      - .yarn
-
+cache: &global_cache
   # Cache NextJS files: https://nextjs.org/docs/messages/no-cache#gitlab-ci
-  - key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .next/cache/
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .next/cache/
+    - node_modules
+    - .yarn
+  policy: pull
 
 build:
   stage: build
@@ -26,6 +22,11 @@ build:
     - yarn -v
     - yarn install --cache-folder .yarn --frozen-lockfile
     - yarn run build
+  cache:
+    # inherit all global cache settings
+    <<: *global_cache
+    # override the policy
+    policy: pull-push
 
 lint-code:
   stage: test
