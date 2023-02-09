@@ -13,21 +13,21 @@ cache:
         - yarn.lock
     paths:
       - node_modules
+      - .yarn
 
   # Cache NextJS files: https://nextjs.org/docs/messages/no-cache#gitlab-ci
   - key: ${CI_COMMIT_REF_SLUG}
     paths:
       - .next/cache/
 
-build-project:
+build:
   stage: build
   script:
     - yarn -v
-    # Use instead of install for CI/CD: https://docs.npmjs.com/cli/v8/commands/npm-ci
-    - yarn install --frozen-lockfile
+    - yarn install --cache-folder .yarn --frozen-lockfile
     - yarn run build
 
-lint-check:
+lint-code:
   stage: test
   script:
     - yarn run lint

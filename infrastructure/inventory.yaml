@@ -1,0 +1,11 @@
+database:
+  hosts:
+    postgres01:
+      ansible_host: imdbgraph.org
+
+webservers:
+  hosts:
+    webserver01:
+      ansible_host: imdbgraph.org
+  vars:
+    ansible_user: aamini
