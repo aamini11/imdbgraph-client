@@ -1,7 +1,7 @@
 include:
   - template: Security/SAST.gitlab-ci.yml
 
-image: node:16.14.0-alpine3.14
+image: node:18.14-alpine
 
 stages:
   - build
@@ -10,9 +10,9 @@ stages:
 cache:
   - key:
       files:
-        - pnpm-lock.yaml
+        - yarn.lock
     paths:
-      - node_modules/
+      - node_modules
 
   # Cache NextJS files: https://nextjs.org/docs/messages/no-cache#gitlab-ci
   - key: ${CI_COMMIT_REF_SLUG}
@@ -27,13 +27,20 @@ build-project:
     - yarn install --frozen-lockfile
     - yarn run build
 
-lint-project:
+lint-check:
   stage: test
   script:
     - yarn run lint
     - yarn run check-format
 
-unit-test-job:
+unit-test:
   stage: test
   script:
-    - yarn test
+    - 'yarn global add jest'
+    - 'yarn add --dev jest-junit'
+    - 'jest --ci --reporters=default --reporters=jest-junit'
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
