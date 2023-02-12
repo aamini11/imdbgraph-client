@@ -103,8 +103,11 @@ export default function Searchbar() {
                     onSubmitSearch();
                 }}
             >
+                {/* Set border radius to 0 (rounded-none). Otherwise, safari on iphone thinks the input
+                 * box should be rounded and causes the divider to look weird.
+                 */}
                 <input
-                    className="bg-transparent border-r border-black dark:border-white mr-4 flex-grow pl-2 focus:outline-none"
+                    className="bg-transparent rounded-none border-r border-black dark:border-white mr-4 flex-grow pl-2 focus:outline-none"
                     type="text"
                     placeholder="Search for any TV show..."
                     value={text}
