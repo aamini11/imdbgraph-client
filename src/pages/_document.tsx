@@ -15,6 +15,9 @@ export default function Document() {
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `
+                        // Prevent scroll restoration: https://mmazzarolo.com/blog/2021-04-10-nextjs-scroll-restoration/
+                        // Annoying on mobile when browsing between ratings graphs.
+                        history.scrollRestoration = "manual";
                         (function () {
                               const storageKey = "theme";
                               const defaultTheme = "light";

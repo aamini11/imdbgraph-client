@@ -5,7 +5,7 @@ import { ThemedPage } from "./ThemeButton";
 export default function Page(props: { children: React.ReactNode }) {
     return (
         <ThemedPage>
-            <div className="flex flex-col min-h-screen min-w-fit items-center">
+            <div className="flex flex-col min-h-[100dvh] items-center">
                 <div className="w-full flex-1">{props.children}</div>
                 <footer className="flex justify-center w-[calc(100%-4rem)] py-5 border-t">
                     <a
