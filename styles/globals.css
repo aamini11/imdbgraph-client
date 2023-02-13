@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-main {
-    min-height: 100vh;
-}
-
 html,
 body {
     padding: 0;
