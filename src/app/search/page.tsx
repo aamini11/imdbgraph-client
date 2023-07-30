@@ -1,56 +1,41 @@
+"use client";
+
 import Navigation from "components/Navigation";
-import Page from "components/Page";
-import { ThemeButton } from "components/ThemeButton";
 import { formatYears, Show } from "models/Show";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const query = context.query.q;
-    if (typeof query !== "string") {
-        throw "Invalid query parameter";
-    }
-
+async function getSearchResults(query: string): Promise<Show[]> {
     // Fetch data from external API
-    const response = await fetch(`https://api.imdbgraph.org/search?q=${encodeURIComponent(query)}`);
+    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
     if (response.ok) {
-        const searchResults = (await response.json()) as Show[];
-        return {
-            props: {
-                searchResults,
-                searchTerm: query,
-            },
-        };
+        return (await response.json()) as Show[];
     } else {
         throw "API Failed";
     }
 }
 
-export default function Search(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default async function Search(props : { searchParams: { q: string } }) {
+    const query = props.searchParams.q;
+    if (!query) {
+        throw "No query provided";
+    }
+
+    const shows = await getSearchResults(query);
     return (
         <div>
-            <Head>
-                <title>IMDB Graph Search - {props.searchTerm}</title>
-                <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Page>
-                <div className="p-6 w-full flex items-center max-w-screen-sm">
-                    <div className="w-full max-w-screen-sm">
-                        <Navigation />
-                    </div>
-                    <ThemeButton />
+            <div className="p-6 w-full flex items-center max-w-screen-sm">
+                <div className="w-full max-w-screen-sm">
+                    <Navigation />
                 </div>
-                <div className="max-w-screen-sm px-6">
-                    {props.searchResults.length > 0 ? (
-                        <List searchResults={props.searchResults} />
-                    ) : (
-                        <div className="pt-8">No results found for : {props.searchTerm}</div>
-                    )}
-                </div>
-            </Page>
+            </div>
+            <div className="max-w-screen-sm px-6">
+                {shows.length > 0 ? (
+                    <List searchResults={shows} />
+                ) : (
+                    <div className="pt-8">No results found for : {query}</div>
+                )}
+            </div>
         </div>
     );
 }

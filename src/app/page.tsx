@@ -1,37 +1,23 @@
-import Head from "next/head";
-import Header from "../components/Header";
-import Page from "../components/Page";
-import Searchbar from "../components/Searchbar";
-import { ThemeButton } from "../components/ThemeButton";
+import Header from "components/Header";
+import Searchbar from "components/Searchbar";
+import "./global.css";
 
 export default function Home() {
     return (
         <div>
-            <Head>
-                <title>IMDB Graph</title>
-                <meta name="description" content="Website to visualize IMDB TV show ratings as a graph" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Page>
-                <div className="flex">
-                    <div className="ml-auto p-3">
-                        <ThemeButton />
-                    </div>
+            <div className="flex flex-col items-center gap-8 pb-10">
+                <Header text="Welcome to IMDB Graph" />
+                <div className="max-w-md w-full px-4">
+                    <Searchbar />
                 </div>
-                <div className="flex flex-col items-center gap-8 pb-10">
-                    <Header text="Welcome to IMDB Graph" />
-                    <div className="max-w-md w-full px-4">
-                        <Searchbar />
-                    </div>
 
-                    <div className="px-10">
-                        <Card
-                            title="Source Code &rarr;"
-                            body="IMDB Graph is 100% open source. Click here to see the GitLab page"
-                        />
-                    </div>
+                <div className="px-10">
+                    <Card
+                        title="Source Code &rarr;"
+                        body="IMDB Graph is 100% open source. Click here to see the GitLab page"
+                    />
                 </div>
-            </Page>
+            </div>
         </div>
     );
 }

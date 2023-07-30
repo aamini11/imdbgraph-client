@@ -1,7 +1,9 @@
+"use client";
+
 import debounce from "lodash/debounce";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { Show } from "../models/Show";
+import { Show } from "models/Show";
 
 const DROPDOWN_SIZE_LIMIT = 5;
 
@@ -66,10 +68,7 @@ export default function Searchbar() {
     };
 
     function onSubmitSearch(show?: Show) {
-        const goToShowRatings = (show: Show) =>
-            void router.push({
-                pathname: `/ratings/${encodeURIComponent(show.imdbId)}`,
-            });
+        const goToShowRatings = (show: Show) => router.push(`/ratings/${encodeURIComponent(show.imdbId)}`);
 
         if (isEmpty(text)) {
             return;
@@ -87,10 +86,7 @@ export default function Searchbar() {
             goToShowRatings(suggestions[selected]);
         } else {
             // Do a search with whatever query is in the search box
-            void router.push({
-                pathname: "/search",
-                query: { q: text },
-            });
+            void router.push(`/search?q=${text}`);
         }
     }
 
@@ -107,7 +103,7 @@ export default function Searchbar() {
                  * box should be rounded and causes the divider to look weird.
                  */}
                 <input
-                    className="bg-transparent rounded-none border-r border-black dark:border-white mr-4 flex-grow pl-2 focus:outline-none"
+                    className="pr-2 bg-transparent rounded-none border-r border-black dark:border-white mr-4 flex-grow pl-2 focus:outline-none"
                     type="text"
                     placeholder="Search for any TV show..."
                     value={text}
@@ -124,7 +120,7 @@ export default function Searchbar() {
                         }
                     }}
                 />
-                <button className="pr-2" type="submit">
+                <button className="p-1" type="submit">
                     <SearchIcon />
                 </button>
             </form>
