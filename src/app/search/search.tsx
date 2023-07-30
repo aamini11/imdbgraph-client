@@ -1,11 +1,11 @@
+import Navigation from "components/Navigation";
+import Page from "components/Page";
+import { ThemeButton } from "components/ThemeButton";
+import { formatYears, Show } from "models/Show";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import Navigation from "../components/Navigation";
-import Page from "../components/Page";
-import { ThemeButton } from "../components/ThemeButton";
-import { formatYears, Show } from "../models/Show";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const query = context.query.q;

@@ -1,15 +1,17 @@
+"use client";
+
+import Header from "components/Header";
+import Navigation from "components/Navigation";
+import Page from "components/Page";
+import { ThemeButton, ThemeContext } from "components/ThemeButton";
 import Highcharts, { PointOptionsObject, SeriesSplineOptions } from "highcharts";
 import _ from "lodash";
+import { Episode, formatYears, RatingsData, Show } from "models/Show";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
 import useSWR from "swr";
-import Header from "../../components/Header";
-import Navigation from "../../components/Navigation";
-import Page from "../../components/Page";
-import { ThemeButton, ThemeContext } from "../../components/ThemeButton";
-import { Episode, formatYears, RatingsData, Show } from "../../models/Show";
 
 export default function RatingsPage() {
     const router = useRouter();
