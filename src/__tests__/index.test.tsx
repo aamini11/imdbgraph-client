@@ -1,15 +1,10 @@
-import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import Home from "../pages";
+import Home from "../app/page";
 
-jest.mock("next/router", () => ({
-    useRouter() {
-        // NO-OP
-    },
-}));
+jest.mock("next/navigation");
 
 describe("Home page tests", () => {
-    it("Renders title correctly", () => {
+    test("Renders title correctly", () => {
         render(<Home />);
 
         const mainTitle = screen.getByRole("heading", {
@@ -19,7 +14,7 @@ describe("Home page tests", () => {
         expect(mainTitle).toBeInTheDocument();
     });
 
-    it("Renders Gitlab page correctly", () => {
+    test("Renders Gitlab page correctly", () => {
         render(<Home />);
 
         const title = "Source Code →";
@@ -27,7 +22,6 @@ describe("Home page tests", () => {
             screen.getByRole("heading", {
                 name: title,
                 level: 2,
-                exact: false,
             })
         ).toBeInTheDocument();
 

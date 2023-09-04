@@ -1,6 +1,5 @@
-import "@testing-library/jest-dom";
-import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
-import Ratings from "../pages/ratings/[id]";
+import { render, screen } from "@testing-library/react";
+import Ratings from "../app/ratings/[id]/page";
 
 global.fetch = jest.fn(() =>
     Promise.resolve({
@@ -17,23 +16,20 @@ global.fetch = jest.fn(() =>
                 },
                 allEpisodeRatings: {},
             }),
-    })
+    }),
 ) as jest.Mock;
 
-jest.mock("next/router", () => ({
-    useRouter() {
-        return {
-            query: { id: "tt0417299" },
-        };
-    },
-}));
+jest.mock("next/navigation");
 
 describe("Ratings page tests", () => {
-    it("Test show with not ratings", async () => {
-        render(<Ratings />);
-        await waitForElementToBeRemoved(() => screen.queryByText("Loading..."));
+    test("Page when show has no ratings", async () => {
+        render(await Ratings({
+            params: {
+                id: "tt0417299"
+            }
+        }));
 
-        const noShowMessage = screen.getByRole("heading", {
+        const noShowMessage = await screen.findByRole("heading", {
             name: /No Ratings found for TV show/i,
         });
         expect(noShowMessage).toBeInTheDocument();
