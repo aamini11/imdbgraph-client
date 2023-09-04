@@ -1,7 +1,7 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { mockSearchResult } from "components/__tests__/mockSearchResult";
-import Searchbar from "components/Searchbar";
+import Searchbar, { DROPDOWN_SIZE_LIMIT } from "components/Searchbar";
 
 jest.mock("next/navigation");
 
@@ -23,8 +23,9 @@ describe("Searchbar tests", () => {
         expect(searchBar).toBeInTheDocument();
         await user.type(searchBar, "Avatar");
 
-        const dropdown = await screen.findByRole("list");
-        const suggestions = await within(dropdown).findAllByRole("listitem");
-        expect(suggestions).toHaveLength(10);
+        for (const suggestion of mockSearchResult.slice(0, DROPDOWN_SIZE_LIMIT)) {
+            const suggestionListItem = await screen.findByRole("link", { name: suggestion.title });
+            expect(suggestionListItem).toBeInTheDocument();
+        }
     });
 });

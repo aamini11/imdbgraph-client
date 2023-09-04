@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-const DROPDOWN_SIZE_LIMIT = 5;
+export const DROPDOWN_SIZE_LIMIT = 5;
 
 export default function Searchbar() {
     const router = useRouter();
