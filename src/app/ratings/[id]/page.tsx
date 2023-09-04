@@ -5,9 +5,8 @@ import { Graph } from "./Graph";
 
 export default async function RatingsPage(props: { params: { id?: string } }) {
     const showId = props.params.id;
-    const ratings = showId ? await getRatings(showId) : undefined;
-    if (!ratings) {
-        return null;
+    if (!showId) {
+        throw "Missing show ID parameter";
     }
 
     return (
@@ -17,7 +16,7 @@ export default async function RatingsPage(props: { params: { id?: string } }) {
                     <Navigation />
                 </div>
             </div>
-            <Graph ratings={ratings} />
+            <Graph ratings={await getRatings(showId)} />
         </div>
     );
 }

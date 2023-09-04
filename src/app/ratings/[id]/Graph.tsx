@@ -1,20 +1,20 @@
 "use client";
 
 import Header from "components/Header";
-import { ThemeContext } from "components/theme/ThemedPage";
+import { Theme, ThemeContext } from "components/theme/ThemedPage";
 import Highcharts, { SeriesSplineOptions } from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { merge } from "lodash";
 import { Episode, formatYears, RatingsData, Show } from "models/Show";
 import { useContext } from "react";
 
-export function Graph( { ratings } : { ratings: RatingsData }) {
+export function Graph({ ratings }: { ratings: RatingsData }) {
     const { theme } = useContext(ThemeContext);
 
     if (!hasRatings(ratings)) {
         return <Header text="No Ratings found for TV show" />;
     } else {
-        const options = theme === "dark" ? merge(defaultOptions(), darkTheme()) : defaultOptions();
+        const options = theme === Theme.DARK ? merge(defaultOptions(), darkTheme()) : defaultOptions();
         const optionsWithData = { ...options, series: parseRatings(ratings) };
         return (
             <>
@@ -22,7 +22,8 @@ export function Graph( { ratings } : { ratings: RatingsData }) {
                 <HighchartsReact
                     highcharts={Highcharts}
                     options={optionsWithData}
-                    className="min-w-[400px] max-w-[100vw] w-full" />
+                    className="min-w-[400px] max-w-[100vw] w-full"
+                />
             </>
         );
     }
