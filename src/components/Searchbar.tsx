@@ -1,13 +1,12 @@
 "use client";
 
 import debounce from "lodash/debounce";
+import { Show } from "models/Show";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { Show } from "models/Show";
 
 const DROPDOWN_SIZE_LIMIT = 5;
-
-type SearchCallback = (show?: Show) => void;
 
 export default function Searchbar() {
     const router = useRouter();
@@ -125,7 +124,7 @@ export default function Searchbar() {
                 </button>
             </form>
             {isDropdownVisible && (
-                <DropDown suggestions={suggestions} activeOption={selected} onSubmitSearch={onSubmitSearch} />
+                <DropDown suggestions={suggestions} activeOption={selected} />
             )}
         </div>
     );
@@ -145,7 +144,7 @@ function SearchIcon() {
     );
 }
 
-function DropDown(props: { suggestions: Show[]; activeOption: number | null; onSubmitSearch: SearchCallback }) {
+function DropDown(props: { suggestions: Show[]; activeOption: number | null }) {
     return (
         <ul
             className="mt-2 bg-white dark:bg-neutral-900 w-full absolute z-[1] border-gray-500 border"
@@ -156,22 +155,23 @@ function DropDown(props: { suggestions: Show[]; activeOption: number | null; onS
                     key={show.imdbId}
                     show={show}
                     isSelected={i === props.activeOption}
-                    onSubmitSearch={props.onSubmitSearch}
                 />
             ))}
         </ul>
     );
 }
 
-function DropDownOption(props: { show: Show; isSelected: boolean; onSubmitSearch: SearchCallback }) {
+function DropDownOption(props: { show: Show; isSelected: boolean; }) {
+    const { imdbId, title } = props.show;
     return (
         <li
-            onClick={() => props.onSubmitSearch(props.show)}
             className={`text-left px-2 p-1 select-none hover:cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-100 ${
                 props.isSelected ? "bg-gray-100 dark:bg-neutral-700 border-l-2 border-blue-700" : ""
             }`}
         >
-            <a>{props.show.title}</a>
+            <Link href={`/ratings/${imdbId}`}>
+                {title}
+            </Link>
         </li>
     );
 }
