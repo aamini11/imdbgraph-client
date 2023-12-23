@@ -1,9 +1,7 @@
-"use client";
-
-import Navigation from "components/Navigation";
-import { formatYears, Show } from "models/Show";
 import Link from "next/link";
 import React from "react";
+import Navigation from "components/Navigation";
+import { formatYears, Show } from "models/Show";
 
 async function getSearchResults(query: string): Promise<Show[]> {
     // Fetch data from external API

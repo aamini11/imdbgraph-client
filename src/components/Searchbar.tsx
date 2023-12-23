@@ -1,10 +1,10 @@
 "use client";
 
 import debounce from "lodash/debounce";
-import { Show } from "models/Show";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { Show } from "models/Show";
 
 export const DROPDOWN_SIZE_LIMIT = 5;
 
