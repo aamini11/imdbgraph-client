@@ -5,7 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest --config jest.config.js",
+    "test": "jest --config jest.config.ts",
     "lint": "next lint --max-warnings=0",
     "format": "npx prettier --write '**/*.{js,ts,jsx,tsx}'",
     "check-format": "npx prettier --check '**/*.{js,ts,jsx,tsx}'"
@@ -18,7 +18,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "swr": "^2.2.0",
-    "terser": "^5.19.2"
+    "terser": "^5.19.2",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.17.0",
