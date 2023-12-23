@@ -9,13 +9,6 @@ module.exports = {
 
     overrides: [
         {
-            files: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
-            env: {
-                "jest/globals": true, // now **/*.test.js files' env has both es6 *and* jest
-            },
-            extends: ["plugin:jest/recommended", "plugin:jest/style", "plugin:testing-library/react"],
-        },
-        {
             files: ["**/*.{ts,tsx}"],
             parser: "@typescript-eslint/parser",
             parserOptions: {
