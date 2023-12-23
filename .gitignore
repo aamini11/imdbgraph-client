@@ -42,3 +42,7 @@ yarn-error.log*
 
 # Recommened by NextJS to be ignored: https://nextjs.org/docs/basic-features/typescript
 next-env.d.ts
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
