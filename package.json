@@ -5,6 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "npx playwright test",
     "lint": "next lint --max-warnings=0",
     "format": "npx prettier --write '**/*.{js,ts,jsx,tsx}'",
     "check-format": "npx prettier --check '**/*.{js,ts,jsx,tsx}'"
