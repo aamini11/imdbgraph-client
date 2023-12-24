@@ -1,6 +1,4 @@
 stages:
-  - install
-  - lint
   - build
   - test
 
@@ -22,28 +20,20 @@ default:
       - .pnpm-store
     policy: pull
 
-.update-cache:
+build:
+  stage: build
+  script:
+    - pnpm install
+    - pnpm run build
   cache:
     <<: *global_cache
     policy: pull-push
 
-install:
-  extends: .update-cache
-  stage: install
-  script:
-    - pnpm install
-
 lint:
-  stage: lint
+  stage: test
   script:
     - pnpm run lint
     - pnpm run check-format
-
-build:
-  extends: .update-cache
-  stage: build
-  script:
-    - pnpm run build
 
 end-to-end-tests:
   image: mcr.microsoft.com/playwright:v1.40.0-jammy

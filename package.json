@@ -6,10 +6,10 @@
     "build": "next build",
     "start": "next start",
     "test": "npx playwright test",
-    "lint": "next lint --max-warnings=0",
+    "lint:check": "next lint --max-warnings=0",
     "lint:fix": "next lint --fix",
-    "format": "npx prettier --write '**/*.{js,ts,jsx,tsx}'",
-    "check-format": "npx prettier --check '**/*.{js,ts,jsx,tsx}'"
+    "format:check": "npx prettier --write '**/*.{js,ts,jsx,tsx}'",
+    "format:fix": "npx prettier --check '**/*.{js,ts,jsx,tsx}'"
   },
   "dependencies": {
     "highcharts": "^11.2.0",
