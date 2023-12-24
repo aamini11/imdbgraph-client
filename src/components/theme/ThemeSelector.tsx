@@ -1,7 +1,7 @@
 "use client";
 
-import { useContext } from "react";
 import { Theme, ThemeContext } from "components/theme/ThemedPage";
+import { useContext } from "react";
 
 export function ThemeSelector() {
     return (
@@ -41,21 +41,23 @@ function ThemeButton({ theme }: { theme: Theme }) {
                 }}
                 checked={checked}
             />
-            <div className={`
-                w-[32px] h-[32px]
-                peer-focus-visible:border
-                rounded-full
-                ${checked ? "bg-neutral-200 dark:bg-neutral-700" : ""}
-                border-blue-500
-                flex items-center justify-center
-            `}>
+            <div
+                className={`
+                    w-[32px] h-[32px]
+                    peer-focus-visible:border
+                    rounded-full
+                    ${checked ? "bg-neutral-200 dark:bg-neutral-700" : ""}
+                    border-blue-500
+                    flex items-center justify-center
+                `}
+            >
                 <Icon theme={theme} size={16} />
             </div>
         </label>
     );
 }
 
-function Icon(props: { theme: Theme, size: number }) {
+function Icon(props: { theme: Theme; size: number }) {
     const icons = {
         system: (
             <>
@@ -73,7 +75,7 @@ function Icon(props: { theme: Theme, size: number }) {
                 <circle cx={12} cy={12} r={5} />
                 <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
             </>
-        )
+        ),
     };
 
     return (

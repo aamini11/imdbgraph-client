@@ -1,10 +1,10 @@
 "use client";
 
 import debounce from "lodash/debounce";
+import { Show } from "models/Show";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { Show } from "models/Show";
 
 export const DROPDOWN_SIZE_LIMIT = 5;
 
@@ -52,7 +52,7 @@ export default function Searchbar() {
                 const suggestions: Show[] = (await response.json()) as Show[];
                 setSuggestions(suggestions);
             }, 300),
-        []
+        [],
     );
 
     const onUserTyping = (input: string) => {
@@ -123,9 +123,7 @@ export default function Searchbar() {
                     <SearchIcon />
                 </button>
             </form>
-            {isDropdownVisible && (
-                <DropDown suggestions={suggestions} activeOption={selected} />
-            )}
+            {isDropdownVisible && <DropDown suggestions={suggestions} activeOption={selected} />}
         </div>
     );
 }
@@ -151,17 +149,13 @@ function DropDown(props: { suggestions: Show[]; activeOption: number | null }) {
             onMouseDown={(e) => e.preventDefault()}
         >
             {props.suggestions.slice(0, DROPDOWN_SIZE_LIMIT).map((show, i) => (
-                <DropDownOption
-                    key={show.imdbId}
-                    show={show}
-                    isSelected={i === props.activeOption}
-                />
+                <DropDownOption key={show.imdbId} show={show} isSelected={i === props.activeOption} />
             ))}
         </ul>
     );
 }
 
-function DropDownOption(props: { show: Show; isSelected: boolean; }) {
+function DropDownOption(props: { show: Show; isSelected: boolean }) {
     const { imdbId, title } = props.show;
     return (
         <li
@@ -169,9 +163,7 @@ function DropDownOption(props: { show: Show; isSelected: boolean; }) {
                 props.isSelected ? "bg-gray-100 dark:bg-neutral-700 border-l-2 border-blue-700" : ""
             }`}
         >
-            <Link href={`/ratings/${imdbId}`}>
-                {title}
-            </Link>
+            <Link href={`/ratings/${imdbId}`}>{title}</Link>
         </li>
     );
 }

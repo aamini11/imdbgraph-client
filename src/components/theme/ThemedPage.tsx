@@ -36,7 +36,7 @@ export function getUserTheme() {
  *
  * https://github.com/vercel/next.js/discussions/12533
  */
-export function ThemedPage(props: { interClassName: string, children: React.ReactNode }) {
+export function ThemedPage(props: { interClassName: string; children: React.ReactNode }) {
     const [theme, setTheme] = useState<Theme | undefined>(undefined);
 
     useEffect(() => {
@@ -56,9 +56,5 @@ export function ThemedPage(props: { interClassName: string, children: React.Reac
         setTheme(theme);
     };
 
-    return (
-        <ThemeContext.Provider value={{ theme, setTheme: changeTheme }}>
-            {props.children}
-        </ThemeContext.Provider>
-    );
+    return <ThemeContext.Provider value={{ theme, setTheme: changeTheme }}>{props.children}</ThemeContext.Provider>;
 }

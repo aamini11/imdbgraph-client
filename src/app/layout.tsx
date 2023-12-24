@@ -1,10 +1,10 @@
+import { ThemedPage } from "components/theme/ThemedPage";
+import { ThemeSelector } from "components/theme/ThemeSelector";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Image from "next/image";
 import React from "react";
 import { minify } from "terser";
-import { ThemedPage } from "components/theme/ThemedPage";
-import { ThemeSelector } from "components/theme/ThemeSelector";
 import { initializeTheme } from "utils/anti-flashbang";
 import "./global.css";
 
@@ -20,7 +20,7 @@ const inter = Inter({
     display: "swap",
 });
 
-async function minifyCode(func: { name: string, toString: () => string }) {
+async function minifyCode(func: { name: string; toString: () => string }) {
     const minifyOutput = await minify(func.toString() + `\n ${func.name}()`);
 
     if (!minifyOutput.code) {

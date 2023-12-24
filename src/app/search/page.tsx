@@ -1,7 +1,7 @@
-import Link from "next/link";
-import React from "react";
 import Navigation from "components/Navigation";
 import { formatYears, Show } from "models/Show";
+import Link from "next/link";
+import React from "react";
 
 async function getSearchResults(query: string): Promise<Show[]> {
     // Fetch data from external API
@@ -13,7 +13,7 @@ async function getSearchResults(query: string): Promise<Show[]> {
     }
 }
 
-export default async function Search(props : { searchParams: { q: string } }) {
+export default async function Search(props: { searchParams: { q: string } }) {
     const query = props.searchParams.q;
     if (!query) {
         throw "No query provided";

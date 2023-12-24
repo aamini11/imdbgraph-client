@@ -1,7 +1,7 @@
-import { notFound } from "next/navigation";
-import { Graph } from "./Graph";
 import Navigation from "components/Navigation";
 import { RatingsData } from "models/Show";
+import { notFound } from "next/navigation";
+import { Graph } from "./Graph";
 
 export default async function RatingsPage(props: { params: { id?: string } }) {
     const showId = props.params.id;
@@ -27,10 +27,10 @@ async function getRatings(showId: string): Promise<RatingsData> {
     }
 
     const url = `https://api.imdbgraph.org/ratings/${encodeURIComponent(showId)}`;
-    const data= await fetch(url);
+    const data = await fetch(url);
     if (!data.ok) {
         notFound();
     } else {
-        return await data.json() as Promise<RatingsData>;
+        return (await data.json()) as Promise<RatingsData>;
     }
 }
