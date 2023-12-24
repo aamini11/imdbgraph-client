@@ -1,7 +1,7 @@
-import Navigation from "components/Navigation";
-import { RatingsData } from "models/Show";
 import { notFound } from "next/navigation";
 import { Graph } from "./Graph";
+import Navigation from "components/Navigation";
+import { RatingsData } from "models/Show";
 
 export default async function RatingsPage(props: { params: { id?: string } }) {
     const showId = props.params.id;
