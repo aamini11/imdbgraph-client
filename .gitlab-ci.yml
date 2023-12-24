@@ -45,7 +45,7 @@ build:
   script:
     - pnpm run build
 
-unit-test:
+end-to-end-tests:
   image: mcr.microsoft.com/playwright:v1.40.0-jammy
   stage: test
   script:
