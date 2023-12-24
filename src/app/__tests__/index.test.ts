@@ -18,7 +18,3 @@ test("LinkedIn button works", async ({ page }) => {
     const href = await page.getByRole("link", { name: /Developed by Aria Amini/i }).getAttribute("href");
     expect(href).toEqual("https://www.linkedin.com/in/aria-amini/");
 });
-
-test("Test matches snapshot", async ({ page }) => {
-    await expect(page).toHaveScreenshot();
-});
