@@ -1,11 +1,10 @@
-include:
-  - template: Security/SAST.gitlab-ci.yml
-
 stages:
+  - install
+  - lint
   - build
   - test
 
-# PNPM template: https://github.com/pnpm/pnpm/issues/1174#issuecomment-996719439
+# pnpm template: https://github.com/pnpm/pnpm/issues/1174#issuecomment-996719439
 default:
   image: node:20.10-alpine
   before_script:
@@ -23,22 +22,28 @@ default:
       - .pnpm-store
     policy: pull
 
-build:
-  stage: build
-  script:
-    - pnpm install
-    - pnpm run build
+.update-cache:
   cache:
-    # inherit all global cache settings
     <<: *global_cache
-    # override the policy
     policy: pull-push
 
-lint-code:
-  stage: test
+install:
+  extends: .update-cache
+  stage: install
+  script:
+    - pnpm install
+
+lint:
+  stage: lint
   script:
     - pnpm run lint
     - pnpm run check-format
+
+build:
+  extends: .update-cache
+  stage: build
+  script:
+    - pnpm run build
 
 unit-test:
   image: mcr.microsoft.com/playwright:v1.40.0-jammy
