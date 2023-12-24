@@ -32,8 +32,8 @@ build:
 lint:
   stage: test
   script:
-    - pnpm run lint
-    - pnpm run check-format
+    - pnpm run lint:check
+    - pnpm run format:check
 
 end-to-end-tests:
   image: mcr.microsoft.com/playwright:v1.40.0-jammy
