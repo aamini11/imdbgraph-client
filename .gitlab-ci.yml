@@ -1,6 +1,9 @@
 stages:
+  - install
+  - lint
   - build
   - test
+  - deploy
 
 # pnpm template: https://github.com/pnpm/pnpm/issues/1174#issuecomment-996719439
 default:
@@ -9,7 +12,6 @@ default:
     - corepack enable
     - corepack prepare pnpm@latest-8 --activate
     - pnpm config set store-dir .pnpm-store
-    - pnpm install
   cache: &global_cache
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -20,17 +22,27 @@ default:
       - .pnpm-store
     policy: pull
 
-build:
-  stage: build
-  script:
-    - pnpm install
-    - pnpm run build
+.updates-cache:
   cache:
     <<: *global_cache
     policy: pull-push
 
+install:
+  extends:
+    .updates-cache
+  stage: install
+  script:
+    - pnpm install
+
+build:
+  extends:
+    .updates-cache
+  stage: build
+  script:
+    - pnpm run build
+
 lint:
-  stage: test
+  stage: lint
   script:
     - pnpm run lint:check
     - pnpm run format:check
@@ -40,3 +52,23 @@ end-to-end-tests:
   stage: test
   script:
     - pnpm run test
+
+deploy_preview:
+  stage: deploy
+  except:
+    - main
+  script:
+    - pnpm add --global vercel
+    - vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+    - vercel build --token=$VERCEL_TOKEN
+    - vercel deploy --prebuilt  --token=$VERCEL_TOKEN
+
+deploy_production:
+  stage: deploy
+  only:
+    - main
+  script:
+    - pnpm add --global vercel
+    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+    - vercel build --prod --token=$VERCEL_TOKEN
+    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
