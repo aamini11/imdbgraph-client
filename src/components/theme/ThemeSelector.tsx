@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import { Theme, ThemeContext } from "components/theme/ThemedPage";
+import { Theme, ThemeContext } from "@/components/theme/ThemedPage";
 
 export function ThemeSelector() {
     return (

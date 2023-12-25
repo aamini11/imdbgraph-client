@@ -4,9 +4,9 @@ import Highcharts, { SeriesSplineOptions } from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { merge } from "lodash";
 import { useContext } from "react";
-import Header from "components/Header";
-import { Theme, ThemeContext } from "components/theme/ThemedPage";
-import { Episode, formatYears, RatingsData, Show } from "models/Show";
+import Header from "@/components/Header";
+import { Theme, ThemeContext } from "@/components/theme/ThemedPage";
+import { Episode, formatYears, RatingsData, Show } from "@/models/Show";
 
 export function Graph({ ratings }: { ratings: RatingsData }) {
     const { theme } = useContext(ThemeContext);
