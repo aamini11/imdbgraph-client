@@ -1,10 +1,5 @@
 {
   "compilerOptions": {
-    "paths": {
-      "components/*": ["./src/components/*"],
-      "models/*": ["./src/models/*"],
-      "utils/*": ["./src/utils/*"]
-    },
     "target": "es5",
     "lib": [
       "dom",
@@ -14,7 +9,6 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -27,7 +21,12 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": [
     "next-env.d.ts",
