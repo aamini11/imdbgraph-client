@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Image from "next/image";
@@ -65,6 +66,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                         </footer>
                     </div>
                 </ThemedPage>
+                <Analytics />
             </body>
         </html>
     );

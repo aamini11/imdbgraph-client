@@ -12,6 +12,7 @@
     "format:fix": "npx prettier --check '**/*.{js,ts,jsx,tsx}'"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.1.1",
     "highcharts": "^11.2.0",
     "highcharts-react-official": "^3.2.1",
     "lodash": "^4.17.21",
