@@ -1,10 +1,10 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-.yarn
 /node_modules
-.pnp.cjs
-.pnp.loader.mjs
+/.pnp
+.pnp.js
+.yarn/install-state.gz
 
 # testing
 /coverage
@@ -26,10 +26,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
 
 # vercel
 .vercel
@@ -40,11 +37,13 @@ yarn-error.log*
 # IntelliJ
 .idea
 
-# vscode: 
+# vscode:
 .vscode
 
 # Recommened by NextJS to be ignored: https://nextjs.org/docs/basic-features/typescript
 next-env.d.ts
+
+# Playwright
 /test-results/
 /playwright-report/
 /blob-report/

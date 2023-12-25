@@ -8,8 +8,8 @@
     "test": "npx playwright test",
     "lint:check": "next lint --max-warnings=0",
     "lint:fix": "next lint --fix",
-    "format:check": "npx prettier --write '**/*.{js,ts,jsx,tsx}'",
-    "format:fix": "npx prettier --check '**/*.{js,ts,jsx,tsx}'"
+    "format:check": "npx prettier --check '**/*.{js,ts,jsx,tsx}'",
+    "format:fix": "npx prettier --write '**/*.{js,ts,jsx,tsx}'"
   },
   "dependencies": {
     "@vercel/analytics": "^1.1.1",
@@ -32,7 +32,6 @@
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.15.0",
     "autoprefixer": "^10.4.16",
-    "cssnano": "^6.0.2",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.0.4",
     "eslint-config-prettier": "^9.1.0",
