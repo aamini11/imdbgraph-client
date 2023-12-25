@@ -12,6 +12,7 @@ default:
     - corepack enable
     - corepack prepare pnpm@latest-8 --activate
     - pnpm config set store-dir .pnpm-store
+    - pnpm setup
   cache: &global_cache
     key: ${CI_COMMIT_REF_SLUG}
     paths:
