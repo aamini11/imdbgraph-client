@@ -34,5 +34,5 @@ To run tests use the command `pnpm test`. This project uses playwright as its te
 
 ## Deployment
 
-All changes pushed to master are automatically deployed to production using Vercel. Any changes to a branch other than
+All changes pushed to main are automatically deployed to production using Vercel. Any changes to a branch other than
 main are deployed to a staging URL for previewing changes before production.
