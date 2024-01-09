@@ -5,7 +5,7 @@ import { formatYears, Show } from "@/models/Show";
 
 async function getSearchResults(query: string): Promise<Show[]> {
     // Fetch data from external API
-    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+    const response = await fetch(`https://api.imdbgraph.org/search?q=${encodeURIComponent(query)}`);
     if (response.ok) {
         return (await response.json()) as Show[];
     } else {

@@ -13,20 +13,20 @@ export function Graph({ ratings }: { ratings: RatingsData }) {
 
     if (!hasRatings(ratings)) {
         return <Header text="No Ratings found for TV show" />;
-    } else {
-        const options = theme === Theme.DARK ? merge(defaultOptions(), darkTheme()) : defaultOptions();
-        const optionsWithData = { ...options, series: parseRatings(ratings) };
-        return (
-            <>
-                <ShowTitle show={ratings?.show} />
-                <HighchartsReact
-                    highcharts={Highcharts}
-                    options={optionsWithData}
-                    className="min-w-[400px] max-w-[100vw] w-full"
-                />
-            </>
-        );
     }
+
+    const options = theme === Theme.DARK ? merge(defaultOptions(), darkTheme()) : defaultOptions();
+    const optionsWithData = { ...options, series: parseRatings(ratings) };
+    return (
+        <>
+            <ShowTitle show={ratings?.show} />
+            <HighchartsReact
+                highcharts={Highcharts}
+                options={optionsWithData}
+                className="min-w-[400px] max-w-[100vw] w-full"
+            />
+        </>
+    );
 }
 
 function ShowTitle({ show }: { show?: Show }) {
@@ -61,21 +61,18 @@ function hasRatings(ratings: RatingsData): boolean {
     return false;
 }
 
-interface Series extends SeriesSplineOptions {
-    type: "spline";
-    data: {
-        x: number;
-        y: number;
-        custom: { episode: Episode };
-    }[];
-}
+type Point = {
+    x: number;
+    y?: number;
+    custom?: { episode: Episode };
+};
 
 /**
  * Transform data into a format that Highcharts understands.
  */
-function parseRatings(ratings: RatingsData): Series[] {
+function parseRatings(ratings: RatingsData): SeriesSplineOptions[] {
     let i = 1;
-    const allSeries: Series[] = [];
+    const allSeries: SeriesSplineOptions[] = [];
     for (const [seasonNumber, seasonRatings] of Object.entries(ratings.allEpisodeRatings)) {
         const data = [];
         for (const episode of Object.values(seasonRatings)) {
@@ -94,7 +91,7 @@ function parseRatings(ratings: RatingsData): Series[] {
             i++;
         }
 
-        const series: Series = {
+        const series: SeriesSplineOptions = {
             name: "Season " + seasonNumber,
             type: "spline",
             data: data,
@@ -147,6 +144,17 @@ const defaultOptions: () => Highcharts.Options = () => ({
         followTouchMove: false, // Allow panning on mobile
         footerFormat: "",
         valueDecimals: 2,
+        // CAN NOT BE AN ARROW FUNCTION BECAUSE OF THIS
+        pointFormatter: function (this: Point) {
+            const episode = this?.custom?.episode;
+            if (episode) {
+                return `
+                    ${episode.episodeTitle} (s${episode.season}e${episode.episodeNumber})<br><br>Rating: ${episode.imdbRating.toFixed(1)} (${episode.numVotes.toLocaleString()} votes)
+                `;
+            } else {
+                return "Error: Missing Data";
+            }
+        }
     },
 
     credits: {

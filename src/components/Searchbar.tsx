@@ -1,7 +1,6 @@
 "use client";
 
 import debounce from "lodash/debounce";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Show } from "@/models/Show";
@@ -48,7 +47,7 @@ export default function Searchbar() {
     const fetchSuggestions = useMemo(
         () =>
             debounce(async (query: string) => {
-                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                const response = await fetch(`api/search?q=${encodeURIComponent(query)}`);
                 const suggestions: Show[] = (await response.json()) as Show[];
                 setSuggestions(suggestions);
             }, 300),
@@ -66,9 +65,7 @@ export default function Searchbar() {
         }
     };
 
-    function onSubmitSearch(show?: Show) {
-        const goToShowRatings = (show: Show) => router.push(`/ratings/${encodeURIComponent(show.imdbId)}`);
-
+    function onSubmitSearch() {
         if (isEmpty(text)) {
             return;
         }
@@ -78,13 +75,11 @@ export default function Searchbar() {
             document.activeElement.blur();
         }
 
-        if (show) {
-            goToShowRatings(show);
-        } else if (selected !== null) {
+        if (selected !== null) {
             // If show selected in dropdown, go directly to selected dropdown option
-            goToShowRatings(suggestions[selected]);
+            const show = suggestions[selected];
+            router.push(`/ratings/${encodeURIComponent(show.imdbId)}`);
         } else {
-            // Do a search with whatever query is in the search box
             void router.push(`/search?q=${text}`);
         }
     }
@@ -157,13 +152,17 @@ function DropDown(props: { suggestions: Show[]; activeOption: number | null }) {
 
 function DropDownOption(props: { show: Show; isSelected: boolean }) {
     const { imdbId, title } = props.show;
+    const router = useRouter();
+
     return (
         <li
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={() => router.push(`/ratings/${imdbId}`)}
             className={`text-left px-2 p-1 select-none hover:cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-100 ${
                 props.isSelected ? "bg-gray-100 dark:bg-neutral-700 border-l-2 border-blue-700" : ""
             }`}
         >
-            <Link href={`/ratings/${imdbId}`}>{title}</Link>
+            {title}
         </li>
     );
 }
