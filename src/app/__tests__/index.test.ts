@@ -10,7 +10,7 @@ test("Title works", async ({ page }) => {
 
 test("Search Bar Works", async ({ page }) => {
     await page.getByPlaceholder("Search for any TV show...").fill("Avatar");
-    await page.getByRole("link", { name: "Avatar: The Last Airbender" }).click();
+    await page.getByText("Avatar: The Last Airbender").click();
     await expect(page).toHaveURL(/.*\/ratings\/tt0417299/);
 });
 
