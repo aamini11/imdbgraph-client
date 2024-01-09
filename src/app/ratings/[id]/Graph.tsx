@@ -149,12 +149,14 @@ const defaultOptions: () => Highcharts.Options = () => ({
             const episode = this?.custom?.episode;
             if (episode) {
                 return `
-                    ${episode.episodeTitle} (s${episode.season}e${episode.episodeNumber})<br><br>Rating: ${episode.imdbRating.toFixed(1)} (${episode.numVotes.toLocaleString()} votes)
+                    ${episode.episodeTitle} (s${episode.season}e${episode.episodeNumber})
+                    <br><br>
+                    Rating: ${episode.imdbRating.toFixed(1)} (${episode.numVotes.toLocaleString()} votes)
                 `;
             } else {
                 return "Error: Missing Data";
             }
-        }
+        },
     },
 
     credits: {
