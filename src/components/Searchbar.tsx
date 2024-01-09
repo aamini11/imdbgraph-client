@@ -47,7 +47,7 @@ export default function Searchbar() {
     const fetchSuggestions = useMemo(
         () =>
             debounce(async (query: string) => {
-                const response = await fetch(`api/search?q=${encodeURIComponent(query)}`);
+                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
                 const suggestions: Show[] = (await response.json()) as Show[];
                 setSuggestions(suggestions);
             }, 300),
