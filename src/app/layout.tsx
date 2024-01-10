@@ -4,9 +4,9 @@ import { Inter } from "next/font/google";
 import Image from "next/image";
 import React from "react";
 import { minify } from "terser";
+import { initializeTheme } from "@/components/theme/anti-flashbang";
 import { ThemedPage } from "@/components/theme/ThemedPage";
 import { ThemeSelector } from "@/components/theme/ThemeSelector";
-import { initializeTheme } from "@/utils/anti-flashbang";
 import "./global.css";
 
 export const metadata: Metadata = {

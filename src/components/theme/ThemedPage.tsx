@@ -1,31 +1,41 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export enum Theme {
     LIGHT = "light",
-    SYSTEM = "system",
     DARK = "dark",
 }
 
 const storageKey = "theme";
-const defaultTheme = Theme.SYSTEM;
 
-type ThemeHook = { theme?: Theme; setTheme: (theme: Theme) => void };
+/**
+ * Important note: undefined represents an initial uninitialized theme.
+ */
+type ThemeInfo = { theme: Theme | undefined; changeTheme: (theme: Theme) => void };
 
-export const ThemeContext = createContext<ThemeHook>({
-    theme: defaultTheme,
-    setTheme: () => {
-        /* NO-OP */
-    },
-});
+const ThemeContext = createContext<ThemeInfo | null>(null);
 
-export function getUserTheme() {
-    const localTheme = localStorage.getItem(storageKey);
-    if (!localTheme) {
-        return defaultTheme;
+export function useTheme() {
+    const context = useContext(ThemeContext);
+    if (context === null) {
+        throw Error("No theme provider");
     } else {
+        return context;
+    }
+}
+
+function getUserTheme(): Theme {
+    const localTheme = localStorage.getItem("theme");
+    if (localTheme) {
         return localTheme as Theme;
+    } else {
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (prefersDark) {
+            return Theme.DARK;
+        } else {
+            return Theme.LIGHT;
+        }
     }
 }
 
@@ -33,6 +43,7 @@ export function getUserTheme() {
  * To prevent flashing/flickering when loading the dark theme, this no flash
  * script is necessary. Because it's run in the script tag in head, it's run
  * before anything has rendered. This is essentially the only way to solve the
+ * issue.
  *
  * https://github.com/vercel/next.js/discussions/12533
  */
@@ -44,17 +55,15 @@ export function ThemedPage(props: { interClassName: string; children: React.Reac
     }, []);
 
     const changeTheme = (theme: Theme) => {
-        if (!document.documentElement.classList.contains(theme)) {
-            localStorage.setItem(storageKey, theme);
-            for (const theme of Object.values(Theme)) {
-                if (document.documentElement.classList.contains(theme)) {
-                    document.documentElement.classList.remove(theme);
-                }
+        localStorage.setItem(storageKey, theme);
+        for (const theme of Object.values(Theme)) {
+            if (document.documentElement.classList.contains(theme)) {
+                document.documentElement.classList.remove(theme);
             }
-            document.documentElement.classList.add(theme);
         }
+        document.documentElement.classList.add(theme);
         setTheme(theme);
     };
 
-    return <ThemeContext.Provider value={{ theme, setTheme: changeTheme }}>{props.children}</ThemeContext.Provider>;
+    return <ThemeContext.Provider value={{ theme, changeTheme }}>{props.children}</ThemeContext.Provider>;
 }

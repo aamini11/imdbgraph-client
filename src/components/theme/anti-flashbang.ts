@@ -4,8 +4,13 @@
 export function initializeTheme() {
     const getTheme = () => {
         const localTheme = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
         if (!localTheme) {
-            return "system";
+            if (prefersDark) {
+                return "dark";
+            } else {
+                return "light";
+            }
         } else {
             return localTheme;
         }

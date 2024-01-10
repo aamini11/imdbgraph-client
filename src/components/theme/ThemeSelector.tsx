@@ -1,20 +1,18 @@
 "use client";
 
-import { useContext } from "react";
-import { Theme, ThemeContext } from "@/components/theme/ThemedPage";
+import { Theme, useTheme } from "@/components/theme/ThemedPage";
 
 export function ThemeSelector() {
     return (
         <div className="bg-opacity-0 p-[3px] w-fit flex rounded-full border border-neutral-300 dark:border-neutral-500">
             <ThemeButton theme={Theme.LIGHT} />
-            <ThemeButton theme={Theme.SYSTEM} />
             <ThemeButton theme={Theme.DARK} />
         </div>
     );
 }
 
 function ThemeButton({ theme }: { theme: Theme }) {
-    const { theme: currentTheme, setTheme } = useContext(ThemeContext);
+    const { theme: currentTheme, changeTheme } = useTheme();
     const checked = currentTheme === theme;
     return (
         <label className="relative">
@@ -33,10 +31,9 @@ function ThemeButton({ theme }: { theme: Theme }) {
                 type="radio"
                 onChange={(e) => {
                     const value = e.target.value;
-                    console.log(value);
                     if (Object.values<string>(Theme).includes(value)) {
                         const theme = value as Theme;
-                        setTheme(theme);
+                        changeTheme(theme);
                     }
                 }}
                 checked={checked}
@@ -59,12 +56,6 @@ function ThemeButton({ theme }: { theme: Theme }) {
 
 function Icon(props: { theme: Theme; size: number }) {
     const icons = {
-        system: (
-            <>
-                <rect width={20} height={14} x={2} y={3} rx={2} ry={2} />
-                <path d="M8 21h8M12 17v4" />
-            </>
-        ),
         dark: (
             <>
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />

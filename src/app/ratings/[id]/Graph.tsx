@@ -3,28 +3,29 @@
 import Highcharts, { SeriesSplineOptions } from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { merge } from "lodash";
-import { useContext } from "react";
 import Header from "@/components/Header";
-import { Theme, ThemeContext } from "@/components/theme/ThemedPage";
+import { Theme, useTheme } from "@/components/theme/ThemedPage";
 import { Episode, formatYears, RatingsData, Show } from "@/models/Show";
 
 export function Graph({ ratings }: { ratings: RatingsData }) {
-    const { theme } = useContext(ThemeContext);
+    const { theme } = useTheme();
 
     if (!hasRatings(ratings)) {
         return <Header text="No Ratings found for TV show" />;
     }
 
-    const options = theme === Theme.DARK ? merge(defaultOptions(), darkTheme()) : defaultOptions();
-    const optionsWithData = { ...options, series: parseRatings(ratings) };
+    const themeSpecificOptions = theme === Theme.DARK ? darkThemeOptions : lightThemeOptions;
+    const options = { series: parseRatings(ratings), ...merge(defaultOptions, themeSpecificOptions) };
     return (
         <>
             <ShowTitle show={ratings?.show} />
-            <HighchartsReact
-                highcharts={Highcharts}
-                options={optionsWithData}
-                className="min-w-[400px] max-w-[100vw] w-full"
-            />
+            {theme && (
+                <HighchartsReact
+                    highcharts={Highcharts}
+                    options={options}
+                    className="min-w-[400px] max-w-[100vw] w-full"
+                />
+            )}
         </>
     );
 }
@@ -103,8 +104,9 @@ function parseRatings(ratings: RatingsData): SeriesSplineOptions[] {
     return allSeries;
 }
 
-const defaultOptions: () => Highcharts.Options = () => ({
+const defaultOptions: Highcharts.Options = {
     chart: {
+        backgroundColor: "rgba(0,0,0,0)",
         zooming: {
             type: "x",
         },
@@ -144,7 +146,7 @@ const defaultOptions: () => Highcharts.Options = () => ({
         followTouchMove: false, // Allow panning on mobile
         footerFormat: "",
         valueDecimals: 2,
-        // CAN NOT BE AN ARROW FUNCTION BECAUSE OF THIS
+        // CAN NOT BE AN ARROW FUNCTION BECAUSE OF 'THIS' KEYWORD
         pointFormatter: function (this: Point) {
             const episode = this?.custom?.episode;
             if (episode) {
@@ -162,9 +164,40 @@ const defaultOptions: () => Highcharts.Options = () => ({
     credits: {
         enabled: false,
     },
-});
+};
 
-const darkTheme = () => ({
+const lightThemeOptions = {
+    colors: [
+        "#2caffe",
+        "#544fc5",
+        "#00e272",
+        "#fe6a35",
+        "#6b8abc",
+        "#d568fb",
+        "#2ee0ca",
+        "#fa4b42",
+        "#feb56a",
+        "#91e8e1",
+    ],
+
+    plotOptions: {
+        spline: {
+            dataLabels: {
+                style: {
+                    color: "rgb(0, 0, 0)",
+                },
+            },
+        },
+    },
+
+    legend: {
+        itemStyle: {
+            color: "rgb(0,0,0)",
+        },
+    },
+};
+
+const darkThemeOptions = {
     colors: [
         "#2b908f",
         "#90ee7e",
@@ -179,26 +212,22 @@ const darkTheme = () => ({
         "#aaeeee",
     ],
 
-    // Transparent background to match background of page
-    chart: {
-        backgroundColor: "rgba(0,0,0,0)",
+    plotOptions: {
+        spline: {
+            dataLabels: {
+                style: {
+                    color: "rgb(256, 256, 256)",
+                },
+            },
+        },
     },
 
     legend: {
         itemStyle: {
-            color: "#ffffff",
+            color: "rgb(256,256,256)",
         },
         itemHoverStyle: {
             color: "LightGray",
         },
     },
-
-    loading: {
-        style: {
-            backgroundColor: "rgba(0, 0, 0, 0.0)",
-        },
-        labelStyle: {
-            color: "white",
-        },
-    },
-});
+};
