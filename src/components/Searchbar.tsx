@@ -16,13 +16,13 @@ export default function Searchbar() {
     const [text, setText] = useState("");
     const [suggestions, setSuggestions] = useState<Show[]>([]);
     const [isFocused, setIsFocused] = useState(false);
-    const [selected, setSelected] = useState<number | null>(null);
-    const selectedShow = selected !== null ? suggestions[selected] : undefined;
+    const [selected, setSelected] = useState<number>();
+    const selectedShow = selected !== undefined ? suggestions[selected] : undefined;
 
     const isDropdownVisible = isFocused && text.length > 0 && suggestions.length > 0;
 
     const blur = () => {
-        setSelected(null);
+        setSelected(undefined);
         if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur();
         }
@@ -43,14 +43,14 @@ export default function Searchbar() {
             (selected === 0 && direction === "ArrowUp") ||
             (selected === dropdownSize - 1 && direction === "ArrowDown")
         ) {
-            newSelected = null;
+            newSelected = undefined;
             setSelected(newSelected);
         } else {
             newSelected = direction === "ArrowDown" ? selected + 1 : selected - 1;
             setSelected(newSelected);
         }
 
-        if (newSelected !== null) {
+        if (newSelected !== undefined) {
             setText(suggestions[newSelected].title);
         }
     }
@@ -66,7 +66,7 @@ export default function Searchbar() {
     );
 
     const onUserTyping = (input: string) => {
-        setSelected(null);
+        setSelected(undefined);
         setText(input);
 
         if (isEmpty(input)) {
@@ -127,7 +127,7 @@ export default function Searchbar() {
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => {
                         setIsFocused(false);
-                        setSelected(null);
+                        setSelected(undefined);
                     }}
                     onKeyDown={(e) => {
                         if (e.key == "ArrowUp" || e.key == "ArrowDown") {
