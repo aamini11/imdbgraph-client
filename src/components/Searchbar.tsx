@@ -7,6 +7,9 @@ import { Show } from "@/models/Show";
 
 export const DROPDOWN_SIZE_LIMIT = 5;
 
+/**
+ * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
+ */
 export default function Searchbar() {
     const router = useRouter();
 
@@ -14,8 +17,16 @@ export default function Searchbar() {
     const [suggestions, setSuggestions] = useState<Show[]>([]);
     const [isFocused, setIsFocused] = useState(false);
     const [selected, setSelected] = useState<number | null>(null);
+    const selectedShow = selected !== null ? suggestions[selected] : undefined;
 
     const isDropdownVisible = isFocused && text.length > 0 && suggestions.length > 0;
+
+    const blur = () => {
+        setSelected(null);
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
+    };
 
     function navigateDropdown(direction: "ArrowUp" | "ArrowDown") {
         if (!isDropdownVisible) {
@@ -65,40 +76,51 @@ export default function Searchbar() {
         }
     };
 
-    function onSubmitSearch() {
+    const onFormSubmit = () => {
         if (isEmpty(text)) {
             return;
         }
 
-        setText("");
-        if (document.activeElement instanceof HTMLElement) {
-            document.activeElement.blur();
-        }
-
-        if (selected !== null) {
-            // If show selected in dropdown, go directly to selected dropdown option
-            const show = suggestions[selected];
-            router.push(`/ratings/${encodeURIComponent(show.imdbId)}`);
+        if (selectedShow === undefined) {
+            goToSearchPage(text);
         } else {
-            void router.push(`/search?q=${text}`);
+            goToRatingsPage(selectedShow.imdbId);
         }
-    }
+    };
+
+    const goToSearchPage = (q: string) => {
+        blur();
+        router.push(`/search?q=${q}`);
+    };
+
+    const goToRatingsPage = (imdbId: string) => {
+        blur();
+        router.push(`/ratings/${encodeURIComponent(imdbId)}`);
+    };
 
     return (
         <div className="relative text-base w-full">
             <form
+                role="search"
                 className="min-w-fit flex p-1 dark:bg-neutral-900 border-gray-400 border-2 rounded-xl transition duration-300 focus-within:border-blue-600"
                 onSubmit={(e) => {
+                    onFormSubmit();
                     e.preventDefault();
-                    onSubmitSearch();
                 }}
             >
                 {/* Set border radius to 0 (rounded-none). Otherwise, safari on iphone thinks the input
                  * box should be rounded and causes the divider to look weird.
                  */}
                 <input
-                    className="pr-2 bg-transparent rounded-none border-r border-black dark:border-white mr-4 flex-grow pl-2 focus:outline-none"
+                    id="search-bar"
                     type="text"
+                    role="combobox"
+                    aria-label="TV Show"
+                    aria-controls="tv-search-dropdown"
+                    aria-autocomplete="list"
+                    aria-expanded={isDropdownVisible}
+                    aria-activedescendant={selectedShow?.imdbId}
+                    className="pr-2 bg-transparent rounded-none border-r border-black dark:border-white mr-4 flex-grow pl-2 focus:outline-none"
                     placeholder="Search for any TV show..."
                     value={text}
                     onInput={(e) => onUserTyping(e.currentTarget.value)}
@@ -114,12 +136,60 @@ export default function Searchbar() {
                         }
                     }}
                 />
-                <button className="p-1" type="submit">
+                <button
+                    tabIndex={-1}
+                    className="p-1"
+                    type="submit"
+                    aria-expanded={isDropdownVisible}
+                    aria-controls="tv-search-dropdown"
+                    aria-label="TV Show"
+                >
                     <SearchIcon />
                 </button>
             </form>
-            {isDropdownVisible && <DropDown suggestions={suggestions} activeOption={selected} />}
+            {isDropdownVisible && (
+                <DropDown suggestions={suggestions} selectedShow={selectedShow} goToRatingsPage={goToRatingsPage} />
+            )}
         </div>
+    );
+}
+
+function DropDown(props: {
+    suggestions: Show[];
+    selectedShow?: { imdbId: string };
+    goToRatingsPage: (imdbId: string) => void;
+}) {
+    const { suggestions, selectedShow, goToRatingsPage } = props;
+    return (
+        <ul
+            role="listbox"
+            id="tv-search-dropdown"
+            aria-activedescendant={selectedShow?.imdbId}
+            className="mt-2 bg-white dark:bg-neutral-900 w-full absolute z-[1] border-gray-500 border"
+            onMouseDown={(e) => {
+                // Prevent dropdown option clicks from triggering the onMouseDown of parent
+                e.preventDefault();
+            }}
+        >
+            {suggestions.slice(0, DROPDOWN_SIZE_LIMIT).map((show) => {
+                const isSelected = show === selectedShow;
+                return (
+                    <li
+                        key={show.imdbId}
+                        id={show.imdbId}
+                        role="option"
+                        aria-selected={isSelected}
+                        aria-label="TV show suggestions"
+                        onClick={() => goToRatingsPage(show.imdbId)}
+                        className={`text-left px-2 p-1 select-none hover:cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-100 ${
+                            isSelected ? "bg-gray-100 dark:bg-neutral-700 border-l-2 border-blue-700" : ""
+                        }`}
+                    >
+                        {show.title}
+                    </li>
+                );
+            })}
+        </ul>
     );
 }
 
@@ -134,36 +204,6 @@ function SearchIcon() {
             <title>Search Icon</title>
             <path d="m21.172 24-7.387-7.387A8.945 8.945 0 0 1 9 18c-4.971 0-9-4.029-9-9s4.029-9 9-9 9 4.029 9 9a8.951 8.951 0 0 1-1.387 4.785L24 21.172 21.172 24zM9 16c3.859 0 7-3.14 7-7s-3.141-7-7-7-7 3.14-7 7 3.141 7 7 7z" />
         </svg>
-    );
-}
-
-function DropDown(props: { suggestions: Show[]; activeOption: number | null }) {
-    return (
-        <ul
-            className="mt-2 bg-white dark:bg-neutral-900 w-full absolute z-[1] border-gray-500 border"
-            onMouseDown={(e) => e.preventDefault()}
-        >
-            {props.suggestions.slice(0, DROPDOWN_SIZE_LIMIT).map((show, i) => (
-                <DropDownOption key={show.imdbId} show={show} isSelected={i === props.activeOption} />
-            ))}
-        </ul>
-    );
-}
-
-function DropDownOption(props: { show: Show; isSelected: boolean }) {
-    const { imdbId, title } = props.show;
-    const router = useRouter();
-
-    return (
-        <li
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={() => router.push(`/ratings/${imdbId}`)}
-            className={`text-left px-2 p-1 select-none hover:cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-100 ${
-                props.isSelected ? "bg-gray-100 dark:bg-neutral-700 border-l-2 border-blue-700" : ""
-            }`}
-        >
-            {title}
-        </li>
     );
 }
 

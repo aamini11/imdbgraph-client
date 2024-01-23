@@ -1,11 +1,16 @@
 "use client";
 
 import Highcharts, { SeriesSplineOptions } from "highcharts";
+import Accessibility from "highcharts/modules/accessibility";
+import MouseZoom from "highcharts/modules/mouse-wheel-zoom";
 import HighchartsReact from "highcharts-react-official";
 import { merge } from "lodash";
 import Header from "@/components/Header";
 import { Theme, useTheme } from "@/components/theme/ThemedPage";
 import { Episode, formatYears, RatingsData, Show } from "@/models/Show";
+
+MouseZoom(Highcharts);
+Accessibility(Highcharts);
 
 export function Graph({ ratings }: { ratings: RatingsData }) {
     const { theme } = useTheme();
@@ -109,6 +114,7 @@ const defaultOptions: Highcharts.Options = {
         backgroundColor: "rgba(0,0,0,0)",
         zooming: {
             type: "x",
+            mouseWheel: true,
         },
         panning: {
             enabled: true,
