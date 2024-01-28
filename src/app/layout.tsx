@@ -37,9 +37,9 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         // theme is. So it will complain about mismatching class="dark" attribute. This only suppresses warnings for
         // the html element and not children. (Only 1 level deep)
         <html suppressHydrationWarning>
-            <body>
+            <body className={inter.className}>
                 <script dangerouslySetInnerHTML={{ __html: await minifyCode(initializeTheme) }} />
-                <ThemedPage interClassName={inter.className}>
+                <ThemedPage>
                     <div className="flex flex-col min-h-[100dvh] items-center">
                         <div className="ml-auto p-3">
                             <ThemeSelector />
