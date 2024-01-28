@@ -8,9 +8,18 @@ test("Title works", async ({ page }) => {
     await expect(page.getByRole("heading", { name: /Welcome to IMDB Graph/i })).toBeVisible();
 });
 
-test("Search Bar Works", async ({ page }) => {
+test("Search bar click navigation works", async ({ page }) => {
     await page.getByPlaceholder("Search for any TV show...").fill("Avatar");
     await page.getByText("Avatar: The Last Airbender").click();
+    await expect(page).toHaveURL(/.*\/ratings\/tt0417299/);
+});
+
+test("Search bar keyboard navigation works", async ({ page }) => {
+    const searchBar = page.getByPlaceholder("Search for any TV show...");
+    await searchBar.click();
+    await searchBar.fill("Avatar");
+    await searchBar.press("ArrowDown");
+    await searchBar.press("Enter");
     await expect(page).toHaveURL(/.*\/ratings\/tt0417299/);
 });
 
