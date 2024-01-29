@@ -44,7 +44,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                         <div className="ml-auto p-3">
                             <ThemeSelector />
                         </div>
-                        <div className="w-full flex-1">{props.children}</div>
+                        <div className="w-full flex flex-col flex-1">{props.children}</div>
                         <footer className="flex justify-center w-[calc(100%-4rem)] py-5 border-t">
                             <a
                                 href="https://www.linkedin.com/in/aria-amini/"
