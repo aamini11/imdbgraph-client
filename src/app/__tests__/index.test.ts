@@ -18,6 +18,7 @@ test("Search bar keyboard navigation works", async ({ page }) => {
     const searchBar = page.getByPlaceholder("Search for any TV show...");
     await searchBar.click();
     await searchBar.fill("Avatar");
+    await expect(page.getByText("Avatar: The Last Airbender")).toBeVisible();
     await searchBar.press("ArrowDown");
     await searchBar.press("Enter");
     await expect(page).toHaveURL(/.*\/ratings\/tt0417299/);
