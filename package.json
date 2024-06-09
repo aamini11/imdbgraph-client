@@ -12,7 +12,9 @@
     "format:fix": "npx prettier --write '**/*.{js,ts,jsx,tsx}'"
   },
   "dependencies": {
+    "@nextui-org/react": "^2.4.1",
     "@vercel/analytics": "^1.1.1",
+    "framer-motion": "^11.2.10",
     "highcharts": "^11.2.0",
     "highcharts-react-official": "^3.2.1",
     "lodash": "^4.17.21",
