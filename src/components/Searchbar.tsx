@@ -1,6 +1,7 @@
 "use client";
 
 import { Autocomplete, AutocompleteItem, Button } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { formatYears, Show } from "@/models/Show";
 
@@ -12,16 +13,25 @@ export default function App() {
     const ref = useRef<HTMLInputElement | null>(null);
     const [query, setQuery] = useState("");
     const { suggestions, isLoading } = useSuggestions(query);
+    const [isRedirecting, setIsRedirecting] = useState(false);
+    const router = useRouter();
 
     return (
         <Autocomplete
+            onFocus={(e) => e.preventDefault()}
             ref={ref}
             onClick={() => ref.current?.focus()}
             onInputChange={(text) => setQuery(text)}
+            isDisabled={isRedirecting}
+            onSelectionChange={(imdbId) => {
+                router.push(`/ratings/${encodeURIComponent(imdbId)}`);
+                setIsRedirecting(true);
+            }}
             classNames={{
                 listboxWrapper: "max-h-[320px]",
                 selectorButton: "text-default-500",
             }}
+            isLoading={isLoading || isRedirecting}
             items={suggestions}
             inputProps={{
                 classNames: {
