@@ -1,15 +1,16 @@
 "use client";
 
 import { Autocomplete, AutocompleteItem, Button } from "@nextui-org/react";
+import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { formatYears, Show } from "@/models/Show";
 
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
  * https://nextui.org/docs/components/autocomplete#asynchronous-filtering
  */
-export default function App() {
+export default function SearchBar() {
     const ref = useRef<HTMLInputElement | null>(null);
     const [query, setQuery] = useState("");
     const { suggestions, isLoading } = useSuggestions(query);
@@ -20,12 +21,13 @@ export default function App() {
         <Autocomplete
             onFocus={(e) => e.preventDefault()}
             ref={ref}
+            isClearable={false}
             onClick={() => ref.current?.focus()}
             onInputChange={(text) => setQuery(text)}
             isDisabled={isRedirecting}
             onSelectionChange={(imdbId) => {
-                router.push(`/ratings/${encodeURIComponent(imdbId)}`);
                 setIsRedirecting(true);
+                router.push(`/ratings/${encodeURIComponent(imdbId)}`);
             }}
             classNames={{
                 listboxWrapper: "max-h-[320px]",
@@ -134,15 +136,9 @@ function useSuggestions(query: string) {
     const [isLoading, setIsLoading] = useState(false);
 
     async function fetchSuggestions(query: string) {
-        const controller = new AbortController();
-        const { signal } = controller;
-        if (!query) {
-            setSuggestions([]);
-            return;
-        }
-
         try {
-            setIsLoading(true);
+            const controller = new AbortController();
+            const { signal } = controller;
             const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal });
             if (!response.ok) {
                 throw new Error("Network response was not ok");
@@ -155,9 +151,16 @@ function useSuggestions(query: string) {
         }
     }
 
+    const debouncedFetchSuggestions = useMemo(() => debounce(fetchSuggestions, 100), []);
     useEffect(() => {
-        void fetchSuggestions(query);
-    }, [query]);
+        if (query) {
+            setIsLoading(true);
+            void debouncedFetchSuggestions(query);
+        } else {
+            setIsLoading(false);
+            setSuggestions([]);
+        }
+    }, [debouncedFetchSuggestions, query]);
 
     return { suggestions, isLoading };
 }
