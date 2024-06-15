@@ -17,7 +17,7 @@ const title = tv({
         size: {
             sm: "text-3xl lg:text-4xl",
             md: "text-[2.3rem] lg:text-5xl leading-9",
-            lg: "text-4xl lg:text-6xl",
+            lg: "text-6xl lg:text-6xl",
         },
         fullWidth: {
             true: "w-full block",
@@ -38,7 +38,7 @@ export default function Home() {
     return (
         <div>
             <div className="flex flex-col items-center gap-8 pb-10">
-                <h1 className={title()}>Welcome to IMDB Graph</h1>
+                <h1 className={title({ size: "lg" })}>Welcome to IMDB Graph</h1>
                 <div className="max-w-md w-full px-4">
                     <Searchbar />
                 </div>

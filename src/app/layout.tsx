@@ -2,7 +2,7 @@ import { Link, NextUIProvider } from "@nextui-org/react";
 import { clsx } from "@nextui-org/shared-utils";
 import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter as FontSans } from "next/font/google";
 import React from "react";
 import { minify } from "terser";
 import { initializeTheme } from "@/components/theme/anti-flashbang";
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     icons: "/favicon.ico",
 };
 
-const inter = Inter({
+const fontSans = FontSans({
     subsets: ["latin"],
-    display: "swap",
+    variable: "--font-sans",
 });
 
 async function minifyCode(func: { name: string; toString: () => string }) {
@@ -38,7 +38,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         // theme is. So it will complain about mismatching class="dark" attribute. This only suppresses warnings for
         // the html element and not children. (Only 1 level deep)
         <html suppressHydrationWarning>
-            <body className={clsx("min-h-screen bg-background", inter.className)}>
+            <body className={clsx("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
                 <script dangerouslySetInnerHTML={{ __html: await minifyCode(initializeTheme) }} />
                 <NextUIProvider>
                     <ThemedPage>
