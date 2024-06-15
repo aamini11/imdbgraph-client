@@ -9,8 +9,11 @@ import Header from "@/components/Header";
 import { Theme, useTheme } from "@/components/theme/ThemedPage";
 import { Episode, formatYears, RatingsData, Show } from "@/models/Show";
 
-MouseZoom(Highcharts);
-Accessibility(Highcharts);
+// https://stackoverflow.com/a/56766980
+if (typeof Highcharts === "object") {
+    MouseZoom(Highcharts);
+    Accessibility(Highcharts);
+}
 
 export function Graph({ ratings }: { ratings: RatingsData }) {
     const { theme } = useTheme();
