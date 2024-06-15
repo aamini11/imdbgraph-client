@@ -1,86 +1,65 @@
 "use client";
 
+import { clsx } from "@nextui-org/shared-utils";
+import { SwitchProps, useSwitch } from "@nextui-org/switch";
+import { useIsSSR } from "@react-aria/ssr";
+import { VisuallyHidden } from "@react-aria/visually-hidden";
+import { FC } from "react";
+import { MoonFilledIcon, SunFilledIcon } from "@/components/Icons";
 import { Theme, useTheme } from "@/components/theme/ThemedPage";
 
-export function ThemeSelector() {
-    return (
-        <div className="bg-opacity-0 p-[3px] w-fit flex rounded-full border border-neutral-300 dark:border-neutral-500">
-            <ThemeButton theme={Theme.LIGHT} />
-            <ThemeButton theme={Theme.DARK} />
-        </div>
-    );
+export interface ThemeSwitchProps {
+    classNames?: SwitchProps["classNames"];
 }
 
-function ThemeButton({ theme }: { theme: Theme }) {
-    const { theme: currentTheme, changeTheme } = useTheme();
-    const checked = currentTheme === theme;
-    return (
-        <label className="relative">
-            <input
-                name="theme"
-                value={theme}
-                aria-label={`Switch to ${theme} theme`}
-                className={`
-                    peer
-                    absolute top-0 left-0
-                    w-[32px] h-[32px]
-                    opacity-0
-                    flex items-center justify-center
-                    cursor-pointer
-                `}
-                type="radio"
-                onChange={(e) => {
-                    const value = e.target.value;
-                    if (Object.values<string>(Theme).includes(value)) {
-                        const theme = value as Theme;
-                        changeTheme(theme);
-                    }
-                }}
-                checked={checked}
-            />
-            <div
-                className={`
-                    w-[32px] h-[32px]
-                    peer-focus-visible:border
-                    rounded-full
-                    ${checked ? "bg-neutral-200 dark:bg-neutral-700" : ""}
-                    border-blue-500
-                    flex items-center justify-center
-                `}
-            >
-                <Icon theme={theme} size={16} />
-            </div>
-        </label>
-    );
-}
+export const ThemeSelector: FC<ThemeSwitchProps> = ({ classNames }) => {
+    const { theme, changeTheme } = useTheme();
+    const isSSR = useIsSSR();
 
-function Icon(props: { theme: Theme; size: number }) {
-    const icons = {
-        dark: (
-            <>
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </>
-        ),
-        light: (
-            <>
-                <circle cx={12} cy={12} r={5} />
-                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-            </>
-        ),
+    const onChange = () => {
+        theme === Theme.LIGHT ? changeTheme(Theme.DARK) : changeTheme(Theme.LIGHT);
     };
 
+    const { Component, slots, isSelected, getBaseProps, getInputProps, getWrapperProps } = useSwitch({
+        isSelected: theme === Theme.LIGHT || isSSR,
+        "aria-label": `Switch to ${theme === Theme.LIGHT || isSSR ? Theme.DARK : Theme.LIGHT} mode`,
+        onChange,
+    });
+
     return (
-        <svg
-            className="w-[16px] h-[16px]"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            viewBox="0 0 24 24"
-            shapeRendering="geometricPrecision"
+        <Component
+            {...getBaseProps({
+                className: clsx("px-px transition-opacity hover:opacity-80 cursor-pointer", classNames?.base),
+            })}
         >
-            {icons[props.theme]}
-        </svg>
+            <VisuallyHidden>
+                <input {...getInputProps()} />
+            </VisuallyHidden>
+            <div
+                {...getWrapperProps()}
+                className={slots.wrapper({
+                    class: clsx(
+                        [
+                            "w-auto h-auto",
+                            "bg-transparent",
+                            "rounded-lg",
+                            "flex items-center justify-center",
+                            "group-data-[selected=true]:bg-transparent",
+                            "!text-default-500",
+                            "pt-px",
+                            "px-0",
+                            "mx-0",
+                        ],
+                        classNames?.wrapper,
+                    ),
+                })}
+            >
+                {!isSelected || isSSR ? (
+                    <SunFilledIcon width={22} height={22} />
+                ) : (
+                    <MoonFilledIcon width={22} height={22} />
+                )}
+            </div>
+        </Component>
     );
-}
+};

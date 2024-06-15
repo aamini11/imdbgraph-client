@@ -75,8 +75,7 @@ export default function SearchBar() {
                     <div className="flex justify-between items-center">
                         <div className="flex gap-2 items-center">
                             <div className="flex flex-col">
-                                <span className="text-small">{item.title}</span>
-                                <span> </span>
+                                <span className="text-small">{item.title}&nbsp;</span>
                                 <span className="text-tiny text-default-400">{formatYears(item)}</span>
                             </div>
                         </div>

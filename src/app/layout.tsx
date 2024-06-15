@@ -1,8 +1,8 @@
-import { NextUIProvider } from "@nextui-org/react";
+import { Link, NextUIProvider } from "@nextui-org/react";
+import { clsx } from "@nextui-org/shared-utils";
 import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Image from "next/image";
 import React from "react";
 import { minify } from "terser";
 import { initializeTheme } from "@/components/theme/anti-flashbang";
@@ -38,7 +38,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         // theme is. So it will complain about mismatching class="dark" attribute. This only suppresses warnings for
         // the html element and not children. (Only 1 level deep)
         <html suppressHydrationWarning>
-            <body className={inter.className}>
+            <body className={clsx("min-h-screen bg-background", inter.className)}>
                 <script dangerouslySetInnerHTML={{ __html: await minifyCode(initializeTheme) }} />
                 <NextUIProvider>
                     <ThemedPage>
@@ -47,24 +47,16 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                                 <ThemeSelector />
                             </div>
                             <div className="w-full flex flex-col flex-1">{props.children}</div>
-                            <footer className="flex justify-center w-[calc(100%-4rem)] py-5 border-t">
-                                <a
+                            <footer className="w-full flex items-center justify-center py-3">
+                                <Link
+                                    isExternal
+                                    className="flex items-center gap-1 text-current"
                                     href="https://www.linkedin.com/in/aria-amini/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex justify-center content-center hover:text-blue-600 dark:hover:text-neutral-300 transition hover:ease-in duration-100"
+                                    title="Aria Amini LinkedIn"
                                 >
-                                    <span className="mr-[0.3rem] inline-block h-full align-middle">
-                                        Developed by Aria Amini
-                                    </span>
-                                    <Image
-                                        className="align-middle"
-                                        src="/linkedin.svg"
-                                        alt="LinkedIn Logo"
-                                        width={24}
-                                        height={24}
-                                    />
-                                </a>
+                                    <span className="text-default-600">Developed by</span>
+                                    <p className="text-primary">Aria Amini</p>
+                                </Link>
                             </footer>
                         </div>
                     </ThemedPage>

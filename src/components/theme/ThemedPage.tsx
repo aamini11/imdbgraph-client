@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 export enum Theme {
     LIGHT = "light",
@@ -25,7 +25,7 @@ export function useTheme() {
     }
 }
 
-function getUserTheme(): Theme {
+function getThemeFromLocalStorage(): Theme {
     const localTheme = localStorage.getItem("theme");
     if (localTheme) {
         return localTheme as Theme;
@@ -47,23 +47,22 @@ function getUserTheme(): Theme {
  *
  * https://github.com/vercel/next.js/discussions/12533
  */
-export function ThemedPage(props: { children: React.ReactNode }) {
+export function ThemedPage(props: { children: ReactNode }) {
     const [theme, setTheme] = useState<Theme | undefined>(undefined);
 
     useEffect(() => {
-        setTheme(getUserTheme());
-    }, []);
-
-    const changeTheme = (theme: Theme) => {
-        localStorage.setItem(storageKey, theme);
-        for (const theme of Object.values(Theme)) {
-            if (document.documentElement.classList.contains(theme)) {
-                document.documentElement.classList.remove(theme);
+        if (!theme) {
+            setTheme(getThemeFromLocalStorage());
+        } else {
+            localStorage.setItem(storageKey, theme);
+            for (const theme of Object.values(Theme)) {
+                if (document.documentElement.classList.contains(theme)) {
+                    document.documentElement.classList.remove(theme);
+                }
             }
+            document.documentElement.classList.add(theme);
         }
-        document.documentElement.classList.add(theme);
-        setTheme(theme);
-    };
+    }, [theme]);
 
-    return <ThemeContext.Provider value={{ theme, changeTheme }}>{props.children}</ThemeContext.Provider>;
+    return <ThemeContext.Provider value={{ theme, changeTheme: setTheme }}>{props.children}</ThemeContext.Provider>;
 }

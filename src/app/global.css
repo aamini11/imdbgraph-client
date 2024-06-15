@@ -8,12 +8,6 @@ body {
     margin: 0;
 }
 
-html.dark, body.dark {
-    @apply accent-red-900;
-    @apply text-white;
-    @apply bg-neutral-800;
-}
-
 /* https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model#the_alternative_css_box_model */
 * {
     box-sizing: border-box;
