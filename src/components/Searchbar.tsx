@@ -1,6 +1,6 @@
 "use client";
 
-import { Autocomplete, AutocompleteItem, Button } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -57,8 +57,8 @@ export default function SearchBar() {
                     ],
                 },
             }}
-            aria-label="Select an employee"
-            placeholder="Enter employee name"
+            aria-label="Search for any TV show"
+            placeholder="Search for any TV show..."
             popoverProps={{
                 offset: 10,
                 classNames: {
@@ -74,20 +74,12 @@ export default function SearchBar() {
                 <AutocompleteItem key={item.imdbId} textValue={item.title}>
                     <div className="flex justify-between items-center">
                         <div className="flex gap-2 items-center">
-                            {/*<Avatar alt={item.title} className="flex-shrink-0" size="sm" src={item.avatar} />*/}
                             <div className="flex flex-col">
                                 <span className="text-small">{item.title}</span>
+                                <span> </span>
                                 <span className="text-tiny text-default-400">{formatYears(item)}</span>
                             </div>
                         </div>
-                        <Button
-                            className="border-small mr-0.5 font-medium shadow-small"
-                            radius="full"
-                            size="sm"
-                            variant="bordered"
-                        >
-                            Add
-                        </Button>
                     </div>
                 </AutocompleteItem>
             )}

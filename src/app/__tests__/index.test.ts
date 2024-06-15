@@ -10,15 +10,14 @@ test("Title works", async ({ page }) => {
 
 test("Search bar click navigation works", async ({ page }) => {
     await page.getByPlaceholder("Search for any TV show...").fill("Avatar");
-    await page.getByText("Avatar: The Last Airbender").click();
+    await page.getByText("Avatar: The Last Airbender 2005 - 2008").click();
     await expect(page).toHaveURL(/.*\/ratings\/tt0417299/);
 });
 
 test("Search bar keyboard navigation works", async ({ page }) => {
     const searchBar = page.getByPlaceholder("Search for any TV show...");
-    await searchBar.click();
     await searchBar.fill("Avatar");
-    await expect(page.getByText("Avatar: The Last Airbender")).toBeVisible();
+    await expect(page.getByText("Avatar: The Last Airbender 2005 - 2008")).toBeVisible();
     await searchBar.press("ArrowDown");
     await searchBar.press("Enter");
     await expect(page).toHaveURL(/.*\/ratings\/tt0417299/);
