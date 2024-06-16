@@ -7,7 +7,7 @@ const config: Config = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ["var(--font-sans)"],
+                inter: ["var(--font-inter)"],
             },
         },
     },
