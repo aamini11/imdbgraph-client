@@ -6,6 +6,7 @@
     "build": "next build",
     "start": "next start",
     "test": "npx playwright test",
+    "test:update-snapshots": "npx playwright test --update-snapshots",
     "lint:check": "next lint --max-warnings=0",
     "lint:fix": "next lint --fix",
     "format:check": "npx prettier --check '**/*.{js,ts,jsx,tsx}'",
@@ -15,7 +16,6 @@
     "@nextui-org/react": "^2.4.1",
     "@react-aria/ssr": "^3.9.4",
     "@react-aria/visually-hidden": "^3.8.12",
-    "@react-stately/data": "^3.11.4",
     "@vercel/analytics": "^1.1.1",
     "framer-motion": "^11.2.10",
     "highcharts": "^11.4.3",
@@ -23,8 +23,7 @@
     "lodash": "^4.17.21",
     "next": "^14.2.4",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "terser": "^5.31.1"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.41.2",
@@ -43,6 +42,7 @@
     "prettier": "^3.3.2",
     "tailwind-variants": "^0.2.1",
     "tailwindcss": "^3.4.4",
+    "terser": "^5.31.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }
