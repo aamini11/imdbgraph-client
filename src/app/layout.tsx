@@ -39,7 +39,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         // theme is. So it will complain about mismatching class="dark" attribute. This only suppresses warnings for
         // the html element and not children. (Only 1 level deep)
         <html suppressHydrationWarning>
-            <body className={clsx("min-h-screen bg-background antialiased", inter.variable)}>
+            <body className={clsx("min-h-screen min-w-80 bg-background antialiased", inter.variable)}>
                 <script dangerouslySetInnerHTML={{ __html: await minifyCode(initializeTheme) }} />
                 <NextUIProvider>
                     <ThemedPage>

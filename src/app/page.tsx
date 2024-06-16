@@ -3,7 +3,7 @@ import Searchbar from "@/components/Searchbar";
 import "./global.css";
 
 const title = tv({
-    base: "tracking-tight inline font-semibold",
+    base: "tracking-tight inline font-semibold text-center",
     variants: {
         color: {
             violet: "from-[#FF1CF7] to-[#b249f8]",
@@ -37,9 +37,9 @@ const title = tv({
 export default function Home() {
     return (
         <div>
-            <div className="flex flex-col items-center gap-8 pb-10">
+            <div className="flex flex-col items-center gap-8 pb-10 px-10">
                 <h1 className={title({ size: "lg" })}>Welcome to IMDB Graph</h1>
-                <div className="max-w-md w-full px-4">
+                <div className="min-w-80 max-w-lg w-full px-4">
                     <Searchbar />
                 </div>
 
