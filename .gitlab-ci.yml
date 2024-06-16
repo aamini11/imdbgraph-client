@@ -50,7 +50,7 @@ lint:
     - pnpm run format:check
 
 end-to-end-tests:
-  image: mcr.microsoft.com/playwright:v1.40.0-jammy
+  image: mcr.microsoft.com/playwright:v1.44.1-jammy
   stage: test
   script:
     - pnpm run test
