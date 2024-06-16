@@ -2,9 +2,9 @@ import { Link, NextUIProvider } from "@nextui-org/react";
 import { clsx } from "@nextui-org/shared-utils";
 import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";
-import { Inter } from "next/font/google";
 import React from "react";
 import { minify } from "terser";
+import { inter } from "@/components/Fonts";
 import { initializeTheme } from "@/components/theme/anti-flashbang";
 import { ThemedPage } from "@/components/theme/ThemedPage";
 import { ThemeSelector } from "@/components/theme/ThemeSelector";
@@ -16,12 +16,6 @@ export const metadata: Metadata = {
     description: "Website to visualize IMDB TV show ratings as a graph",
     icons: "/favicon.ico",
 };
-
-const inter = Inter({
-    subsets: ["latin"],
-    display: "swap",
-    variable: "--font-inter",
-});
 
 async function minifyCode(func: { name: string; toString: () => string }) {
     const minifyOutput = await minify(func.toString() + `\n ${func.name}()`);

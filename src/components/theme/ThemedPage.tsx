@@ -26,7 +26,7 @@ export function useTheme() {
 }
 
 function getThemeFromLocalStorage(): Theme {
-    const localTheme = localStorage.getItem("theme");
+    const localTheme = localStorage.getItem(storageKey);
     if (localTheme) {
         return localTheme as Theme;
     } else {

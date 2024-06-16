@@ -1,10 +1,10 @@
 "use client";
 
-import Highcharts, { SeriesSplineOptions } from "highcharts";
+import Highcharts, { defaultOptions, SeriesSplineOptions } from "highcharts";
 import Accessibility from "highcharts/modules/accessibility";
 import MouseZoom from "highcharts/modules/mouse-wheel-zoom";
 import HighchartsReact from "highcharts-react-official";
-import { merge } from "lodash";
+import { isArray, mergeWith } from "lodash";
 import Header from "@/components/Header";
 import { Theme, useTheme } from "@/components/theme/ThemedPage";
 import { Episode, formatYears, RatingsData, Show } from "@/models/Show";
@@ -23,14 +23,16 @@ export function Graph({ ratings }: { ratings: RatingsData }) {
     }
 
     const themeSpecificOptions = theme === Theme.DARK ? darkThemeOptions : lightThemeOptions;
-    const options = { series: parseRatings(ratings), ...merge(defaultOptions, themeSpecificOptions) };
     return (
         <>
             <ShowTitle show={ratings?.show} />
             {theme && (
                 <HighchartsReact
                     highcharts={Highcharts}
-                    options={options}
+                    options={{
+                        series: parseRatings(ratings),
+                        ...mergeOptions(defaultOptions, commonOptions, themeSpecificOptions),
+                    }}
                     className="min-w-[400px] max-w-[100vw] w-full"
                 />
             )}
@@ -112,7 +114,7 @@ function parseRatings(ratings: RatingsData): SeriesSplineOptions[] {
     return allSeries;
 }
 
-const defaultOptions: Highcharts.Options = {
+const commonOptions: Highcharts.Options = {
     chart: {
         backgroundColor: "rgba(0,0,0,0)",
         zooming: {
@@ -124,7 +126,6 @@ const defaultOptions: Highcharts.Options = {
             type: "xy",
         },
     },
-
     title: {
         text: "",
     },
@@ -175,20 +176,7 @@ const defaultOptions: Highcharts.Options = {
     },
 };
 
-const lightThemeOptions = {
-    colors: [
-        "#2caffe",
-        "#544fc5",
-        "#00e272",
-        "#fe6a35",
-        "#6b8abc",
-        "#d568fb",
-        "#2ee0ca",
-        "#fa4b42",
-        "#feb56a",
-        "#91e8e1",
-    ],
-
+const lightThemeOptions: Highcharts.Options = {
     plotOptions: {
         spline: {
             dataLabels: {
@@ -206,37 +194,65 @@ const lightThemeOptions = {
     },
 };
 
-const darkThemeOptions = {
-    colors: [
-        "#2b908f",
-        "#90ee7e",
-        "#f45b5b",
-        "#7798BF",
-        "#aaeeee",
-        "#ff0066",
-        "#eeaaee",
-        "#55BF3B",
-        "#DF5353",
-        "#7798BF",
-        "#aaeeee",
-    ],
+const darkThemeOptions: Highcharts.Options = {
+    colors: ["#7CEA9C", "#50B2C0", "rgb(114, 78, 145)", "hsl(45, 93%, 58%)", "rgb(230, 78, 108)"],
+
+    yAxis: {
+        gridLineColor: "#3f3f46",
+        labels: {
+            style: {
+                color: "#d4d4d4",
+            },
+        },
+    },
 
     plotOptions: {
         spline: {
             dataLabels: {
                 style: {
-                    color: "rgb(256, 256, 256)",
+                    color: "#d4d4d4",
                 },
             },
         },
     },
 
+    tooltip: {
+        style: {
+            color: "#d4d4d4",
+        },
+        borderWidth: 1,
+        borderColor: "#d4d4d4",
+        backgroundColor: "#171717",
+    },
+
     legend: {
         itemStyle: {
-            color: "rgb(256,256,256)",
+            color: "#d4d4d4",
+            fontFamily: "var(--font-inter)",
         },
         itemHoverStyle: {
-            color: "LightGray",
+            color: "#fafafa",
         },
     },
 };
+
+/**
+ * Modified version of lodash's recursive merge function. In lodash's version, it would merge together two arrays.
+ * In this version, if two arrays are encountered, it just replaces the original with the new array. The main use case
+ * for this function is when merging the dark theme config object I want it to replace all the colors not just add dark
+ * theme colors to the original set of default colors.
+ */
+function mergeOptions<T>(...options: [T, T, T]): Highcharts.Options {
+    // merge mutates the first param so pass in any empty object {} instead.
+    return mergeWith(
+        {},
+        ...options,
+        (obj: Highcharts.Options, src: Highcharts.Options): Highcharts.Options | undefined => {
+            if (isArray(obj) && isArray(src)) {
+                return src;
+            } else {
+                return undefined;
+            }
+        },
+    );
+}
