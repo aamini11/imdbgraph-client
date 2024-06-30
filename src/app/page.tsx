@@ -1,4 +1,6 @@
+import { Spacer } from "@nextui-org/react";
 import { tv } from "tailwind-variants";
+import { OldSearchbar } from "@/components/OldSearchBar";
 import Searchbar from "@/components/Searchbar";
 import "./global.css";
 
@@ -41,6 +43,8 @@ export default function Home() {
                 <h1 className={title({ size: "lg" })}>Welcome to IMDB Graph</h1>
                 <div className="min-w-80 max-w-lg w-full px-4">
                     <Searchbar />
+                    <Spacer y={80} />
+                    <OldSearchbar />
                 </div>
 
                 <div className="px-10">

@@ -13,7 +13,7 @@
     "format:fix": "npx prettier --write '**/*.{js,ts,jsx,tsx}'"
   },
   "dependencies": {
-    "@nextui-org/react": "^2.4.1",
+    "@nextui-org/react": "0.0.0-canary-20240625142753",
     "@react-aria/ssr": "^3.9.4",
     "@react-aria/visually-hidden": "^3.8.12",
     "@vercel/analytics": "^1.1.1",

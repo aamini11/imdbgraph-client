@@ -4,6 +4,7 @@ import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { SearchIcon } from "@/components/Icons";
 import { formatYears, Show } from "@/models/Show";
 
 /**
@@ -19,22 +20,24 @@ export default function SearchBar() {
 
     return (
         <Autocomplete
-            onFocus={(e) => e.preventDefault()}
             ref={ref}
             isClearable={false}
+            menuTrigger={"input"}
+            inputValue={query}
+            onOpenChange={(isOpen) => isOpen && ref.current?.focus()}
             onClick={() => ref.current?.focus()}
+            allowsCustomValue={true}
+            allowsEmptyCollection={false}
             onInputChange={(text) => setQuery(text)}
             isDisabled={isRedirecting}
-            onSelectionChange={(imdbId) => {
+            onSelectionChange={(imdbId): void => {
                 setIsRedirecting(true);
-                router.push(`/ratings/${encodeURIComponent(imdbId)}`);
+                router.push(`/ratings/${encodeURIComponent(imdbId ?? "")}`);
             }}
             classNames={{
                 listboxWrapper: "max-h-[320px]",
                 selectorButton: "text-default-500",
             }}
-            isLoading={isLoading || isRedirecting}
-            items={suggestions}
             inputProps={{
                 classNames: {
                     input: "ml-1",
@@ -57,8 +60,6 @@ export default function SearchBar() {
                     ],
                 },
             }}
-            aria-label="Search for any TV show"
-            placeholder="Search for any TV show..."
             popoverProps={{
                 offset: 10,
                 classNames: {
@@ -66,6 +67,10 @@ export default function SearchBar() {
                     content: "p-1 border-small border-default-100 bg-background",
                 },
             }}
+            isLoading={isLoading || isRedirecting}
+            items={suggestions}
+            aria-label="Search for any TV show"
+            placeholder="Search for any TV show..."
             startContent={<SearchIcon className="text-default-400" strokeWidth={2.5} size={20} />}
             radius="full"
             variant="bordered"
@@ -85,42 +90,6 @@ export default function SearchBar() {
         </Autocomplete>
     );
 }
-
-const SearchIcon = ({
-    size = 24,
-    strokeWidth = 1.5,
-    className,
-}: {
-    size: number;
-    strokeWidth: number;
-    className: string;
-}) => (
-    <svg
-        aria-hidden="true"
-        fill="none"
-        focusable="false"
-        height={size}
-        role="presentation"
-        viewBox="0 0 24 24"
-        width={size}
-        className={className}
-    >
-        <path
-            d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={strokeWidth}
-        />
-        <path
-            d="M22 22L20 20"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={strokeWidth}
-        />
-    </svg>
-);
 
 function useSuggestions(query: string) {
     const [suggestions, setSuggestions] = useState<Show[]>([]);

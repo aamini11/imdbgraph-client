@@ -13,6 +13,10 @@ export type Show = {
     readonly genre?: string;
 };
 
+export function titleWithYears(show: Show) {
+    return `${show.title} (${formatYears(show)})`;
+}
+
 export function formatYears(show: Show): string {
     const endDate = show.endYear ?? "Present";
     return `${show.startYear} - ${endDate}`;
