@@ -17,6 +17,7 @@
     "@react-aria/ssr": "^3.9.4",
     "@react-aria/visually-hidden": "^3.8.12",
     "@vercel/analytics": "^1.1.1",
+    "downshift": "^9.0.6",
     "framer-motion": "^11.2.10",
     "highcharts": "^11.4.3",
     "highcharts-react-official": "^3.2.1",
