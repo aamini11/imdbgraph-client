@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Searchbar from "./Searchbar";
+import { Searchbar } from "@/components/OldSearchBar";
 
 export default function Navigation() {
     return (

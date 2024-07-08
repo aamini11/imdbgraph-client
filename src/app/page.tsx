@@ -1,7 +1,5 @@
-import { Spacer } from "@nextui-org/react";
 import { tv } from "tailwind-variants";
-import { OldSearchbar } from "@/components/OldSearchBar";
-import Searchbar from "@/components/Searchbar";
+import { Searchbar } from "@/components/OldSearchBar";
 import "./global.css";
 
 const title = tv({
@@ -43,8 +41,6 @@ export default function Home() {
                 <h1 className={title({ size: "lg" })}>Welcome to IMDB Graph</h1>
                 <div className="min-w-80 max-w-lg w-full px-4">
                     <Searchbar />
-                    <Spacer y={80} />
-                    <OldSearchbar />
                 </div>
 
                 <div className="px-10">
@@ -65,7 +61,9 @@ function Card(props: { title: string; body: string }) {
                 href="https://gitlab.com/users/aamini11/projects"
                 className="max-w-[300px] p-6 rounded-[10px]
                            dark:bg-neutral-950
-                           border-2 border-neutral-700
+                           border-2
+                           border-neutral-300
+                           dark:border-neutral-700
                            transition hover:text-blue-300 hover:border-blue-300 hover:ease-in duration-200"
             >
                 <h2 className="mt-0 mr-0 mb-4 ml-0 text-2xl whitespace-nowrap">{props.title}</h2>

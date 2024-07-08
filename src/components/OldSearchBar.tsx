@@ -1,18 +1,17 @@
 "use client";
 
 import { Input, Listbox, ListboxItem, ScrollShadow, Spinner } from "@nextui-org/react";
+import { clsx } from "@nextui-org/shared-utils";
 import debounce from "lodash/debounce";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { SearchIcon } from "@/components/Icons";
 import { formatYears, Show } from "@/models/Show";
 
-export const DROPDOWN_SIZE_LIMIT = 5;
-
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
  */
-export function OldSearchbar() {
+export function Searchbar() {
     const router = useRouter();
 
     const [text, setText] = useState("");
@@ -20,15 +19,9 @@ export function OldSearchbar() {
     const [isFocused, setIsFocused] = useState(false);
     const [selected, setSelected] = useState<number>();
     const selectedShow = selected !== undefined ? suggestions[selected] : undefined;
+    const [isRedirecting, setIsRedirecting] = useState(false);
 
     const isDropdownVisible = isFocused && text.length > 0 && suggestions.length > 0;
-
-    const blur = () => {
-        setSelected(undefined);
-        if (document.activeElement instanceof HTMLElement) {
-            document.activeElement.blur();
-        }
-    };
 
     function navigateDropdown(direction: "ArrowUp" | "ArrowDown") {
         if (!isDropdownVisible) {
@@ -63,26 +56,27 @@ export function OldSearchbar() {
             return;
         }
 
+        setIsRedirecting(true);
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
         if (selectedShow === undefined) {
-            goToSearchPage(text);
+            // Go to search page
+            router.push(`/search?q=${text}`);
         } else {
+            // Go to ratings page
             goToRatingsPage(selectedShow.imdbId);
         }
     };
 
-    const goToSearchPage = (q: string) => {
-        blur();
-        router.push(`/search?q=${q}`);
-    };
-
     const goToRatingsPage = (imdbId: string) => {
-        blur();
         router.push(`/ratings/${encodeURIComponent(imdbId)}`);
     };
 
     return (
         <form
             role="search"
+            className="relative w-full"
             onSubmit={(e) => {
                 onFormSubmit();
                 e.preventDefault();
@@ -103,10 +97,7 @@ export function OldSearchbar() {
                 value={!selectedShow ? text : selectedShow.title}
                 onChange={(e) => onUserTyping(e.currentTarget.value)}
                 onFocus={() => setIsFocused(true)}
-                onBlur={() => {
-                    setIsFocused(false);
-                    setSelected(undefined);
-                }}
+                onBlur={() => setIsFocused(false)}
                 onKeyDown={(e) => {
                     if (e.key == "ArrowUp" || e.key == "ArrowDown") {
                         e.preventDefault();
@@ -118,23 +109,18 @@ export function OldSearchbar() {
                     inputWrapper: "h-[48px]",
                 }}
                 startContent={<SearchIcon className="text-default-400" strokeWidth={2.5} size={20} />}
-                endContent={isLoading && <Spinner color="default" size="sm" />}
+                endContent={(isLoading || isRedirecting) && <Spinner color="default" size="sm" />}
+                disabled={isRedirecting}
             />
-            {isDropdownVisible && (
-                <DropDown suggestions={suggestions} selectedShow={selectedShow} goToRatingsPage={goToRatingsPage} />
-            )}
+            {isDropdownVisible && <DropDown suggestions={suggestions} selectedShow={selectedShow} />}
         </form>
     );
 }
 
-function DropDown(props: {
-    suggestions: Show[];
-    selectedShow?: { imdbId: string };
-    goToRatingsPage: (imdbId: string) => void;
-}) {
+function DropDown(props: { suggestions: Show[]; selectedShow?: { imdbId: string } }) {
     const { suggestions, selectedShow } = props;
     return (
-        <div className="rounded-large p-1 border-small border-default-100 bg-background">
+        <div className="rounded-large p-1 border-small border-default-100 bg-background mt-3 absolute w-full">
             <ScrollShadow hideScrollBar className="max-h-[320px] mt-30">
                 <Listbox
                     label="suggestions"
@@ -144,27 +130,29 @@ function DropDown(props: {
                             "rounded-medium",
                             "text-default-500",
                             "transition-opacity",
+
                             "data-[hover=true]:text-foreground",
-                            "dark:data-[hover=true]:bg-default-50",
-                            "data-[pressed=true]:opacity-70",
                             "data-[hover=true]:bg-default-200",
+                            "dark:data-[hover=true]:bg-default-50",
+
+                            "data-[pressed=true]:opacity-70",
                             "data-[selectable=true]:focus:bg-default-100",
                             "data-[focus-visible=true]:ring-default-500",
                         ],
                     }}
-                    // className="rounded-large p-1 border-small border-default-100 bg-background"
                     role="listbox"
                     id="tv-search-dropdown"
-                    selectedKeys={selectedShow?.imdbId === undefined ? [] : [selectedShow.imdbId]}
-                    // aria-activedescendant={selectedShow?.imdbId}
-                    onMouseDown={(e) => {
-                        // Prevent dropdown option clicks from triggering the onMouseDown of parent
-                        e.preventDefault();
-                    }}
                 >
-                    {(show) => (
-                        <ListboxItem key={show.imdbId} textValue={show.title}>
-                            <div className="flex justify-between items-center">
+                    {suggestions.map((show) => (
+                        <ListboxItem
+                            className={clsx({ "bg-default-50 text-foreground": show.imdbId === selectedShow?.imdbId })}
+                            key={show.imdbId}
+                            textValue={show.title}
+                        >
+                            <div
+                                // href={{ pathname: `/ratings/tt0417299` }}
+                                className="flex justify-between items-center"
+                            >
                                 <div className="flex gap-2 items-center">
                                     <div className="flex flex-col">
                                         <span className="text-small">{show.title}&nbsp;</span>
@@ -173,7 +161,7 @@ function DropDown(props: {
                                 </div>
                             </div>
                         </ListboxItem>
-                    )}
+                    ))}
                 </Listbox>
             </ScrollShadow>
         </div>
