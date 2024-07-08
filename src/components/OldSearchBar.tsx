@@ -1,8 +1,9 @@
 "use client";
 
-import { Input, Listbox, ListboxItem, ScrollShadow, Spinner } from "@nextui-org/react";
+import { Input, ScrollShadow, Spinner } from "@nextui-org/react";
 import { clsx } from "@nextui-org/shared-utils";
 import debounce from "lodash/debounce";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { SearchIcon } from "@/components/Icons";
@@ -83,13 +84,14 @@ export function Searchbar() {
             }}
         >
             <Input
+                autoComplete="off"
                 variant="bordered"
                 radius="full"
                 id="search-bar"
                 type="text"
                 role="combobox"
                 aria-label="TV Show"
-                aria-controls="tv-search-dropdown"
+                aria-owns="tv-search-dropdown"
                 aria-autocomplete="list"
                 aria-expanded={isDropdownVisible}
                 aria-activedescendant={selectedShow?.imdbId ?? ""}
@@ -112,7 +114,9 @@ export function Searchbar() {
                 endContent={(isLoading || isRedirecting) && <Spinner color="default" size="sm" />}
                 disabled={isRedirecting}
             />
-            {isDropdownVisible && <DropDown suggestions={suggestions} selectedShow={selectedShow} />}
+            <div id="search-suggestions">
+                {isDropdownVisible && <DropDown suggestions={suggestions} selectedShow={selectedShow} />}
+            </div>
         </form>
     );
 }
@@ -120,37 +124,37 @@ export function Searchbar() {
 function DropDown(props: { suggestions: Show[]; selectedShow?: { imdbId: string } }) {
     const { suggestions, selectedShow } = props;
     return (
-        <div className="rounded-large p-1 border-small border-default-100 bg-background mt-3 absolute w-full">
-            <ScrollShadow hideScrollBar className="max-h-[320px] mt-30">
-                <Listbox
-                    label="suggestions"
-                    items={suggestions}
-                    itemClasses={{
-                        base: [
-                            "rounded-medium",
-                            "text-default-500",
-                            "transition-opacity",
-
-                            "data-[hover=true]:text-foreground",
-                            "data-[hover=true]:bg-default-200",
-                            "dark:data-[hover=true]:bg-default-50",
-
-                            "data-[pressed=true]:opacity-70",
-                            "data-[selectable=true]:focus:bg-default-100",
-                            "data-[focus-visible=true]:ring-default-500",
-                        ],
-                    }}
-                    role="listbox"
-                    id="tv-search-dropdown"
-                >
+        <div
+            role="listbox"
+            className="rounded-large p-1 border-small border-default-100 bg-background mt-2 absolute w-full"
+        >
+            <ScrollShadow hideScrollBar className="max-h-[320px]">
+                <ul id="tv-search-dropdown">
                     {suggestions.map((show) => (
-                        <ListboxItem
-                            className={clsx({ "bg-default-50 text-foreground": show.imdbId === selectedShow?.imdbId })}
+                        <li
                             key={show.imdbId}
-                            textValue={show.title}
+                            className={clsx(
+                                "rounded-medium",
+                                "text-default-500",
+                                "transition-opacity",
+                                { "bg-default-50 text-foreground": show.imdbId === selectedShow?.imdbId },
+
+                                "hover:text-foreground",
+                                "hover:bg-default-200",
+                                "dark:hover:bg-default-50",
+
+                                "flex gap-2 items-center justify-between px-2 py-1.5 w-full h-full",
+                                "subpixel-antialiased cursor-pointer tap-highlight-transparent hover:transition-colors",
+
+                                // "data-[pressed=true]:opacity-70",
+                                // "data-[selectable=true]:focus:bg-default-100",
+                                // "data-[focus-visible=true]:ring-default-500",
+                            )}
+                            // textValue={show.title}
                         >
-                            <div
-                                // href={{ pathname: `/ratings/tt0417299` }}
+                            <Link
+                                tabIndex={-1}
+                                href={{ pathname: `/ratings/tt0417299` }}
                                 className="flex justify-between items-center"
                             >
                                 <div className="flex gap-2 items-center">
@@ -159,10 +163,10 @@ function DropDown(props: { suggestions: Show[]; selectedShow?: { imdbId: string 
                                         <span className="text-tiny text-default-400">{formatYears(show)}</span>
                                     </div>
                                 </div>
-                            </div>
-                        </ListboxItem>
+                            </Link>
+                        </li>
                     ))}
-                </Listbox>
+                </ul>
             </ScrollShadow>
         </div>
     );
