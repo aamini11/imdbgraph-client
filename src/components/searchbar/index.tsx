@@ -64,7 +64,9 @@ export function Searchbar() {
                 {...getInputProps()}
             />
             <div {...getMenuProps()} className="absolute w-full z-10 overflow-clip">
-                {isOpen && text.length > 0 && <DropDown suggestions={suggestions} comboBoxProps={comboBoxProps} />}
+                {isOpen && !isLoading && text.length > 0 && (
+                    <DropDown suggestions={suggestions} comboBoxProps={comboBoxProps} />
+                )}
             </div>
         </div>
     );
