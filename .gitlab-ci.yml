@@ -58,7 +58,7 @@ end-to-end-tests:
 # https://vercel.com/guides/how-can-i-use-gitlab-pipelines-with-vercel#configuring-gitlab-ci/cd-for-vercel
 deploy_preview:
   stage: deploy
-  needs: [ build, end-to-end-tests ]
+  needs: [ build ]
   when:
     manual
   except:
