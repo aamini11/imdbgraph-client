@@ -3,10 +3,10 @@
 import { Input, ScrollShadow, Spinner } from "@nextui-org/react";
 import { clsx } from "@nextui-org/shared-utils";
 import { useCombobox, UseComboboxReturnValue } from "downshift";
-import debounce from "lodash/debounce";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { SearchIcon } from "@/components/Icons";
+import { useSuggestions } from "@/components/searchbar/useSuggestions";
 import { formatYears, Show } from "@/models/Show";
 
 /**
@@ -64,9 +64,7 @@ export function Searchbar() {
                 {...getInputProps()}
             />
             <div {...getMenuProps()} className="absolute w-full z-10 overflow-clip">
-                {isOpen && suggestions.length > 0 && (
-                    <DropDown suggestions={suggestions} comboBoxProps={comboBoxProps} />
-                )}
+                {isOpen && text.length > 0 && <DropDown suggestions={suggestions} comboBoxProps={comboBoxProps} />}
             </div>
         </div>
     );
@@ -88,35 +86,38 @@ function DropDown(props: { suggestions: Show[]; comboBoxProps: UseComboboxReturn
         </div>
     );
 
+    const listItems = suggestions.map((show, index) => (
+        <li
+            key={show.imdbId}
+            className={clsx(
+                "flex gap-2 items-center justify-between px-2 py-1.5 w-full h-full",
+                "rounded-medium text-default-500 transition-opacity",
+                "subpixel-antialiased cursor-pointer tap-highlight-transparent hover:transition-colors",
+                { "bg-default-200 dark:bg-default-50 text-foreground": index === highlightedIndex },
+                "hover:bg-default-200 hover:text-foreground",
+                "dark:hover:bg-default-50",
+            )}
+            {...getItemProps({ item: show, index })}
+        >
+            <div className="flex justify-between w-full items-center">
+                <div className="flex flex-col">
+                    <span className="text-small break-words">{show.title}&nbsp;</span>
+                    <span className="text-tiny text-default-400">{formatYears(show)}</span>
+                </div>
+                {rating(show)}
+            </div>
+        </li>
+    ));
+
     return (
         <div className="rounded-large p-2 border-small border-default-100 bg-background mt-2">
             <ScrollShadow hideScrollBar className="max-h-[320px]">
                 <ul id="tv-search-dropdown">
-                    {suggestions.map((show, index) => (
-                        <li
-                            key={show.imdbId}
-                            className={clsx(
-                                "rounded-medium",
-                                "text-default-500",
-                                "transition-opacity",
-                                { "bg-default-50 text-foreground": index === highlightedIndex },
-                                "hover:text-foreground",
-                                "hover:bg-default-200",
-                                "dark:hover:bg-default-50",
-                                "flex gap-2 items-center justify-between px-2 py-1.5 w-full h-full",
-                                "subpixel-antialiased cursor-pointer tap-highlight-transparent hover:transition-colors",
-                            )}
-                            {...getItemProps({ item: show, index })}
-                        >
-                            <div className="flex justify-between w-full items-center">
-                                <div className="flex flex-col">
-                                    <span className="text-small break-words">{show.title}&nbsp;</span>
-                                    <span className="text-tiny text-default-400">{formatYears(show)}</span>
-                                </div>
-                                {rating(show)}
-                            </div>
-                        </li>
-                    ))}
+                    {suggestions.length > 0 ? (
+                        listItems
+                    ) : (
+                        <li className="text-small text-default-400 pl-2">No TV Shows found</li>
+                    )}
                 </ul>
             </ScrollShadow>
         </div>
@@ -125,38 +126,4 @@ function DropDown(props: { suggestions: Show[]; comboBoxProps: UseComboboxReturn
 
 function isEmpty(s: string) {
     return !s || !/\S/.test(s);
-}
-
-function useSuggestions(query: string) {
-    const [suggestions, setSuggestions] = useState<Show[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-
-    async function fetchSuggestions(query: string) {
-        try {
-            const controller = new AbortController();
-            const { signal } = controller;
-            const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal });
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            const shows = (await response.json()) as Show[];
-            setSuggestions(shows);
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    const debouncedFetchSuggestions = useMemo(() => debounce(fetchSuggestions, 100), []);
-    useEffect(() => {
-        if (query) {
-            setIsLoading(true);
-            void debouncedFetchSuggestions(query);
-        } else {
-            setIsLoading(false);
-            setSuggestions([]);
-        }
-    }, [debouncedFetchSuggestions, query]);
-
-    return { suggestions, isLoading };
 }
