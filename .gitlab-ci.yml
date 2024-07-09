@@ -55,8 +55,12 @@ end-to-end-tests:
   script:
     - pnpm run test
 
+# https://vercel.com/guides/how-can-i-use-gitlab-pipelines-with-vercel#configuring-gitlab-ci/cd-for-vercel
 deploy_preview:
   stage: deploy
+  needs: [ build, end-to-end-tests ]
+  when:
+    manual
   except:
     - main
   script:
@@ -67,6 +71,9 @@ deploy_preview:
 
 deploy_production:
   stage: deploy
+  needs: [ build, end-to-end-tests ]
+  when:
+    manual
   only:
     - main
   script:
