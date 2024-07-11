@@ -3,11 +3,14 @@
 import { Input, ScrollShadow, Spinner } from "@nextui-org/react";
 import { clsx } from "@nextui-org/shared-utils";
 import { useCombobox, UseComboboxReturnValue } from "downshift";
+import { AnimatePresence } from "framer-motion";
+import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { SearchIcon } from "@/components/Icons";
-import { useSuggestions } from "@/components/searchbar/useSuggestions";
 import { formatYears, Show } from "@/models/Show";
+
+const DROPDOWN_LIMIT = 5;
 
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
@@ -17,12 +20,28 @@ export function Searchbar() {
 
     const [text, setText] = useState("");
     const [isRedirecting, setIsRedirecting] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [suggestions, setSuggestions] = useState<Show[]>([]);
 
-    const { suggestions, isLoading } = useSuggestions(text);
+    const handleNewQuery = useMemo(
+        () =>
+            debounce((x: string) => {
+                void fetchSuggestions(x)
+                    .then((suggestions) => setSuggestions(suggestions.slice(0, DROPDOWN_LIMIT)))
+                    .finally(() => setIsLoading(false));
+            }, 200),
+        [],
+    );
 
     const comboBoxProps = useCombobox({
         items: suggestions,
-        onInputValueChange: ({ inputValue }) => setText(inputValue),
+        onInputValueChange: ({ inputValue }) => {
+            setText(inputValue);
+            if (!isEmpty(inputValue)) {
+                setIsLoading(true);
+                handleNewQuery(inputValue);
+            }
+        },
         onSelectedItemChange: ({ selectedItem }) => onFormSubmit(selectedItem),
         itemToString: (show) => show?.title ?? "",
     });
@@ -64,9 +83,11 @@ export function Searchbar() {
                 {...getInputProps()}
             />
             <div {...getMenuProps()} className="absolute w-full z-10 overflow-clip">
-                {isOpen && !isLoading && text.length > 0 && (
-                    <DropDown suggestions={suggestions} comboBoxProps={comboBoxProps} />
-                )}
+                <AnimatePresence>
+                    {isOpen && text.length > 0 && (!isLoading || suggestions.length > 0) && (
+                        <DropDown suggestions={suggestions} comboBoxProps={comboBoxProps} />
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );
@@ -112,8 +133,8 @@ function DropDown(props: { suggestions: Show[]; comboBoxProps: UseComboboxReturn
     ));
 
     return (
-        <div className="rounded-large p-2 border-small border-default-100 bg-background mt-2">
-            <ScrollShadow hideScrollBar className="max-h-[320px]">
+        <div className="rounded-large p-2 border-small border-default-400 dark:border-default-100 bg-background mt-2">
+            <ScrollShadow className="max-h-[320px]">
                 <ul id="tv-search-dropdown">
                     {suggestions.length > 0 ? (
                         listItems
@@ -129,3 +150,12 @@ function DropDown(props: { suggestions: Show[]; comboBoxProps: UseComboboxReturn
 function isEmpty(s: string) {
     return !s || !/\S/.test(s);
 }
+
+const fetchSuggestions = async (query: string) => {
+    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+    }
+
+    return (await response.json()) as Show[];
+};
