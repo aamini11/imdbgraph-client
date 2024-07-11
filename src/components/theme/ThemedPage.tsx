@@ -12,7 +12,7 @@ const storageKey = "theme";
 /**
  * Important note: undefined represents an initial uninitialized theme.
  */
-type ThemeInfo = { theme: Theme | undefined; changeTheme: (theme: Theme) => void };
+type ThemeInfo = { theme: Theme | undefined; setTheme: (theme: Theme) => void };
 
 const ThemeContext = createContext<ThemeInfo | null>(null);
 
@@ -64,5 +64,5 @@ export function ThemedPage(props: { children: ReactNode }) {
         }
     }, [theme]);
 
-    return <ThemeContext.Provider value={{ theme, changeTheme: setTheme }}>{props.children}</ThemeContext.Provider>;
+    return <ThemeContext.Provider value={{ theme, setTheme }}>{props.children}</ThemeContext.Provider>;
 }

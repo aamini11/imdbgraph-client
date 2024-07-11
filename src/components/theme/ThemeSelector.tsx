@@ -13,11 +13,11 @@ export interface ThemeSwitchProps {
 }
 
 export const ThemeSelector: FC<ThemeSwitchProps> = ({ classNames }) => {
-    const { theme, changeTheme } = useTheme();
+    const { theme, setTheme } = useTheme();
     const isSSR = useIsSSR();
 
     const onChange = () => {
-        theme === Theme.LIGHT ? changeTheme(Theme.DARK) : changeTheme(Theme.LIGHT);
+        theme === Theme.LIGHT ? setTheme(Theme.DARK) : setTheme(Theme.LIGHT);
     };
 
     const { Component, slots, isSelected, getBaseProps, getInputProps, getWrapperProps } = useSwitch({
