@@ -30,12 +30,7 @@ function getThemeFromLocalStorage(): Theme {
     if (localTheme) {
         return localTheme as Theme;
     } else {
-        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-        if (prefersDark) {
-            return Theme.DARK;
-        } else {
-            return Theme.LIGHT;
-        }
+        return Theme.DARK;
     }
 }
 
