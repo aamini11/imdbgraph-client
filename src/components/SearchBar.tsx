@@ -25,10 +25,13 @@ export function Searchbar() {
 
     const handleNewQuery = useMemo(
         () =>
-            debounce((x: string) => {
-                void fetchSuggestions(x)
-                    .then((suggestions) => setSuggestions(suggestions.slice(0, DROPDOWN_LIMIT)))
-                    .finally(() => setIsLoading(false));
+            debounce(async (x: string) => {
+                try {
+                    const suggestions = await fetchSuggestions(x);
+                    setSuggestions(suggestions.slice(0, DROPDOWN_LIMIT));
+                } finally {
+                    setIsLoading(false);
+                }
             }, 200),
         [],
     );
@@ -39,7 +42,7 @@ export function Searchbar() {
             setText(inputValue);
             if (!isEmpty(inputValue)) {
                 setIsLoading(true);
-                handleNewQuery(inputValue);
+                void handleNewQuery(inputValue);
             }
         },
         onSelectedItemChange: ({ selectedItem }) => onFormSubmit(selectedItem),
