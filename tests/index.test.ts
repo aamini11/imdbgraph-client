@@ -13,15 +13,14 @@ test("Home Page matches screenshot", async ({ page }) => {
 });
 
 test("Search bar click navigation works", async ({ page }) => {
-    await page.goto('http://localhost:3000/');
+    await page.goto("http://localhost:3000/");
     const searchBar = page.getByPlaceholder("Search for any TV show...");
     await searchBar.click();
-    await searchBar.fill('Avatar');
+    await searchBar.fill("Avatar");
     await expect(page.getByText("Avatar: The Last Airbender 2005 - 2008")).toBeVisible();
-    await searchBar.press('ArrowDown');
-    await searchBar.press('Enter');
-    await expect(page).
-    toHaveURL(/.*\/ratings\/tt0417299/);
+    await searchBar.press("ArrowDown");
+    await searchBar.press("Enter");
+    await expect(page).toHaveURL(/.*\/ratings\/tt0417299/);
 });
 
 test("Search bar keyboard navigation works", async ({ page }) => {
