@@ -1,5 +1,5 @@
 import { tv } from "tailwind-variants";
-import { Searchbar } from "@/components/searchbar";
+import { Searchbar } from "@/components/SearchBar";
 import "./global.css";
 
 const title = tv({
