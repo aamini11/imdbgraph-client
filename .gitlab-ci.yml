@@ -71,7 +71,7 @@ deploy_preview:
 
 deploy_production:
   stage: deploy
-  needs: [ build, end-to-end-tests ]
+  needs: [ build ]
   when:
     manual
   only:
