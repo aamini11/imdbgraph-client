@@ -29,7 +29,9 @@ default:
     <<: *global_cache
     policy: pull-push
 
+# Explanation for "needs" attributes used by jobs below: https://stackoverflow.com/q/64322308
 install:
+  needs: [ ]
   extends:
     .updates-cache
   stage: install
@@ -37,6 +39,7 @@ install:
     - pnpm install
 
 build:
+  needs: [ install ]
   extends:
     .updates-cache
   stage: build
@@ -44,12 +47,14 @@ build:
     - pnpm run build
 
 lint:
+  needs: [ install ]
   stage: lint
   script:
     - pnpm run lint:check
     - pnpm run format:check
 
 end-to-end-tests:
+  needs: [ install ]
   image: mcr.microsoft.com/playwright:v1.44.1-jammy
   stage: test
   script:
