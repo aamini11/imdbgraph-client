@@ -38,14 +38,6 @@ install:
   script:
     - pnpm install
 
-build:
-  needs: [ install ]
-  extends:
-    .updates-cache
-  stage: build
-  script:
-    - pnpm run build
-
 lint:
   needs: [ install ]
   stage: lint
@@ -63,7 +55,7 @@ end-to-end-tests:
 # https://vercel.com/guides/how-can-i-use-gitlab-pipelines-with-vercel#configuring-gitlab-ci/cd-for-vercel
 deploy_preview:
   stage: deploy
-  needs: [ build ]
+  needs: [ install ]
   when:
     manual
   except:
@@ -76,7 +68,7 @@ deploy_preview:
 
 deploy_production:
   stage: deploy
-  needs: [ build ]
+  needs: [ install ]
   when:
     manual
   only:
