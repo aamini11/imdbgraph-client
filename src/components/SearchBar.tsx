@@ -77,7 +77,9 @@ export function Searchbar() {
                 type="text"
                 placeholder="Search for any TV show..."
                 classNames={{
-                    input: "ml-1",
+                    // Reason for text-base. (Auto-zoom on safari. Input text size must be >16px)
+                    // https://stackoverflow.com/q/2989263
+                    input: "ml-1 text-base",
                     inputWrapper: "h-[48px]",
                 }}
                 startContent={<SearchIcon className="text-default-400" strokeWidth={2.5} size={20} />}
