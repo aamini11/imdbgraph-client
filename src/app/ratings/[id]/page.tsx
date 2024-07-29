@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { Graph } from "./Graph";
+import { Graph } from "@/components/Graph";
 import Navigation from "@/components/Navigation";
 import { RatingsData } from "@/models/Show";
 
@@ -27,7 +27,7 @@ async function getRatings(showId: string): Promise<RatingsData> {
     }
 
     const url = `https://api.imdbgraph.org/ratings/${encodeURIComponent(showId)}`;
-    const data = await fetch(url);
+    const data = await fetch(url, { next: { revalidate: 60 * 60 * 24 /* One day */ } });
     if (!data.ok) {
         notFound();
     } else {
