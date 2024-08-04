@@ -45,30 +45,24 @@ export function Searchbar() {
                 void handleNewQuery(inputValue);
             }
         },
-        onSelectedItemChange: ({ selectedItem }) => onFormSubmit(selectedItem),
+        onSelectedItemChange: ({ selectedItem: show }) => {
+            if (isEmpty(text)) {
+                return;
+            }
+
+            if (show) {
+                setIsRedirecting(true);
+                if (document.activeElement instanceof HTMLElement) {
+                    document.activeElement.blur();
+                }
+                // Go to ratings page
+                router.push(`/ratings/${encodeURIComponent(show.imdbId)}`);
+            }
+        },
         itemToString: (show) => show?.title ?? "",
     });
+
     const { isOpen, getInputProps, getMenuProps } = comboBoxProps;
-
-    const onFormSubmit = (show: Show) => {
-        if (isEmpty(text)) {
-            return;
-        }
-
-        if (show) {
-            setIsRedirecting(true);
-            if (document.activeElement instanceof HTMLElement) {
-                document.activeElement.blur();
-            }
-            // Go to ratings page
-            goToRatingsPage(show.imdbId);
-        }
-    };
-
-    const goToRatingsPage = (imdbId: string) => {
-        router.push(`/ratings/${encodeURIComponent(imdbId)}`);
-    };
-
     return (
         <div className="relative w-full">
             <Input
@@ -98,9 +92,14 @@ export function Searchbar() {
     );
 }
 
-function DropDown(props: { suggestions: Show[]; comboBoxProps: UseComboboxReturnValue<Show> }) {
-    const { suggestions } = props;
-    const { highlightedIndex, getItemProps } = props.comboBoxProps;
+function DropDown({
+    suggestions,
+    comboBoxProps,
+}: {
+    suggestions: Show[];
+    comboBoxProps: UseComboboxReturnValue<Show>;
+}) {
+    const { highlightedIndex, getItemProps } = comboBoxProps;
 
     const rating = (show: Show) => (
         <div className="shrink-0 flex items-center space-x-1 text-sm pl-2">
