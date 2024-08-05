@@ -10,13 +10,15 @@ export default async function RatingsPage(props: { params: { id?: string } }) {
     }
 
     return (
-        <div>
+        <div className="flex flex-1 flex-col">
             <div className="grid grid-cols-[1fr,minmax(auto,600px),1fr]">
                 <div className="w-full col-start-2">
                     <Navigation />
                 </div>
             </div>
-            <Graph ratings={await getRatings(showId)} />
+            <div className="flex-1">
+                <Graph ratings={await getRatings(showId)} />
+            </div>
         </div>
     );
 }

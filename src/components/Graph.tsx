@@ -5,7 +5,6 @@ import Accessibility from "highcharts/modules/accessibility";
 import MouseZoom from "highcharts/modules/mouse-wheel-zoom";
 import HighchartsReact from "highcharts-react-official";
 import { isArray, mergeWith } from "lodash";
-import Header from "@/components/Header";
 import { Theme, useTheme } from "@/components/theme/ThemedPage";
 import { Episode, formatYears, RatingsData, Show } from "@/models/Show";
 
@@ -19,12 +18,17 @@ export function Graph({ ratings }: { ratings: RatingsData }) {
     const { theme } = useTheme();
 
     if (!hasRatings(ratings)) {
-        return <Header text="No Ratings found for TV show" />;
+        return (
+            <>
+                <ShowTitle show={ratings?.show} />
+                <h1 className="pt-8 text-center text-6xl leading-tight">No Ratings Found</h1>
+            </>
+        );
     }
 
     const themeSpecificOptions = theme === Theme.DARK ? darkThemeOptions : lightThemeOptions;
     return (
-        <>
+        <div className="flex flex-1">
             <ShowTitle show={ratings?.show} />
             {theme && (
                 <HighchartsReact
@@ -36,7 +40,7 @@ export function Graph({ ratings }: { ratings: RatingsData }) {
                     className="min-w-[400px] max-w-[100vw] w-full"
                 />
             )}
-        </>
+        </div>
     );
 }
 
@@ -128,6 +132,10 @@ const commonOptions: Highcharts.Options = {
     },
     title: {
         text: "",
+    },
+
+    accessibility: {
+        description: "A graph showing all the episode ratings of TV show",
     },
 
     plotOptions: {
