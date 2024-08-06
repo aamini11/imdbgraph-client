@@ -7,8 +7,9 @@ import { AnimatePresence } from "framer-motion";
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
+import { z } from "zod";
 import { SearchIcon } from "@/components/Icons";
-import { formatYears, Show } from "@/models/Show";
+import { formatYears, Show, ShowSchema } from "@/lib/Show";
 
 const DROPDOWN_LIMIT = 5;
 
@@ -155,11 +156,11 @@ function isEmpty(s: string) {
     return !s || !/\S/.test(s);
 }
 
-const fetchSuggestions = async (query: string) => {
+const fetchSuggestions = async (query: string): Promise<Show[]> => {
     const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
     if (!response.ok) {
         throw new Error("Network response was not ok");
     }
 
-    return (await response.json()) as Show[];
+    return z.array(ShowSchema).parse(await response.json());
 };

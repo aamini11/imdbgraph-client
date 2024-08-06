@@ -6,7 +6,7 @@ import MouseZoom from "highcharts/modules/mouse-wheel-zoom";
 import HighchartsReact from "highcharts-react-official";
 import { isArray, mergeWith } from "lodash";
 import { Theme, useTheme } from "@/components/theme/ThemedPage";
-import { Episode, formatYears, RatingsData, Show } from "@/models/Show";
+import { Episode, RatingsData } from "@/lib/Show";
 
 // https://stackoverflow.com/a/56766980
 if (typeof Highcharts === "object") {
@@ -18,45 +18,19 @@ export function Graph({ ratings }: { ratings: RatingsData }) {
     const { theme } = useTheme();
 
     if (!hasRatings(ratings)) {
-        return (
-            <>
-                <ShowTitle show={ratings?.show} />
-                <h1 className="pt-8 text-center text-6xl leading-tight">No Ratings Found</h1>
-            </>
-        );
+        return <h1 className="pt-8 text-center text-6xl leading-tight">No Ratings Found</h1>;
     }
 
     const themeSpecificOptions = theme === Theme.DARK ? darkThemeOptions : lightThemeOptions;
     return (
-        <div className="flex flex-1">
-            <ShowTitle show={ratings?.show} />
-            {theme && (
-                <HighchartsReact
-                    highcharts={Highcharts}
-                    options={{
-                        series: parseRatings(ratings),
-                        ...mergeOptions(defaultOptions, commonOptions, themeSpecificOptions),
-                    }}
-                    className="min-w-[400px] max-w-[100vw] w-full"
-                />
-            )}
-        </div>
-    );
-}
-
-function ShowTitle({ show }: { show?: Show }) {
-    if (show === undefined) {
-        return null;
-    }
-    return (
-        <div className="p-3">
-            <h1 className="text-center text-xl">
-                {show.title} ({formatYears(show)})
-            </h1>
-            <h2 className="text-center text-sm">
-                Show rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})
-            </h2>
-        </div>
+        <HighchartsReact
+            highcharts={Highcharts}
+            options={{
+                series: parseRatings(ratings),
+                ...mergeOptions(defaultOptions, commonOptions, themeSpecificOptions),
+            }}
+            className="min-w-[400px] max-w-[100vw] w-full"
+        />
     );
 }
 
