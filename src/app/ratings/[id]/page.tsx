@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Graph } from "@/components/Graph";
 import Navigation from "@/components/Navigation";
@@ -7,7 +6,7 @@ import { formatYears, RatingsData, RatingsDataSchema, Show } from "@/lib/Show";
 export default async function RatingsPage(props: { params: { id?: string } }) {
     const showId = props.params.id;
     if (!showId) {
-        throw "Missing show ID parameter";
+        throw Error("Missing show ID parameter");
     }
 
     const ratings = await getRatings(showId);
@@ -26,21 +25,15 @@ export default async function RatingsPage(props: { params: { id?: string } }) {
     );
 }
 
-function ShowTitle({ show }: { show?: Show }) {
-    if (show === undefined) {
-        return null;
-    }
+function ShowTitle({ show }: { show: Show }) {
     return (
-        <div className="flex justify-center items-center">
-            <Image className="my-5" src={`/api/thumbnail/${show.imdbId}.jpg`} width={80} height={115} alt="Poster" />
-            <div className="p-3">
-                <h1 className="text-center text-xl">
-                    {show.title} ({formatYears(show)})
-                </h1>
-                <h2 className="text-center text-sm">
-                    Show rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})
-                </h2>
-            </div>
+        <div className="p-3">
+            <h1 className="text-center text-xl">
+                {show.title} ({formatYears(show)})
+            </h1>
+            <h2 className="text-center text-sm">
+                Show rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})
+            </h2>
         </div>
     );
 }
@@ -51,7 +44,7 @@ async function getRatings(showId: string): Promise<RatingsData> {
     }
 
     const url = `https://api.imdbgraph.org/ratings/${encodeURIComponent(showId)}`;
-    const data = await fetch(url, { next: { revalidate: 30 } });
+    const data = await fetch(url, { next: { revalidate: 3600 } });
     if (!data.ok) {
         notFound();
     } else {
