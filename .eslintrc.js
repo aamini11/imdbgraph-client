@@ -6,19 +6,14 @@ module.exports = {
         "next/core-web-vitals",
         "prettier",
     ],
+    root: true,
 
     overrides: [
         {
             files: ["**/*.{ts,tsx}"],
             parser: "@typescript-eslint/parser",
-            parserOptions: {
-                tsconfigRootDir: __dirname,
-                project: ["./tsconfig.json"],
-            },
-            extends: [
-                "plugin:@typescript-eslint/recommended",
-                "plugin:@typescript-eslint/recommended-requiring-type-checking",
-            ],
+            extends: ["plugin:@typescript-eslint/strict", "plugin:@typescript-eslint/stylistic"],
+            plugins: ["@typescript-eslint"],
         },
     ],
 
