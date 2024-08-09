@@ -3,9 +3,7 @@ import { clsx } from "@nextui-org/shared-utils";
 import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";
 import React from "react";
-import { minify } from "terser";
 import { inter } from "@/components/Fonts";
-import { initializeTheme } from "@/components/theme/anti-flashbang";
 import { ThemedPage } from "@/components/theme/ThemedPage";
 import { ThemeSelector } from "@/components/theme/ThemeSelector";
 import "./global.css";
@@ -17,16 +15,6 @@ export const metadata: Metadata = {
     icons: "/favicon.ico",
 };
 
-async function minifyCode(func: { name: string; toString: () => string }) {
-    const minifyOutput = await minify(func.toString() + `\n ${func.name}()`);
-
-    if (!minifyOutput.code) {
-        throw new Error("Minified code is empty");
-    }
-
-    return minifyOutput.code;
-}
-
 export default async function RootLayout(props: { children: React.ReactNode }) {
     return (
         // SuppressHydrationWarning is necessary because it is impossible for the server to know what the default
@@ -34,7 +22,6 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         // the html element and not children. (Only 1 level deep)
         <html suppressHydrationWarning>
             <body className={clsx("min-h-screen min-w-80 bg-background antialiased", inter.variable)}>
-                <script dangerouslySetInnerHTML={{ __html: await minifyCode(initializeTheme) }} />
                 <NextUIProvider>
                     <ThemedPage>
                         <div className="flex flex-col min-h-[100dvh] items-center">

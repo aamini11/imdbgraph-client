@@ -7,8 +7,8 @@
     "start": "next start",
     "test": "npx playwright test",
     "test:update-snapshots": "npx playwright test --update-snapshots",
-    "lint:check": "next lint --max-warnings=0",
-    "lint:fix": "next lint --fix",
+    "lint:check": "npx eslint src/**/*.{js,ts,jsx,tsx} --max-warnings=0",
+    "lint:fix": "npx eslint src/**/*.{js,ts,jsx,tsx} --fix",
     "format:check": "npx prettier --check '**/*.{js,ts,jsx,tsx}'",
     "format:fix": "npx prettier --write '**/*.{js,ts,jsx,tsx}'"
   },
@@ -24,6 +24,7 @@
     "highcharts-react-official": "^3.2.1",
     "lodash": "^4.17.21",
     "next": "^14.2.5",
+    "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^3.23.8"
