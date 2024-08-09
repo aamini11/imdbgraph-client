@@ -50,11 +50,11 @@ function hasRatings(ratings: RatingsData): boolean {
     return false;
 }
 
-interface Point {
+type Point = {
     x: number;
     y?: number;
     custom?: { episode: Episode };
-}
+};
 
 /**
  * Transform data into a format that Highcharts understands.

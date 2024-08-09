@@ -14,6 +14,9 @@ module.exports = {
             parser: "@typescript-eslint/parser",
             extends: ["plugin:@typescript-eslint/strict", "plugin:@typescript-eslint/stylistic"],
             plugins: ["@typescript-eslint"],
+            rules: {
+                "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+            },
         },
     ],
 

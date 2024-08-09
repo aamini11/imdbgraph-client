@@ -8,17 +8,15 @@ import { FC } from "react";
 import { MoonFilledIcon, SunFilledIcon } from "@/components/Icons";
 import { Theme, useTheme } from "@/components/theme/ThemedPage";
 
-export interface ThemeSwitchProps {
+export type ThemeSwitchProps = {
     classNames?: SwitchProps["classNames"];
-}
+};
 
 export const ThemeSelector: FC<ThemeSwitchProps> = ({ classNames }) => {
     const { theme, setTheme } = useTheme();
     const isSSR = useIsSSR();
 
-    const onChange = () => {
-        theme === Theme.LIGHT ? setTheme(Theme.DARK) : setTheme(Theme.LIGHT);
-    };
+    const onChange = () => (theme === Theme.LIGHT ? setTheme(Theme.DARK) : setTheme(Theme.LIGHT));
 
     const { Component, slots, isSelected, getBaseProps, getInputProps, getWrapperProps } = useSwitch({
         isSelected: theme === Theme.LIGHT || isSSR,
