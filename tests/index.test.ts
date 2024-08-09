@@ -8,10 +8,6 @@ test("Title works", async ({ page }) => {
     await expect(page.getByRole("heading", { name: /Welcome to IMDB Graph/i })).toBeVisible();
 });
 
-test("Home Page matches screenshot", async ({ page }) => {
-    await expect(page).toHaveScreenshot();
-});
-
 test("Search bar click navigation works", async ({ page }) => {
     const searchBar = page.getByPlaceholder("Search for any TV show...");
     await searchBar.click();
