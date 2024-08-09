@@ -50,11 +50,11 @@ function hasRatings(ratings: RatingsData): boolean {
     return false;
 }
 
-type Point = {
+interface Point {
     x: number;
     y?: number;
     custom?: { episode: Episode };
-};
+}
 
 /**
  * Transform data into a format that Highcharts understands.
@@ -224,7 +224,7 @@ const darkThemeOptions: Highcharts.Options = {
  * for this function is when merging the dark theme config object I want it to replace all the colors not just add dark
  * theme colors to the original set of default colors.
  */
-function mergeOptions<T>(...options: T[]): Highcharts.Options {
+function mergeOptions<T>(...options: [T, T, T]): Highcharts.Options {
     // merge mutates the first param so pass in any empty object {} instead.
     return mergeWith(
         {},
