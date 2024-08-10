@@ -1,63 +1,27 @@
 "use client";
 
-import { clsx } from "@nextui-org/shared-utils";
-import { SwitchProps, useSwitch } from "@nextui-org/switch";
-import { useIsSSR } from "@react-aria/ssr";
-import { VisuallyHidden } from "@react-aria/visually-hidden";
-import { FC } from "react";
-import { MoonFilledIcon, SunFilledIcon } from "@/components/assets/Icons";
-import { Theme, useTheme } from "@/components/theme/ThemedPage";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import * as React from "react";
+import { Button } from "@/components/ui/Button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/DropdownMenu";
 
-export type ThemeSwitchProps = {
-    classNames?: SwitchProps["classNames"];
-};
-
-export const ThemeSelector: FC<ThemeSwitchProps> = ({ classNames }) => {
-    const { theme, setTheme } = useTheme();
-    const isSSR = useIsSSR();
-
-    const onChange = () => (theme === Theme.LIGHT ? setTheme(Theme.DARK) : setTheme(Theme.LIGHT));
-
-    const { Component, slots, isSelected, getBaseProps, getInputProps, getWrapperProps } = useSwitch({
-        isSelected: theme === Theme.LIGHT || isSSR,
-        "aria-label": `Switch to ${theme === Theme.LIGHT || isSSR ? Theme.DARK : Theme.LIGHT} mode`,
-        onChange,
-    });
+export function ThemeSelector() {
+    const { setTheme } = useTheme();
 
     return (
-        <Component
-            {...getBaseProps({
-                className: clsx("px-px transition-opacity hover:opacity-80 cursor-pointer", classNames?.base),
-            })}
-        >
-            <VisuallyHidden>
-                <input {...getInputProps()} />
-            </VisuallyHidden>
-            <div
-                {...getWrapperProps()}
-                className={slots.wrapper({
-                    class: clsx(
-                        [
-                            "w-auto h-auto",
-                            "bg-transparent",
-                            "rounded-lg",
-                            "flex items-center justify-center",
-                            "group-data-[selected=true]:bg-transparent",
-                            "!text-default-500",
-                            "pt-px",
-                            "px-0",
-                            "mx-0",
-                        ],
-                        classNames?.wrapper,
-                    ),
-                })}
-            >
-                {!isSelected || isSSR ? (
-                    <SunFilledIcon width={22} height={22} />
-                ) : (
-                    <MoonFilledIcon width={22} height={22} />
-                )}
-            </div>
-        </Component>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                    <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="sr-only">Toggle theme</span>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     );
-};
+}
