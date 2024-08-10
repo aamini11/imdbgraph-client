@@ -10,7 +10,7 @@ export enum Theme {
 
 export function ThemedPage(props: { children: ReactNode }) {
     return (
-        <ThemeProvider defaultTheme="dark" enableSystem={true}>
+        <ThemeProvider defaultTheme="dark" enableSystem={true} attribute={"class"}>
             {props.children}
         </ThemeProvider>
     );
