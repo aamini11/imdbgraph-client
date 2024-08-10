@@ -3,7 +3,7 @@ import { clsx } from "@nextui-org/shared-utils";
 import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";
 import React from "react";
-import { inter } from "@/components/Fonts";
+import { inter } from "@/components/assets/Fonts";
 import { ThemedPage } from "@/components/theme/ThemedPage";
 import { ThemeSelector } from "@/components/theme/ThemeSelector";
 import "./global.css";

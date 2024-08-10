@@ -8,7 +8,7 @@ import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { z } from "zod";
-import { SearchIcon } from "@/components/Icons";
+import { SearchIcon } from "@/components/assets/Icons";
 import { formatYears, Show, ShowSchema } from "@/lib/Show";
 
 const DROPDOWN_LIMIT = 5;
@@ -162,5 +162,6 @@ const fetchSuggestions = async (query: string): Promise<Show[]> => {
         throw new Error("Network response was not ok");
     }
 
-    return z.array(ShowSchema).parse(await response.json());
+    const show = await response.json();
+    return z.array(ShowSchema).parse(show);
 };

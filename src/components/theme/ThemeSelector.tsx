@@ -5,7 +5,7 @@ import { SwitchProps, useSwitch } from "@nextui-org/switch";
 import { useIsSSR } from "@react-aria/ssr";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { FC } from "react";
-import { MoonFilledIcon, SunFilledIcon } from "@/components/Icons";
+import { MoonFilledIcon, SunFilledIcon } from "@/components/assets/Icons";
 import { Theme, useTheme } from "@/components/theme/ThemedPage";
 
 export type ThemeSwitchProps = {
