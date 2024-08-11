@@ -1,10 +1,12 @@
 "use client";
 
+import { useIsSSR } from "@react-aria/ssr";
 import Highcharts, { defaultOptions, SeriesSplineOptions } from "highcharts";
 import Accessibility from "highcharts/modules/accessibility";
 import MouseZoom from "highcharts/modules/mouse-wheel-zoom";
 import HighchartsReact from "highcharts-react-official";
 import { isArray, mergeWith } from "lodash";
+import { Spinner } from "@/components/spinner";
 import { Theme, useTheme } from "@/components/theme/ThemedPage";
 import { Episode, RatingsData } from "@/lib/Show";
 
@@ -16,21 +18,28 @@ if (typeof Highcharts === "object") {
 
 export function Graph({ ratings }: { ratings: RatingsData }) {
     const { theme } = useTheme();
+    const isSSR = useIsSSR();
 
     if (!hasRatings(ratings)) {
         return <h1 className="pt-8 text-center text-6xl leading-tight">No Ratings Found</h1>;
     }
 
-    const themeSpecificOptions = theme === Theme.DARK ? darkThemeOptions : lightThemeOptions;
+    const themeSpecificOptions = theme === Theme.LIGHT ? lightThemeOptions : darkThemeOptions;
     return (
-        <HighchartsReact
-            highcharts={Highcharts}
-            options={{
-                series: parseRatings(ratings),
-                ...mergeOptions(defaultOptions, commonOptions, themeSpecificOptions),
-            }}
-            className="min-w-[400px] max-w-[100vw] w-full"
-        />
+        <div className="flex flex-1 relative max-h-[400px] min-h-[250px]">
+            {isSSR ? (
+                <Spinner />
+            ) : (
+                <HighchartsReact
+                    highcharts={Highcharts}
+                    containerProps={{ style: { position: "absolute", height: "100%", width: "100%" } }}
+                    options={{
+                        series: parseRatings(ratings),
+                        ...mergeOptions(defaultOptions, commonOptions, themeSpecificOptions),
+                    }}
+                />
+            )}
+        </div>
     );
 }
 

@@ -17,7 +17,7 @@ export default async function RatingsPage(props: { params: { id?: string } }) {
                     <Navigation />
                 </div>
             </div>
-            <div className="flex-1">
+            <div className="flex flex-col flex-1">
                 <ShowTitle show={ratings.show} />
                 <Graph ratings={ratings} />
             </div>
@@ -43,8 +43,9 @@ async function getRatings(showId: string): Promise<RatingsData> {
         notFound();
     }
 
+    const timeout = 60 * 60 * 12;
     const url = `https://api.imdbgraph.org/ratings/${encodeURIComponent(showId)}`;
-    const data = await fetch(url, { next: { revalidate: 3600 } });
+    const data = await fetch(url, { next: { revalidate: timeout } });
     if (!data.ok) {
         notFound();
     } else {
