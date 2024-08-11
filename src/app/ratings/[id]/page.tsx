@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { Graph } from "@/components/Graph";
-import Navigation from "@/components/Navigation";
-import { formatYears, RatingsData, RatingsDataSchema, Show } from "@/lib/Show";
+import { Graph } from "@/components/graph";
+import Navigation from "@/components/navigation";
+import { formatYears, RatingsData, RatingsDataSchema, Show } from "@/lib/show";
 
 export default async function RatingsPage(props: { params: { id?: string } }) {
     const showId = props.params.id;

@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { Searchbar } from "@/components/SearchBar";
+import { SearchBar } from "@/components/search-bar";
 
 export default function Navigation() {
     return (
         <div className="w-full pr-4 flex items-center">
             <HomeIcon />
-            <Searchbar />
+            <SearchBar />
         </div>
     );
 }

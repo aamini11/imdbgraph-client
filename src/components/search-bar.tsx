@@ -10,14 +10,14 @@ import { useRouter } from "next/navigation";
 import React, { startTransition, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { SearchIcon } from "@/components/assets/Icons";
-import { formatYears, Show, ShowSchema } from "@/lib/Show";
+import { formatYears, Show, ShowSchema } from "@/lib/show";
 
 const DROPDOWN_LIMIT = 5;
 
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
  */
-export function Searchbar() {
+export function SearchBar() {
     const router = useRouter();
 
     const [text, setText] = useState("");

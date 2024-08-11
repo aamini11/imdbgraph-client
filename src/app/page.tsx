@@ -1,5 +1,5 @@
 import { tv } from "tailwind-variants";
-import { Searchbar } from "@/components/SearchBar";
+import { SearchBar } from "@/components/search-bar";
 import "./global.css";
 
 const title = tv({
@@ -40,7 +40,7 @@ export default function Home() {
             <div className="flex flex-col items-center gap-8 pb-10 px-10">
                 <h1 className={title({ size: "lg" })}>Welcome to IMDB Graph</h1>
                 <div className="min-w-80 max-w-lg w-full px-4">
-                    <Searchbar />
+                    <SearchBar />
                 </div>
 
                 <div className="px-10">

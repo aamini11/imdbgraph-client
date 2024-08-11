@@ -4,9 +4,9 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import React from "react";
-import { inter } from "@/components/assets/Fonts";
-import { ThemedPage } from "@/components/theme/ThemedPage";
-import { ThemeSelector } from "@/components/theme/ThemeSelector";
+import { inter } from "@/components/assets/fonts";
+import { ThemeButton } from "@/components/theme/theme-button";
+import { ThemedPage } from "@/components/theme/themed-page";
 import "./global.css";
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                     <ThemedPage>
                         <div className="flex flex-col min-h-[100dvh] items-center">
                             <div className="ml-auto p-3">
-                                <ThemeSelector />
+                                <ThemeButton />
                             </div>
                             <div className="w-full flex flex-col flex-1">{props.children}</div>
                             <footer className="w-full flex items-center justify-center py-3">
