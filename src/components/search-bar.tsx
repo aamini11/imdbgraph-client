@@ -26,10 +26,6 @@ export function SearchBar() {
     const [suggestions, setSuggestions] = useState<Show[]>([]);
 
     useEffect(() => {
-        router.prefetch("/ratings");
-    }, [router]);
-
-    useEffect(() => {
         return () => setIsRedirecting(false);
     }, []);
 
