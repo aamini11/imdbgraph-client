@@ -2,7 +2,6 @@
 
 import { TRANSITION_VARIANTS } from "@nextui-org/framer-utils";
 import { Input, ScrollShadow, Spinner } from "@nextui-org/react";
-import { clsx } from "@nextui-org/shared-utils";
 import { useCombobox, UseComboboxReturnValue } from "downshift";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
@@ -11,6 +10,7 @@ import React, { startTransition, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { SearchIcon } from "@/components/assets/Icons";
 import { formatYears, Show, ShowSchema } from "@/lib/show";
+import { cn } from "@/lib/utils";
 
 const DROPDOWN_LIMIT = 5;
 
@@ -128,7 +128,7 @@ function DropDown({
     const listItems = suggestions.map((show, index) => (
         <li
             key={show.imdbId}
-            className={clsx(
+            className={cn(
                 "flex gap-2 items-center justify-between px-2 py-1.5 w-full h-full",
                 "rounded-medium text-default-500 transition-opacity",
                 "subpixel-antialiased cursor-pointer tap-highlight-transparent hover:transition-colors",

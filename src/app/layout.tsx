@@ -1,5 +1,4 @@
 import { Link, NextUIProvider } from "@nextui-org/react";
-import { clsx } from "@nextui-org/shared-utils";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
@@ -7,6 +6,7 @@ import React from "react";
 import { inter } from "@/components/assets/fonts";
 import { ThemeButton } from "@/components/theme/theme-button";
 import { ThemedPage } from "@/components/theme/themed-page";
+import { cn } from "@/lib/utils";
 import "./global.css";
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         // theme is. So it will complain about mismatching class="dark" attribute. This only suppresses warnings for
         // the html element and not children. (Only 1 level deep)
         <html suppressHydrationWarning>
-            <body className={clsx("min-h-screen min-w-80 bg-background antialiased", inter.variable)}>
+            <body className={cn("min-h-screen min-w-80 bg-background antialiased", inter.variable)}>
                 <NextUIProvider>
                     <ThemedPage>
                         <div className="flex flex-col min-h-[100dvh] items-center">
