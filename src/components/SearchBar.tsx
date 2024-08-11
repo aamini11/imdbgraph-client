@@ -1,12 +1,13 @@
 "use client";
 
+import { TRANSITION_VARIANTS } from "@nextui-org/framer-utils";
 import { Input, ScrollShadow, Spinner } from "@nextui-org/react";
 import { clsx } from "@nextui-org/shared-utils";
 import { useCombobox, UseComboboxReturnValue } from "downshift";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
-import React, { useMemo, useState } from "react";
+import React, { startTransition, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { SearchIcon } from "@/components/assets/Icons";
 import { formatYears, Show, ShowSchema } from "@/lib/Show";
@@ -23,6 +24,14 @@ export function Searchbar() {
     const [isRedirecting, setIsRedirecting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [suggestions, setSuggestions] = useState<Show[]>([]);
+
+    useEffect(() => {
+        router.prefetch("/ratings");
+    }, [router]);
+
+    useEffect(() => {
+        return () => setIsRedirecting(false);
+    }, []);
 
     const handleNewQuery = useMemo(
         () =>
@@ -50,7 +59,11 @@ export function Searchbar() {
                     document.activeElement.blur();
                 }
                 // Go to ratings page
-                router.push(`/ratings/${encodeURIComponent(show.imdbId)}`);
+                // https://buildui.com/posts/global-progress-in-nextjs#introduction
+                startTransition(() => {
+                    setIsRedirecting(false);
+                    router.push(`/ratings/${encodeURIComponent(show.imdbId)}`);
+                });
             }
         },
         itemToString: (show) => show?.title ?? "",
@@ -85,7 +98,9 @@ export function Searchbar() {
             <div {...getMenuProps()} className="absolute w-full z-10 overflow-clip">
                 <AnimatePresence>
                     {isOpen && text.length > 0 && (!isLoading || suggestions.length > 0) && (
-                        <DropDown suggestions={suggestions} comboBoxProps={comboBoxProps} />
+                        <motion.div animate="enter" exit="exit" initial="exit" variants={TRANSITION_VARIANTS.fade}>
+                            <DropDown suggestions={suggestions} comboBoxProps={comboBoxProps} />
+                        </motion.div>
                     )}
                 </AnimatePresence>
             </div>

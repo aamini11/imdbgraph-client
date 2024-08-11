@@ -37,7 +37,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                                     title="Aria Amini LinkedIn"
                                 >
                                     <span className="text-default-600">Developed by</span>
-                                    <p className="text-primary">Aria Amini</p>
+                                    <p className="text-blue-600">Aria Amini</p>
                                 </Link>
                             </footer>
                         </div>
