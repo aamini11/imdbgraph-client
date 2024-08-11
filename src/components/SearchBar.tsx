@@ -39,13 +39,6 @@ export function Searchbar() {
 
     const comboBoxProps = useCombobox({
         items: suggestions,
-        onInputValueChange: ({ inputValue }) => {
-            setText(inputValue);
-            if (!isEmpty(inputValue)) {
-                setIsLoading(true);
-                void handleNewQuery(inputValue);
-            }
-        },
         onSelectedItemChange: ({ selectedItem: show }) => {
             if (isEmpty(text)) {
                 return;
@@ -71,6 +64,13 @@ export function Searchbar() {
                 radius="full"
                 type="text"
                 placeholder="Search for any TV show..."
+                onValueChange={(inputValue) => {
+                    setText(inputValue);
+                    if (!isEmpty(inputValue)) {
+                        setIsLoading(true);
+                        void handleNewQuery(inputValue);
+                    }
+                }}
                 classNames={{
                     // Reason for text-base. (Auto-zoom on safari. Input text size must be >16px)
                     // https://stackoverflow.com/q/2989263
