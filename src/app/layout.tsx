@@ -1,6 +1,7 @@
 import { Link, NextUIProvider } from "@nextui-org/react";
 import { clsx } from "@nextui-org/shared-utils";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import React from "react";
 import { inter } from "@/components/assets/Fonts";
@@ -44,6 +45,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                     </ThemedPage>
                 </NextUIProvider>
                 <Analytics />
+                <SpeedInsights />
             </body>
         </html>
     );
