@@ -6,8 +6,7 @@ html,
 body {
     padding: 0;
     margin: 0;
-    height: 100vh;
-    width: 100vw;
+    height: 100dvh;
 }
 
 /* https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model#the_alternative_css_box_model */
