@@ -1,4 +1,4 @@
-import { Link, NextUIProvider } from "@nextui-org/react";
+import { NextUIProvider } from "@nextui-org/react";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
@@ -6,6 +6,7 @@ import React from "react";
 import { inter } from "@/components/assets/fonts";
 import { ThemeButton } from "@/components/theme/theme-button";
 import { ThemedPage } from "@/components/theme/themed-page";
+import { Footer } from "@/components/ui/footer";
 import { cn } from "@/lib/utils";
 import "./global.css";
 
@@ -25,22 +26,12 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
             <body className={cn("min-h-screen min-w-80 bg-background antialiased", inter.variable)}>
                 <NextUIProvider>
                     <ThemedPage>
-                        <div className="flex flex-col min-h-[100dvh] items-center">
+                        <div className="flex flex-col min-h-[100dvh]">
                             <div className="ml-auto p-3">
                                 <ThemeButton />
                             </div>
                             <div className="w-full flex flex-col flex-1">{props.children}</div>
-                            <footer className="w-full flex items-center justify-center py-3">
-                                <Link
-                                    isExternal
-                                    className="flex items-center gap-1 text-current"
-                                    href="https://www.linkedin.com/in/aria-amini/"
-                                    title="Aria Amini LinkedIn"
-                                >
-                                    <span className="text-default-600">Developed by</span>
-                                    <p className="text-blue-600">Aria Amini</p>
-                                </Link>
-                            </footer>
+                            <Footer />
                         </div>
                     </ThemedPage>
                 </NextUIProvider>
