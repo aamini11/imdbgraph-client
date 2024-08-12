@@ -1,10 +1,13 @@
-import { nextui } from "@nextui-org/react";
+import { nextui } from "@nextui-org/theme";
 import type { Config } from "tailwindcss";
 import TailwindPlugin from "tailwindcss-animate";
 
 const config = {
     darkMode: ["class"],
-    content: ["./src/**/*.{js,ts,jsx,tsx}", "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"],
+    content: [
+        "./src/**/*.{js,ts,jsx,tsx}",
+        "./node_modules/@nextui-org/theme/dist/components/(input|scroll-shadow|spinner).{js,ts,jsx,tsx}",
+    ],
     prefix: "",
     theme: {
         container: {

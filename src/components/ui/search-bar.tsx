@@ -1,7 +1,9 @@
 "use client";
 
 import { TRANSITION_VARIANTS } from "@nextui-org/framer-utils";
-import { Input, ScrollShadow, Spinner } from "@nextui-org/react";
+import { Input } from "@nextui-org/input";
+import { ScrollShadow } from "@nextui-org/scroll-shadow";
+import { Spinner } from "@nextui-org/spinner";
 import { useCombobox, UseComboboxReturnValue } from "downshift";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
