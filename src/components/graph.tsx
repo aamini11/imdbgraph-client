@@ -6,8 +6,8 @@ import Accessibility from "highcharts/modules/accessibility";
 import MouseZoom from "highcharts/modules/mouse-wheel-zoom";
 import HighchartsReact from "highcharts-react-official";
 import { isArray, mergeWith } from "lodash";
-import { Spinner } from "@/components/spinner";
 import { Theme, useTheme } from "@/components/theme/themed-page";
+import { Spinner } from "@/components/ui/spinner";
 import { Episode, RatingsData } from "@/lib/show";
 
 // https://stackoverflow.com/a/56766980
