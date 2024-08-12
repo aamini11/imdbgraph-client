@@ -8,7 +8,7 @@ import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
 import React, { startTransition, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import { SearchIcon } from "@/components/assets/Icons";
+import { SearchIcon } from "@/components/assets/icons";
 import { formatYears, Show, ShowSchema } from "@/lib/show";
 import { cn } from "@/lib/utils";
 
