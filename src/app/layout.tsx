@@ -12,7 +12,20 @@ import "./global.css";
 
 export const metadata: Metadata = {
     title: "IMDB Graph",
-    keywords: ["imdbgraph.org", "imdbgraph.com", "IMDB", "Graph", "IMDB Graph", "Visualize", "Episode ratings"],
+    keywords: [
+        "imdbgraph.org",
+        "imdbgraph.com",
+        "IMDB",
+        "Graph",
+        "IMDB Graph",
+        "IMDB Chart",
+        "imdbgraph",
+        "Visualize",
+        "Episode ratings",
+        "chart",
+        "season",
+        "episode",
+    ],
     description: "Website to visualize IMDB TV show ratings as a graph",
     icons: "/favicon.ico",
 };
@@ -22,7 +35,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         // SuppressHydrationWarning is necessary because it is impossible for the server to know what the default
         // theme is. So it will complain about mismatching class="dark" attribute. This only suppresses warnings for
         // the html element and not children. (Only 1 level deep)
-        <html suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning>
             <body className={cn("min-h-screen min-w-80 bg-background antialiased", inter.variable)}>
                 <NextUIProvider>
                     <ThemedPage>
