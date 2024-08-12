@@ -29,6 +29,6 @@ test("Search bar keyboard navigation works", async ({ page }) => {
 });
 
 test("LinkedIn button works", async ({ page }) => {
-    const href = await page.getByRole("link", { name: /Developed by Aria Amini/i }).getAttribute("href");
+    const href = await page.getByRole("link", { name: "Aria" }).getAttribute("href");
     expect(href).toEqual("https://www.linkedin.com/in/aria-amini/");
 });
