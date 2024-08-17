@@ -1,9 +1,10 @@
 import { tv } from "tailwind-variants";
 import { SearchBar } from "@/components/ui/search-bar";
+import { cn } from "@/lib/utils";
 import "./global.css";
 
 const title = tv({
-    base: "tracking-tight inline font-semibold text-center",
+    base: "text-balance tracking-tight inline font-semibold text-center",
     variants: {
         color: {
             violet: "from-[#FF1CF7] to-[#b249f8]",
@@ -37,9 +38,9 @@ const title = tv({
 export default function Home() {
     return (
         <div>
-            <div className="flex flex-col items-center gap-12 pb-10 px-10 pt-20">
-                <h1 className={title({ size: "lg" })}>Welcome to IMDB Graph</h1>
-                <div className="min-w-80 max-w-lg w-full px-4">
+            <div className="flex flex-col items-center gap-9 pb-10 pt-20">
+                <h1 className={cn("px-8", title({ size: "lg" }))}>Welcome to IMDB Graph</h1>
+                <div className="min-w-80 w-full max-w-md px-3">
                     <SearchBar />
                 </div>
             </div>
