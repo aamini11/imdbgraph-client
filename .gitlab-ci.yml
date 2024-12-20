@@ -47,7 +47,7 @@ lint:
 
 end-to-end-tests:
   needs: [ install ]
-  image: mcr.microsoft.com/playwright:v1.46.0-jammy
+  image: mcr.microsoft.com/playwright:v1.49.1-jammy
   stage: test
   script:
     - pnpm run test
