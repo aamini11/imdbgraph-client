@@ -14,7 +14,7 @@ export function Footer() {
                     </a>
                     . The source code is available on{" "}
                     <a
-                        href="https://gitlab.com/users/aamini11/projects"
+                        href="https://gitlab.com/imdbgraph"
                         target="_blank"
                         rel="noreferrer"
                         className="font-medium underline underline-offset-4"
