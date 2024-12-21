@@ -49,6 +49,13 @@ async function getRatings(showId: string): Promise<RatingsData> {
     if (!data.ok) {
         notFound();
     } else {
-        return RatingsDataSchema.parse(await data.json());
+        const ratingsData = await data.json();
+        try {
+            return RatingsDataSchema.parse(ratingsData);
+        } catch (error) {
+            // Just return faulty data but log the error at least.
+            console.error("Failed to parse ratings data", error);
+            return ratingsData;
+        }
     }
 }

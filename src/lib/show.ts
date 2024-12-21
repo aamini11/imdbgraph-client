@@ -21,7 +21,7 @@ export function formatYears(show: Show): string {
 }
 
 export const EpisodeSchema = z.object({
-    episodeTitle: z.string(),
+    episodeTitle: z.string().nullish(),
     season: z.number(),
     episodeNumber: z.number(),
     imdbRating: z.number(),
