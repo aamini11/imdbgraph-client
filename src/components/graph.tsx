@@ -8,7 +8,8 @@ import HighchartsReact from "highcharts-react-official";
 import { isArray, mergeWith } from "lodash";
 import { Theme, useTheme } from "@/components/theme/themed-page";
 import { Spinner } from "@/components/ui/spinner";
-import { Episode, RatingsData } from "@/lib/show";
+import { Episode } from "@/lib/data/episode";
+import { RatingsData } from "@/lib/data/ratings";
 
 // https://stackoverflow.com/a/56766980
 if (typeof Highcharts === "object") {

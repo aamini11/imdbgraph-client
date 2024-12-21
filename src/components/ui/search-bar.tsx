@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import React, { startTransition, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { SearchIcon } from "@/components/assets/icons";
-import { formatYears, Show, ShowSchema } from "@/lib/show";
+import { formatYears, Show, ShowSchema } from "@/lib/data/show";
 import { cn } from "@/lib/utils";
 
 const DROPDOWN_LIMIT = 5;
@@ -176,5 +176,15 @@ const fetchSuggestions = async (query: string): Promise<Show[]> => {
     }
 
     const show = await response.json();
-    return z.array(ShowSchema).parse(show);
+    try {
+        return z.array(ShowSchema).parse(show);
+    } catch (error) {
+        // Just return faulty data but log the error at least.
+        if (error instanceof z.ZodError) {
+            console.error(`Failed to parse ratings data for show: ${show.imdbId}`, error);
+            return show as Show[];
+        } else {
+            throw error;
+        }
+    }
 };

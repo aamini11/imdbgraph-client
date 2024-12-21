@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
+import { z } from "zod";
 import { Graph } from "@/components/graph";
 import Navigation from "@/components/navigation";
-import { formatYears, RatingsData, RatingsDataSchema, Show } from "@/lib/show";
+import { RatingsData, RatingsDataSchema } from "@/lib/data/ratings";
+import { formatYears, Show } from "@/lib/data/show";
 
 export default async function RatingsPage(props: { params: { id?: string } }) {
     const showId = props.params.id;
@@ -54,8 +56,12 @@ async function getRatings(showId: string): Promise<RatingsData> {
             return RatingsDataSchema.parse(ratingsData);
         } catch (error) {
             // Just return faulty data but log the error at least.
-            console.error("Failed to parse ratings data", error);
-            return ratingsData;
+            if (error instanceof z.ZodError) {
+                console.error(`Failed to parse ratings data for show: ${ratingsData.show.imdbId}`, error);
+                return ratingsData as RatingsData;
+            } else {
+                throw error;
+            }
         }
     }
 }
