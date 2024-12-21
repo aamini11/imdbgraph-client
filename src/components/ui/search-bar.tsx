@@ -181,7 +181,7 @@ const fetchSuggestions = async (query: string): Promise<Show[]> => {
     } catch (error) {
         // Just return faulty data but log the error at least.
         if (error instanceof z.ZodError) {
-            console.error(`Failed to parse ratings data for show: ${show.imdbId}`, error);
+            console.error(`Failed to parse show data for: ${show.imdbId}`, error);
             return show as Show[];
         } else {
             throw error;
