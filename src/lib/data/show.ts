@@ -3,7 +3,7 @@ import { z } from "zod";
 export const ShowSchema = z.object({
     imdbId: z.string(),
     title: z.string(),
-    startYear: z.string(),
+    startYear: z.string().nullish(),
     endYear: z.string().nullish(),
     runtime: z.string().nullish(),
     rating: z.string().nullish(),
