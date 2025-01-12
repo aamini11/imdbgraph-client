@@ -32,15 +32,9 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.1.0
         version: 1.1.0(@types/react@18.3.3)(react@18.3.1)
-      '@radix-ui/react-toggle':
-        specifier: ^1.1.0
-        version: 1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/ssr':
         specifier: ^3.9.5
         version: 3.9.5(react@18.3.1)
-      '@react-aria/visually-hidden':
-        specifier: ^3.8.14
-        version: 3.8.14(react@18.3.1)
       '@sentry/nextjs':
         specifier: ^8.23.0
         version: 8.23.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(next@14.2.5(@babel/core@7.24.8)(@opentelemetry/api@1.9.0)(@playwright/test@1.46.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.93.0)
@@ -144,9 +138,6 @@ importers:
       tailwindcss:
         specifier: ^3.4.7
         version: 3.4.7(ts-node@10.9.2(@types/node@22.1.0)(typescript@5.5.4))
-      terser:
-        specifier: ^5.31.3
-        version: 5.31.3
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.1.0)(typescript@5.5.4)
@@ -879,19 +870,6 @@ packages:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
-        optional: true
-
-  '@radix-ui/react-toggle@1.1.0':
-    resolution: {integrity: sha512-gwoxaKZ0oJ4vIgzsfESBuSgJNdc0rv12VhHgcqN0TEJmmZixXG/2XpsLK8kzNWYcnaoRIEEQc0bEi3dIvdUpjw==}
-    peerDependencies:
-      '@types/react': '*'
-      '@types/react-dom': '*'
-      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
-      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      '@types/react-dom':
         optional: true
 
   '@radix-ui/react-use-callback-ref@1.1.0':
@@ -4454,17 +4432,6 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.3
 
-  '@radix-ui/react-toggle@1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@radix-ui/primitive': 1.1.0
-      '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-use-controllable-state': 1.1.0(@types/react@18.3.3)(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-    optionalDependencies:
-      '@types/react': 18.3.3
-      '@types/react-dom': 18.3.0
-
   '@radix-ui/react-use-callback-ref@1.1.0(@types/react@18.3.3)(react@18.3.1)':
     dependencies:
       react: 18.3.1
@@ -7379,7 +7346,7 @@ snapshots:
   terser@5.31.3:
     dependencies:
       '@jridgewell/source-map': 0.3.6
-      acorn: 8.11.3
+      acorn: 8.12.1
       commander: 2.20.3
       source-map-support: 0.5.21
 
