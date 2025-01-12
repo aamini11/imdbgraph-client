@@ -19,7 +19,7 @@ export function Footer() {
                         rel="noreferrer"
                         className="font-medium underline underline-offset-4"
                     >
-                        GitLab
+                        GitHub
                     </a>
                     .
                 </p>
