@@ -5,6 +5,8 @@ import Navigation from "@/components/navigation";
 import { RatingsData, RatingsDataSchema } from "@/lib/data/ratings";
 import { formatYears, Show } from "@/lib/data/show";
 
+export const dynamic = 'force-dynamic';
+
 export default async function RatingsPage(props: { params: { id?: string } }) {
     const showId = props.params.id;
     if (!showId) {
