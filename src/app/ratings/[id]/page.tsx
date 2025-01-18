@@ -51,7 +51,7 @@ async function getRatings(showId: string): Promise<RatingsData> {
         notFound();
     }
 
-    const timeout = 60 * 60 * 12; // Reset cache every 12 hours
+    const timeout = 60; // Reset cache every 12 hours
     const url = `https://api.imdbgraph.org/ratings/${encodeURIComponent(showId)}`;
     const data = await fetch(url, { next: { revalidate: timeout } });
     if (!data.ok) {
