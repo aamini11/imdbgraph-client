@@ -2,8 +2,10 @@ import { notFound } from "next/navigation";
 import { z } from "zod";
 import { Graph } from "@/components/graph";
 import Navigation from "@/components/navigation";
+import { Spinner } from "@/components/ui/spinner";
 import { RatingsData, RatingsDataSchema } from "@/lib/data/ratings";
 import { formatYears, Show } from "@/lib/data/show";
+import { Suspense } from "react";
 
 export const dynamic = 'force-dynamic';
 
@@ -23,7 +25,9 @@ export default async function RatingsPage(props: { params: { id?: string } }) {
             </div>
             <div className="flex flex-col flex-1">
                 <ShowTitle show={ratings.show} />
-                <Graph ratings={ratings} />
+                <Suspense fallback={<Spinner />}>
+                    <Graph ratings={ratings} />
+                </Suspense>
             </div>
         </div>
     );
