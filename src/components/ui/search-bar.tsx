@@ -75,7 +75,7 @@ export function SearchBar() {
                 radius="full"
                 type="text"
                 placeholder="Search for any TV show..."
-                onValueChange={(inputValue) => {
+                onValueChange={(inputValue: string) => {
                     setText(inputValue);
                     if (!isEmpty(inputValue)) {
                         setIsLoading(true);
