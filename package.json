@@ -2,8 +2,8 @@
   "name": "imdbgraph-client",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
     "start": "next start",
     "test": "npx playwright test",
     "test:update-snapshots": "npx playwright test --update-snapshots",
