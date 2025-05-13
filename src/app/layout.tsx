@@ -1,4 +1,4 @@
-import { NextUIProvider } from "@nextui-org/system";
+import { HeroUIProvider } from "@heroui/system";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
@@ -37,7 +37,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         // the html element and not children. (Only 1 level deep)
         <html lang="en" suppressHydrationWarning>
             <body className={cn("min-h-dvh min-w-80 bg-background antialiased", inter.variable)}>
-                <NextUIProvider>
+                <HeroUIProvider>
                     <ThemedPage>
                         <div className="flex flex-col min-h-[100dvh]">
                             <div className="ml-auto p-3">
@@ -47,7 +47,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                             <Footer />
                         </div>
                     </ThemedPage>
-                </NextUIProvider>
+                </HeroUIProvider>
                 <Analytics />
                 <SpeedInsights />
             </body>

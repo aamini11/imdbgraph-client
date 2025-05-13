@@ -1,9 +1,9 @@
 "use client";
 
-import { TRANSITION_VARIANTS } from "@nextui-org/framer-utils";
-import { Input } from "@nextui-org/input";
-import { ScrollShadow } from "@nextui-org/scroll-shadow";
-import { Spinner } from "@nextui-org/spinner";
+import { TRANSITION_VARIANTS } from "@heroui/framer-utils";
+import { Input } from "@heroui/input";
+import { ScrollShadow } from "@heroui/scroll-shadow";
+import { Spinner } from "@heroui/spinner";
 import { useCombobox, UseComboboxReturnValue } from "downshift";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";

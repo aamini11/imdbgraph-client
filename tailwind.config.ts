@@ -1,4 +1,4 @@
-import { nextui } from "@nextui-org/theme";
+import { heroui } from "@heroui/theme";
 import type { Config } from "tailwindcss";
 import TailwindPlugin from "tailwindcss-animate";
 
@@ -6,7 +6,7 @@ const config = {
     darkMode: ["class"],
     content: [
         "./src/**/*.{js,ts,jsx,tsx}",
-        "./node_modules/@nextui-org/theme/dist/components/(input|scroll-shadow|spinner).{js,ts,jsx,tsx}",
+        "./node_modules/@heroui/theme/dist/components/(input|scroll-shadow|spinner).{js,ts,jsx,tsx}",
     ],
     prefix: "",
     theme: {
@@ -77,7 +77,7 @@ const config = {
             },
         },
     },
-    plugins: [TailwindPlugin, nextui()],
+    plugins: [TailwindPlugin, heroui()],
 } satisfies Config;
 
 export default config;
