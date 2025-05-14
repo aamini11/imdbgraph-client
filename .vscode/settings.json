@@ -1,8 +1,6 @@
-{    
+{
     "files.autoSave": "afterDelay",
     "editor.formatOnSave": true,
     "editor.rulers": [80, 120],
-    "[typescriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
