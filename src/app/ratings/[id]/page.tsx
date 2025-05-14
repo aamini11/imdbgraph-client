@@ -1,12 +1,13 @@
-import { notFound } from "next/navigation";
-import { z } from "zod";
 import { Graph } from "@/components/graph";
 import Navigation from "@/components/navigation";
 import { RatingsData, RatingsDataSchema } from "@/lib/data/ratings";
 import { formatYears, Show } from "@/lib/data/show";
+import { notFound } from "next/navigation";
+import { z } from "zod";
 
-export default async function RatingsPage(props: { params: { id?: string } }) {
-    const showId = props.params.id;
+export default async function RatingsPage({ params }: { params: Promise<{ id?: string }> }) {
+    const show = await params;
+    const showId = show.id;
     if (!showId) {
         throw Error("Missing show ID parameter");
     }
