@@ -51,8 +51,17 @@ async function Ratings({ searchParams }: { searchParams: Promise<{ id?: string }
   if (!id) {
     notFound();
   }
-  const ratings = await getRatings(id);
+
+  const url = `https://api.imdbgraph.org/ratings/${encodeURIComponent(id)}`;
+  const timeout = 60 * 60 * 12; // 12 hours
+  const data = await fetch(url, { next: { revalidate: timeout } });
+  if (!data.ok) {
+    notFound();
+  }
+  const jsonResponse = await data.json();
+  const ratings = validateRatingsData(jsonResponse);
   const show = ratings.show;
+
   return (
     <>
       {/* Title */}
@@ -71,25 +80,4 @@ async function Ratings({ searchParams }: { searchParams: Promise<{ id?: string }
       </div>
     </>
   );
-}
-
-async function getRatings(showId: string): Promise<RatingsData> {
-  const url = `https://api.imdbgraph.org/ratings/${encodeURIComponent(showId)}`;
-  const timeout = 60 * 60 * 12; // 12 hours
-  const data = await fetch(url, { next: { revalidate: timeout } });
-  if (!data.ok) {
-    notFound();
-  }
-  const ratingsData = await data.json();
-  try {
-    return RatingsDataSchema.parse(ratingsData);
-  } catch (error) {
-    // Just return faulty data but log the error at least.
-    if (error instanceof z.ZodError) {
-      console.error(`Failed to parse ratings data for show: ${showId}`, error);
-      return ratingsData as RatingsData;
-    } else {
-      throw error;
-    }
-  }
 }
