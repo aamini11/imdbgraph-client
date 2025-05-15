@@ -72,7 +72,8 @@ async function Ratings({ searchParams }: { searchParams: Promise<{ id?: string }
 
 async function getRatings(showId: string): Promise<RatingsData> {
   const url = `https://api.imdbgraph.org/ratings/${encodeURIComponent(showId)}`;
-  const data = await fetch(url);
+  const timeout = 60 * 60 * 12; // 12 hours
+  const data = await fetch(url, { next: { revalidate: timeout } });
   if (!data.ok) {
     notFound();
   }
