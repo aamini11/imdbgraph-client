@@ -1,8 +1,8 @@
 import { Graph } from "@/components/graph";
+import { Loader } from "@/components/loading";
 import { SearchBar } from "@/components/search-bar";
 import { RatingsData, RatingsDataSchema } from "@/lib/data/ratings";
 import { formatYears } from "@/lib/data/show";
-import { Spinner } from "@heroui/spinner";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -12,7 +12,7 @@ export const experimental_ppr = true;
 
 export default function RatingsPage({ searchParams }: { searchParams: Promise<{ id?: string }> }) {
   return (
-    <div className="flex flex-1 flex-col">
+    <>
       {/* TOP NAVBAR (Home icon + seachbar) */}
       <div className="grid grid-cols-[1fr_minmax(auto,600px)_1fr]">
         <div className="w-full col-start-2">
@@ -36,13 +36,13 @@ export default function RatingsPage({ searchParams }: { searchParams: Promise<{ 
         </div>
       </div>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN CONTENT (Title + Graph) */}
       <div className="flex flex-col flex-1">
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<Loader />}>
           <Ratings searchParams={searchParams} />
         </Suspense>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -64,8 +64,11 @@ async function Ratings({ searchParams }: { searchParams: Promise<{ id?: string }
           Show rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})
         </h2>
       </div>
+
       {/* Graph */}
-      <Graph ratings={ratings} />
+      <div className="flex-1 min-h-[250px] p-5">
+        <Graph ratings={ratings} />
+      </div>
     </>
   );
 }

@@ -21,7 +21,7 @@ export function Graph({ ratings }: { ratings: RatingsData }) {
     <div className="flex flex-1 relative max-h-[400px] min-h-[250px]">
       <HighchartsReact
         highcharts={Highcharts}
-        containerProps={{ style: { position: "absolute", height: "100%", width: "100%" } }}
+        containerProps={{ style: { height: "100%", width: "100%" } }}
         options={{
           series: parseRatings(ratings),
           ...mergeOptions(Highcharts.defaultOptions, commonOptions, themeSpecificOptions),
