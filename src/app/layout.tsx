@@ -6,7 +6,6 @@ import React from "react";
 import { inter } from "@/components/assets/fonts";
 import { ThemeButton } from "@/components/theme/theme-button";
 import { ThemedPage } from "@/components/theme/themed-page";
-import { Footer } from "@/components/ui/footer";
 import { cn } from "@/lib/utils";
 import "./global.css";
 
@@ -42,11 +41,38 @@ export default function RootLayout(props: { children: React.ReactNode }) {
                 <HeroUIProvider>
                     <ThemedPage>
                         <div className="flex flex-col min-h-[100dvh]">
+                            {/* Header */}
                             <div className="ml-auto p-3">
                                 <ThemeButton />
                             </div>
+                            {/* Main content */}
                             <div className="w-full flex flex-col flex-1">{props.children}</div>
-                            <Footer />
+                            {/* Footer */}
+                            <footer className="py-6 px-6 w-full">
+                                <div className="flex flex-col items-center justify-between gap-4">
+                                    <p className="text-balance text-center text-sm leading-loose text-muted-foreground">
+                                        Built by{" "}
+                                        <a
+                                            href="https://www.linkedin.com/in/aria-amini/"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="font-medium underline underline-offset-4"
+                                        >
+                                            Aria
+                                        </a>
+                                        . The source code is available on{" "}
+                                        <a
+                                            href="https://github.com/aamini11?tab=repositories"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="font-medium underline underline-offset-4"
+                                        >
+                                            GitHub
+                                        </a>
+                                        .
+                                    </p>
+                                </div>
+                            </footer>
                         </div>
                     </ThemedPage>
                 </HeroUIProvider>
