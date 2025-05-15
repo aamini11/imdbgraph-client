@@ -1,5 +1,7 @@
 "use client";
 
+import { formatYears, Show, ShowSchema } from "@/lib/data/show";
+import { cn } from "@/lib/utils";
 import { TRANSITION_VARIANTS } from "@heroui/framer-utils";
 import { Input } from "@heroui/input";
 import { ScrollShadow } from "@heroui/scroll-shadow";
@@ -10,9 +12,6 @@ import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
 import React, { startTransition, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import { SearchIcon } from "@/components/assets/icons";
-import { formatYears, Show, ShowSchema } from "@/lib/data/show";
-import { cn } from "@/lib/utils";
 
 const DROPDOWN_LIMIT = 5;
 
@@ -30,6 +29,10 @@ export function SearchBar() {
     useEffect(() => {
         return () => setIsRedirecting(false);
     }, []);
+
+    useEffect(() => {
+        router.prefetch("/ratings");
+    }, [router]);
 
     const handleNewQuery = useMemo(
         () =>
@@ -60,7 +63,7 @@ export function SearchBar() {
                 // https://buildui.com/posts/global-progress-in-nextjs#introduction
                 startTransition(() => {
                     setIsRedirecting(false);
-                    router.push(`/ratings/${encodeURIComponent(show.imdbId)}`);
+                    router.push(`/ratings?id=${show.imdbId}`);
                 });
             }
         },
@@ -170,7 +173,7 @@ function isEmpty(s: string) {
 }
 
 const fetchSuggestions = async (query: string): Promise<Show[]> => {
-    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+    const response = await fetch(`https://api.imdbgraph.org/search?q=${query}`);
     if (!response.ok) {
         throw new Error("Network response was not ok");
     }
@@ -188,3 +191,39 @@ const fetchSuggestions = async (query: string): Promise<Show[]> => {
         }
     }
 };
+
+export const SearchIcon = ({
+    size = 24,
+    strokeWidth = 1.5,
+    className,
+}: {
+    size: number;
+    strokeWidth: number;
+    className: string;
+}) => (
+    <svg
+        aria-hidden="true"
+        fill="none"
+        focusable="false"
+        height={size}
+        role="presentation"
+        viewBox="0 0 24 24"
+        width={size}
+        className={className}
+    >
+        <path
+            d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={strokeWidth}
+        />
+        <path
+            d="M22 22L20 20"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={strokeWidth}
+        />
+    </svg>
+);

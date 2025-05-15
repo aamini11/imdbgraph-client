@@ -1,15 +1,13 @@
+import "./global.css";
+import { ThemeButton } from "@/components/theme/theme-button";
+import { ThemedPage } from "@/components/theme/themed-page";
+import { cn } from "@/lib/utils";
 import { HeroUIProvider } from "@heroui/system";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
+import { Inter } from "next/font/google";
 import React from "react";
-import { inter } from "@/components/assets/fonts";
-import { ThemeButton } from "@/components/theme/theme-button";
-import { ThemedPage } from "@/components/theme/themed-page";
-import { cn } from "@/lib/utils";
-import "./global.css";
-
-export const experimental_ppr = true;
 
 export const metadata: Metadata = {
     title: "IMDB Graph",
@@ -30,6 +28,12 @@ export const metadata: Metadata = {
     description: "Website to visualize IMDB TV show ratings as a graph",
     icons: "/favicon.ico",
 };
+
+const inter = Inter({
+    subsets: ["latin"],
+    display: "swap",
+    variable: "--font-inter",
+});
 
 export default function RootLayout(props: { children: React.ReactNode }) {
     return (
