@@ -6,12 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "test": "npx playwright test",
-    "test:update-snapshots": "npx playwright test --update-snapshots",
-    "lint:check": "npx eslint src/**/*.{js,ts,jsx,tsx} --max-warnings=0",
-    "lint:fix": "npx eslint src/**/*.{js,ts,jsx,tsx} --fix",
-    "format:check": "npx prettier --check '**/*.{js,ts,jsx,tsx}'",
-    "format:fix": "npx prettier --write '**/*.{js,ts,jsx,tsx}'"
+    "test": "playwright test",
+    "test:update-snapshots": "playwright test --update-snapshots",
+    "lint:check": "eslint src/**/*.{js,ts,jsx,tsx} --max-warnings=0",
+    "lint:fix": "eslint src/**/*.{js,ts,jsx,tsx} --fix",
+    "format:check": "prettier --check '**/*.{js,ts,jsx,tsx}'",
+    "format:fix": "prettier --write '**/*.{js,ts,jsx,tsx}'"
   },
   "dependencies": {
     "@heroui/framer-utils": "^2.1.15",
