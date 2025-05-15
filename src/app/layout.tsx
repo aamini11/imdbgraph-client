@@ -40,7 +40,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
             <body className={cn("min-h-dvh min-w-80 bg-background antialiased", inter.variable)}>
                 <HeroUIProvider>
                     <ThemedPage>
-                        <div className="flex flex-col min-h-[100dvh]">
+                        <div className="flex flex-col min-h-dvh">
                             {/* Header */}
                             <div className="ml-auto p-3">
                                 <ThemeButton />
