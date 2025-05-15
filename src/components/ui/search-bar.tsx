@@ -169,7 +169,7 @@ function isEmpty(s: string) {
 }
 
 const fetchSuggestions = async (query: string): Promise<Show[]> => {
-  const response = await fetch(`https://api.imdbgraph.org/search?q=${query}`);
+  const response = await fetch(`/api/search?q=${query}`);
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
