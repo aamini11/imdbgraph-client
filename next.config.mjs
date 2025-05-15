@@ -8,6 +8,15 @@ const nextConfig = {
       {
         source: "/api/:path*",
         destination: `https://api.imdbgraph.org/:path*`,
+      }
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: "/ratings/:id",
+        destination: "/ratings?id=:id",
+        permanent: true,
       },
     ];
   },
