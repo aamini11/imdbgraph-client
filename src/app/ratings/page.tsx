@@ -1,5 +1,5 @@
-import { Graph } from "@/components/ui/graph";
-import { SearchBar } from "@/components/ui/search-bar";
+import { Graph } from "@/components/graph";
+import { SearchBar } from "@/components/search-bar";
 import { RatingsData, RatingsDataSchema } from "@/lib/data/ratings";
 import { formatYears } from "@/lib/data/show";
 import { Spinner } from "@heroui/spinner";

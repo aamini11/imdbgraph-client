@@ -1,5 +1,5 @@
 import "./global.css";
-import { SearchBar } from "@/components/ui/search-bar";
+import { SearchBar } from "@/components/search-bar";
 
 export default function Home() {
   return (
