@@ -4,14 +4,14 @@ import { ReactNode } from "react";
 export { useTheme };
 
 export enum Theme {
-    LIGHT = "light",
-    DARK = "dark",
+  LIGHT = "light",
+  DARK = "dark",
 }
 
 export function ThemedPage(props: { children: ReactNode }) {
-    return (
-        <ThemeProvider defaultTheme="dark" enableSystem={true} attribute={"class"}>
-            {props.children}
-        </ThemeProvider>
-    );
+  return (
+    <ThemeProvider defaultTheme="dark" enableSystem={true} attribute={"class"}>
+      {props.children}
+    </ThemeProvider>
+  );
 }

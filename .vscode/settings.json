@@ -1,6 +1,6 @@
 {
-    "files.autoSave": "afterDelay",
-    "editor.formatOnSave": true,
-    "editor.rulers": [80, 120],
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "files.autoSave": "afterDelay",
+  "editor.formatOnSave": true,
+  "editor.rulers": [80, 120],
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
