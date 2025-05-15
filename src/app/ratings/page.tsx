@@ -1,8 +1,8 @@
 import { Graph } from "@/components/graph";
+import { Loader } from "@/components/loading";
 import { SearchBar } from "@/components/search-bar";
 import { RatingsData, RatingsDataSchema } from "@/lib/data/ratings";
 import { formatYears } from "@/lib/data/show";
-import { Spinner } from "@heroui/spinner";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -38,7 +38,7 @@ export default function RatingsPage({ searchParams }: { searchParams: Promise<{ 
 
       {/* MAIN CONTENT */}
       <div className="flex flex-col flex-1">
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<Loader />}>
           <Ratings searchParams={searchParams} />
         </Suspense>
       </div>

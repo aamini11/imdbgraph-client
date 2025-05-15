@@ -1,6 +1,6 @@
 import "./spinner.css";
 
-export function Spinner() {
+export function Loader() {
   return (
     <div className="flex flex-1 justify-center items-center">
       <h1 className="text-xl">
