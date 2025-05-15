@@ -1,6 +1,4 @@
-import { heroui } from "@heroui/theme";
 import type { Config } from "tailwindcss";
-import TailwindPlugin from "tailwindcss-animate";
 
 const config = {
     darkMode: ["class"],
@@ -77,7 +75,6 @@ const config = {
             },
         },
     },
-    plugins: [TailwindPlugin, heroui()],
 } satisfies Config;
 
 export default config;
