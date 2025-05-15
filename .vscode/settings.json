@@ -1,0 +1,10 @@
+{
+  "files.autoSave": "afterDelay",
+  "files.exclude": {
+    "node_modules/": true,
+    ".next/": true
+  },
+  "editor.formatOnSave": true,
+  "editor.rulers": [80, 120],
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
