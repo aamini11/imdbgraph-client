@@ -1,26 +1,17 @@
 "use client";
 
-import { useIsSSR } from "@react-aria/ssr";
-import Highcharts, { defaultOptions, SeriesSplineOptions } from "highcharts";
-import Accessibility from "highcharts/modules/accessibility";
-import MouseZoom from "highcharts/modules/mouse-wheel-zoom";
-import HighchartsReact from "highcharts-react-official";
-import { isArray, mergeWith } from "lodash";
 import { Theme, useTheme } from "@/components/theme/themed-page";
-import { Spinner } from "@/components/ui/spinner";
 import { Episode } from "@/lib/data/episode";
 import { RatingsData } from "@/lib/data/ratings";
-
-// https://stackoverflow.com/a/56766980
-if (typeof Highcharts === "object") {
-    MouseZoom(Highcharts);
-    Accessibility(Highcharts);
-}
+import { HighchartsReact } from "highcharts-react-official";
+import Highcharts from "highcharts/esm/highcharts";
+import "highcharts/esm/modules/accessibility";
+import { isArray, mergeWith } from "lodash";
 
 export function Graph({ ratings }: { ratings: RatingsData }) {
     const { theme } = useTheme();
-    const isSSR = useIsSSR();
 
+    // Empty result
     if (!hasRatings(ratings)) {
         return <h1 className="pt-8 text-center text-6xl leading-tight">No Ratings Found</h1>;
     }
@@ -28,18 +19,14 @@ export function Graph({ ratings }: { ratings: RatingsData }) {
     const themeSpecificOptions = theme === Theme.LIGHT ? lightThemeOptions : darkThemeOptions;
     return (
         <div className="flex flex-1 relative max-h-[400px] min-h-[250px]">
-            {isSSR ? (
-                <Spinner />
-            ) : (
-                <HighchartsReact
-                    highcharts={Highcharts}
-                    containerProps={{ style: { position: "absolute", height: "100%", width: "100%" } }}
-                    options={{
-                        series: parseRatings(ratings),
-                        ...mergeOptions(defaultOptions, commonOptions, themeSpecificOptions),
-                    }}
-                />
-            )}
+            <HighchartsReact
+                highcharts={Highcharts}
+                containerProps={{ style: { position: "absolute", height: "100%", width: "100%" } }}
+                options={{
+                    series: parseRatings(ratings),
+                    ...mergeOptions(Highcharts.defaultOptions, commonOptions, themeSpecificOptions),
+                }}
+            />
         </div>
     );
 }
@@ -69,9 +56,9 @@ type Point = {
 /**
  * Transform data into a format that Highcharts understands.
  */
-function parseRatings(ratings: RatingsData): SeriesSplineOptions[] {
+function parseRatings(ratings: RatingsData): Highcharts.SeriesSplineOptions[] {
     let i = 1;
-    const allSeries: SeriesSplineOptions[] = [];
+    const allSeries: Highcharts.SeriesSplineOptions[] = [];
     for (const [seasonNumber, seasonRatings] of Object.entries(ratings.allEpisodeRatings)) {
         const data = [];
         for (const episode of Object.values(seasonRatings)) {
@@ -90,7 +77,7 @@ function parseRatings(ratings: RatingsData): SeriesSplineOptions[] {
             i++;
         }
 
-        const series: SeriesSplineOptions = {
+        const series: Highcharts.SeriesSplineOptions = {
             name: "Season " + seasonNumber,
             type: "spline",
             data: data,

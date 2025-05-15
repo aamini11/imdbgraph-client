@@ -1,18 +1,13 @@
 import { Graph } from "@/components/graph";
 import Navigation from "@/components/navigation";
+import { Spinner } from "@/components/ui/spinner";
 import { RatingsData, RatingsDataSchema } from "@/lib/data/ratings";
-import { formatYears, Show } from "@/lib/data/show";
+import { formatYears } from "@/lib/data/show";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { z } from "zod";
 
-export default async function RatingsPage({ params }: { params: Promise<{ id?: string }> }) {
-    const show = await params;
-    const showId = show.id;
-    if (!showId) {
-        throw Error("Missing show ID parameter");
-    }
-
-    const ratings = await getRatings(showId);
+export default function RatingsPage({ params }: { params: Promise<{ id: string }> }) {
     return (
         <div className="flex flex-1 flex-col">
             <div className="grid grid-cols-[1fr,minmax(auto,600px),1fr]">
@@ -21,48 +16,54 @@ export default async function RatingsPage({ params }: { params: Promise<{ id?: s
                 </div>
             </div>
             <div className="flex flex-col flex-1">
-                <ShowTitle show={ratings.show} />
-                <Graph ratings={ratings} />
+                <Suspense fallback={<Spinner />}>
+                    <Ratings params={params} />
+                </Suspense>
             </div>
         </div>
     );
 }
 
-function ShowTitle({ show }: { show: Show }) {
+export async function Ratings({ params }: { params: Promise<{ id?: string }> }) {
+    const id = (await params)?.id;
+    if (!id) {
+        notFound();
+    }
+    const ratings = await getRatings(id);
+    const show = ratings.show;
     return (
-        <div className="p-3">
-            <h1 className="text-center text-xl">
-                {show.title} ({formatYears(show)})
-            </h1>
-            <h2 className="text-center text-sm">
-                Show rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})
-            </h2>
-        </div>
+        <>
+            {/* Title */}
+            <div className="p-3">
+                <h1 className="text-center text-xl">
+                    {show.title} ({formatYears(show)})
+                </h1>
+                <h2 className="text-center text-sm">
+                    Show rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})
+                </h2>
+            </div>
+            {/* Graph */}
+            <Graph ratings={ratings} />
+        </>
     );
 }
 
 async function getRatings(showId: string): Promise<RatingsData> {
-    if (!showId) {
-        notFound();
-    }
-
-    const timeout = 60 * 60 * 12;
     const url = `https://api.imdbgraph.org/ratings/${encodeURIComponent(showId)}`;
-    const data = await fetch(url, { next: { revalidate: timeout } });
+    const data = await fetch(url);
     if (!data.ok) {
         notFound();
-    } else {
-        const ratingsData = await data.json();
-        try {
-            return RatingsDataSchema.parse(ratingsData);
-        } catch (error) {
-            // Just return faulty data but log the error at least.
-            if (error instanceof z.ZodError) {
-                console.error(`Failed to parse ratings data for show: ${ratingsData.show.imdbId}`, error);
-                return ratingsData as RatingsData;
-            } else {
-                throw error;
-            }
+    }
+    const ratingsData = await data.json();
+    try {
+        return RatingsDataSchema.parse(ratingsData);
+    } catch (error) {
+        // Just return faulty data but log the error at least.
+        if (error instanceof z.ZodError) {
+            console.error(`Failed to parse ratings data for show: ${showId}`, error);
+            return ratingsData as RatingsData;
+        } else {
+            throw error;
         }
     }
 }

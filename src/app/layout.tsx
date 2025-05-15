@@ -10,6 +10,8 @@ import { Footer } from "@/components/ui/footer";
 import { cn } from "@/lib/utils";
 import "./global.css";
 
+export const experimental_ppr = true;
+
 export const metadata: Metadata = {
     title: "IMDB Graph",
     keywords: [
@@ -30,7 +32,7 @@ export const metadata: Metadata = {
     icons: "/favicon.ico",
 };
 
-export default async function RootLayout(props: { children: React.ReactNode }) {
+export default function RootLayout(props: { children: React.ReactNode }) {
     return (
         // SuppressHydrationWarning is necessary because it is impossible for the server to know what the default
         // theme is. So it will complain about mismatching class="dark" attribute. This only suppresses warnings for
