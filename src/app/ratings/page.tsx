@@ -1,16 +1,19 @@
 import { Graph } from "@/components/graph";
 import { Loader } from "@/components/loading";
 import { SearchBar } from "@/components/search-bar";
-import { RatingsData, RatingsDataSchema } from "@/lib/data/ratings";
+import { RatingsData, validateRatingsData } from "@/lib/data/ratings";
 import { formatYears } from "@/lib/data/show";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { z } from "zod";
 
 export const experimental_ppr = true;
 
-export default function RatingsPage({ searchParams }: { searchParams: Promise<{ id?: string }> }) {
+export default function RatingsPageLayout({
+  searchParams,
+}: {
+  searchParams: Promise<{ id?: string }>;
+}) {
   return (
     <>
       {/* TOP NAVBAR (Home icon + seachbar) */}
@@ -46,7 +49,11 @@ export default function RatingsPage({ searchParams }: { searchParams: Promise<{ 
   );
 }
 
-async function Ratings({ searchParams }: { searchParams: Promise<{ id?: string }> }) {
+async function Ratings({
+  searchParams,
+}: {
+  searchParams: Promise<{ id?: string }>;
+}) {
   const id = (await searchParams)?.id;
   if (!id) {
     notFound();
@@ -64,20 +71,38 @@ async function Ratings({ searchParams }: { searchParams: Promise<{ id?: string }
 
   return (
     <>
-      {/* Title */}
+      {/* Show Title */}
       <div className="p-3">
         <h1 className="text-center text-xl">
           {show.title} ({formatYears(show)})
         </h1>
         <h2 className="text-center text-sm">
-          Show rating: {show.showRating.toFixed(1)} (Votes: {show.numVotes.toLocaleString()})
+          Show rating: {show.showRating.toFixed(1)} (Votes:{" "}
+          {show.numVotes.toLocaleString()})
         </h2>
       </div>
 
       {/* Graph */}
       <div className="flex-1 min-h-[250px] p-5">
-        <Graph ratings={ratings} />
+        {!hasRatings(ratings) ? (
+          <h1 className="pt-8 text-center text-6xl leading-tight">
+            No Ratings Found
+          </h1>
+        ) : (
+          <Graph ratings={ratings} />
+        )}
       </div>
     </>
   );
+}
+
+function hasRatings(ratings: RatingsData): boolean {
+  for (const seasonRatings of Object.values(ratings.allEpisodeRatings)) {
+    for (const episode of Object.values(seasonRatings)) {
+      if (episode.numVotes > 0) {
+        return true;
+      }
+    }
+  }
+  return false;
 }

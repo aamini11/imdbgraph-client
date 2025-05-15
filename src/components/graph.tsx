@@ -10,13 +10,8 @@ import { isArray, mergeWith } from "lodash";
 
 export function Graph({ ratings }: { ratings: RatingsData }) {
   const { theme } = useTheme();
-
-  // Empty result
-  if (!hasRatings(ratings)) {
-    return <h1 className="pt-8 text-center text-6xl leading-tight">No Ratings Found</h1>;
-  }
-
   const themeSpecificOptions = theme === Theme.LIGHT ? lightThemeOptions : darkThemeOptions;
+  
   return (
     <div className="flex flex-1 relative max-h-[400px] min-h-[250px]">
       <HighchartsReact
@@ -29,22 +24,6 @@ export function Graph({ ratings }: { ratings: RatingsData }) {
       />
     </div>
   );
-}
-
-/**
- * Helper function to check if a show has any ratings on any of their episodes. This
- * function is used to know whether a graph should be displayed or just an empty
- * banner letting the user know the show had no ratings.
- */
-function hasRatings(ratings: RatingsData): boolean {
-  for (const seasonRatings of Object.values(ratings.allEpisodeRatings)) {
-    for (const episode of Object.values(seasonRatings)) {
-      if (episode.numVotes > 0) {
-        return true;
-      }
-    }
-  }
-  return false;
 }
 
 type Point = {

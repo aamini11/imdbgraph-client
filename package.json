@@ -16,10 +16,10 @@
   "dependencies": {
     "@heroui/framer-utils": "^2.1.15",
     "@heroui/input": "^2.4.19",
-        "@heroui/scroll-shadow": "^2.3.13",
+    "@heroui/scroll-shadow": "^2.3.13",
     "@heroui/spinner": "^2.2.16",
     "@heroui/system": "^2.4.15",
-"@heroui/theme": "2.4.16-beta.1",
+    "@heroui/theme": "2.4.16-beta.1",
     "@radix-ui/react-dropdown-menu": "^2.1.14",
     "@radix-ui/react-slot": "^1.2.2",
     "@vercel/analytics": "^1.5.0",
