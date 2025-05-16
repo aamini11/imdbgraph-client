@@ -4,7 +4,7 @@
   "packageManager": "pnpm@10.11.0",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
