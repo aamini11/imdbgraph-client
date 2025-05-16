@@ -91,18 +91,36 @@ export function SearchBar() {
           input: "ml-1 text-base",
           inputWrapper: "h-[48px]",
         }}
-        startContent={<SearchIcon className="text-default-400" strokeWidth={2.5} size={20} />}
-        endContent={(isLoading || isRedirecting) && <Spinner color="default" size="sm" />}
+        startContent={
+          <SearchIcon
+            className="text-default-400"
+            strokeWidth={2.5}
+            size={20}
+          />
+        }
+        endContent={
+          (isLoading || isRedirecting) && <Spinner color="default" size="sm" />
+        }
         disabled={isRedirecting}
         {...getInputProps()}
       />
       <div {...getMenuProps()} className="absolute w-full z-10 overflow-clip">
         <AnimatePresence>
-          {isOpen && text.length > 0 && (!isLoading || suggestions.length > 0) && (
-            <motion.div animate="enter" exit="exit" initial="exit" variants={TRANSITION_VARIANTS.fade}>
-              <DropDown suggestions={suggestions} comboBoxProps={comboBoxProps} />
-            </motion.div>
-          )}
+          {isOpen &&
+            text.length > 0 &&
+            (!isLoading || suggestions.length > 0) && (
+              <motion.div
+                animate="enter"
+                exit="exit"
+                initial="exit"
+                variants={TRANSITION_VARIANTS.fade}
+              >
+                <DropDown
+                  suggestions={suggestions}
+                  comboBoxProps={comboBoxProps}
+                />
+              </motion.div>
+            )}
         </AnimatePresence>
       </div>
     </div>
@@ -137,7 +155,10 @@ function DropDown({
         "flex gap-2 items-center justify-between px-2 py-1.5 w-full h-full",
         "rounded-medium text-default-500 transition-opacity",
         "subpixel-antialiased cursor-pointer tap-highlight-transparent hover:transition-colors",
-        { "bg-default-200 dark:bg-default-50 text-foreground": index === highlightedIndex },
+        {
+          "bg-default-200 dark:bg-default-50 text-foreground":
+            index === highlightedIndex,
+        },
         "hover:bg-default-200 hover:text-foreground",
         "dark:hover:bg-default-50",
       )}
@@ -146,7 +167,9 @@ function DropDown({
       <div className="flex justify-between w-full items-center">
         <div className="flex flex-col">
           <span className="text-small break-words">{show.title}&nbsp;</span>
-          <span className="text-tiny text-default-400">{formatYears(show)}</span>
+          <span className="text-tiny text-default-400">
+            {formatYears(show)}
+          </span>
         </div>
         {rating(show)}
       </div>
@@ -157,7 +180,13 @@ function DropDown({
     <div className="rounded-large p-2 border-small border-default-400 dark:border-default-100 bg-background mt-2">
       <ScrollShadow className="max-h-[320px]">
         <ul id="tv-search-dropdown">
-          {suggestions.length > 0 ? listItems : <li className="text-small text-default-400 pl-2">No TV Shows found</li>}
+          {suggestions.length > 0 ? (
+            listItems
+          ) : (
+            <li className="text-small text-default-400 pl-2">
+              No TV Shows found
+            </li>
+          )}
         </ul>
       </ScrollShadow>
     </div>

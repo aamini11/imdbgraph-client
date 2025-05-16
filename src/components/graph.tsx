@@ -10,8 +10,9 @@ import { isArray, mergeWith } from "lodash";
 
 export function Graph({ ratings }: { ratings: RatingsData }) {
   const { theme } = useTheme();
-  const themeSpecificOptions = theme === Theme.LIGHT ? lightThemeOptions : darkThemeOptions;
-  
+  const themeSpecificOptions =
+    theme === Theme.LIGHT ? lightThemeOptions : darkThemeOptions;
+
   return (
     <div className="flex flex-1 relative max-h-[400px] min-h-[250px]">
       <HighchartsReact
@@ -19,7 +20,11 @@ export function Graph({ ratings }: { ratings: RatingsData }) {
         containerProps={{ style: { height: "100%", width: "100%" } }}
         options={{
           series: parseRatings(ratings),
-          ...mergeOptions(Highcharts.defaultOptions, commonOptions, themeSpecificOptions),
+          ...mergeOptions(
+            Highcharts.defaultOptions,
+            commonOptions,
+            themeSpecificOptions,
+          ),
         }}
       />
     </div>
@@ -38,7 +43,9 @@ type Point = {
 function parseRatings(ratings: RatingsData): Highcharts.SeriesSplineOptions[] {
   let i = 1;
   const allSeries: Highcharts.SeriesSplineOptions[] = [];
-  for (const [seasonNumber, seasonRatings] of Object.entries(ratings.allEpisodeRatings)) {
+  for (const [seasonNumber, seasonRatings] of Object.entries(
+    ratings.allEpisodeRatings,
+  )) {
     const data = [];
     for (const episode of Object.values(seasonRatings)) {
       if (episode.numVotes == 0) {
@@ -153,7 +160,13 @@ const lightThemeOptions: Highcharts.Options = {
 };
 
 const darkThemeOptions: Highcharts.Options = {
-  colors: ["#7CEA9C", "#50B2C0", "rgb(114, 78, 145)", "hsl(45, 93%, 58%)", "rgb(230, 78, 108)"],
+  colors: [
+    "#7CEA9C",
+    "#50B2C0",
+    "rgb(114, 78, 145)",
+    "hsl(45, 93%, 58%)",
+    "rgb(230, 78, 108)",
+  ],
 
   yAxis: {
     gridLineColor: "#3f3f46",
@@ -195,17 +208,22 @@ const darkThemeOptions: Highcharts.Options = {
 };
 
 /**
- * Modified version of lodash's recursive merge function. In lodash's version, it would merge together two arrays.
- * In this version, if two arrays are encountered, it just replaces the original with the new array. The main use case
- * for this function is when merging the dark theme config object I want it to replace all the colors not just add dark
- * theme colors to the original set of default colors.
+ * Modified version of lodash's recursive merge function. In lodash's version,
+ * it would merge together two arrays. In this version, if two arrays are
+ * encountered, it just replaces the original with the new array. The main use
+ * case for this function is when merging the dark theme config object I want it
+ * to replace all the colors not just add dark theme colors to the original set
+ * of default colors.
  */
 function mergeOptions<T>(...options: [T, T, T]): Highcharts.Options {
   // merge mutates the first param so pass in any empty object {} instead.
   return mergeWith(
     {},
     ...options,
-    (obj: Highcharts.Options, src: Highcharts.Options): Highcharts.Options | undefined => {
+    (
+      obj: Highcharts.Options,
+      src: Highcharts.Options,
+    ): Highcharts.Options | undefined => {
       if (isArray(obj) && isArray(src)) {
         return src;
       } else {

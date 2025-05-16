@@ -41,7 +41,12 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     // theme is. So it will complain about mismatching class="dark" attribute. This only suppresses warnings for
     // the html element and not children. (Only 1 level deep)
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("min-h-dvh min-w-80 bg-background antialiased", inter.variable)}>
+      <body
+        className={cn(
+          "min-h-dvh min-w-80 bg-background antialiased",
+          inter.variable,
+        )}
+      >
         <HeroUIProvider>
           <ThemedPage>
             <div className="flex flex-col min-h-dvh">
@@ -50,7 +55,9 @@ export default function RootLayout(props: { children: React.ReactNode }) {
                 <ThemeButton />
               </div>
               {/* Main content */}
-              <div className="w-full flex flex-col flex-1">{props.children}</div>
+              <div className="w-full flex flex-col flex-1">
+                {props.children}
+              </div>
               {/* Footer */}
               <footer className="py-6 px-6 w-full">
                 <div className="flex flex-col items-center justify-between gap-4">
