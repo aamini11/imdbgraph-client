@@ -16,7 +16,9 @@ export function validateRatingsData(ratingsData: unknown): RatingsData {
     // Just return faulty data but log the error at least.
     if (error instanceof z.ZodError) {
       console.error(`Failed to parse ratings data`, error.issues);
+      return ratingsData as RatingsData;
+    } else {
+      throw error;
     }
-    return ratingsData as RatingsData;
   }
 }
