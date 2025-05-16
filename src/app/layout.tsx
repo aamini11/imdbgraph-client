@@ -6,7 +6,7 @@ import { HeroUIProvider } from "@heroui/system";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Geist } from "next/font/google";
 import React from "react";
 
 export const metadata: Metadata = {
@@ -29,28 +29,30 @@ export const metadata: Metadata = {
   icons: "/favicon.ico",
 };
 
-const inter = Inter({
+const geistSans = Geist({
   subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
+  variable: "--font-geist-sans",
 });
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
-    // SuppressHydrationWarning is necessary because it is impossible for the server to know what the default
-    // theme is. So it will complain about mismatching class="dark" attribute. This only suppresses warnings for
-    // the html element and not children. (Only 1 level deep)
+    /**
+     * SuppressHydrationWarning is necessary because it is impossible for the
+     * server to know what the default theme is. So it will complain about
+     * mismatching class="dark" attribute. This only suppresses warnings for the
+     * html element and not children. (Only 1 level deep)
+     */
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           "min-h-dvh min-w-80 bg-background antialiased",
-          inter.variable,
+          geistSans.variable,
         )}
       >
         <HeroUIProvider>
           <ThemedPage>
             <div className="flex flex-col min-h-dvh">
-              {/* Header */}
+              {/* Header with theme button in top right corner */}
               <div className="ml-auto p-3">
                 <ThemeButton />
               </div>
