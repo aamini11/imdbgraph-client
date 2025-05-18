@@ -6,5 +6,6 @@
   },
   "editor.formatOnSave": true,
   "editor.rulers": [80, 120],
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "tailwindCSS.classFunctions": ["tw", "clsx", "cn"]
 }
