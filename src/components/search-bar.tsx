@@ -81,14 +81,19 @@ export function SearchBar() {
 
   const {
     isOpen,
+    getLabelProps,
     getInputProps,
     getMenuProps,
     highlightedIndex,
     getItemProps,
   } = comboBoxProps;
 
+  const shouldShowDropdown = isOpen && text.length > 0 && !isLoading;
   return (
     <div className="relative w-full">
+      <label className="sr-only" {...getLabelProps()}>
+        TV Show Search Bar
+      </label>
       <Input
         type="text"
         disabled={isRedirecting}
@@ -97,13 +102,15 @@ export function SearchBar() {
         {...getInputProps()}
       />
       {/* Dropdown Menu */}
-      {isOpen && text.length > 0 && (!isLoading || suggestions.length > 0) && (
-        <ul
-          className="rounded-xl p-2 border mt-2 w-full"
-          id="tv-search-dropdown"
-          {...getMenuProps()}
-        >
-          {!suggestions.length ? (
+      <ul
+        className={cn("rounded-xl p-2 border mt-2 w-full", {
+          hidden: !shouldShowDropdown,
+        })}
+        id="tv-search-dropdown"
+        {...getMenuProps()}
+      >
+        {shouldShowDropdown &&
+          (!suggestions.length ? (
             <li className="text-sm px-2 py-1.5">No TV Shows found</li>
           ) : (
             suggestions.map((show, index) => (
@@ -133,9 +140,8 @@ export function SearchBar() {
                 </div>
               </li>
             ))
-          )}
-        </ul>
-      )}
+          ))}
+      </ul>
     </div>
   );
 }
