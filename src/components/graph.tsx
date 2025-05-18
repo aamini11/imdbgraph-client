@@ -6,7 +6,7 @@ import { RatingsData } from "@/lib/data/ratings";
 import { HighchartsReact } from "highcharts-react-official";
 import Highcharts from "highcharts/esm/highcharts";
 import "highcharts/esm/modules/accessibility";
-import { isArray, mergeWith } from "lodash";
+import { mergeWith } from "lodash";
 
 export function Graph({ ratings }: { ratings: RatingsData }) {
   const { theme } = useTheme();
@@ -223,7 +223,7 @@ function mergeOptions<T>(...options: [T, T, T]): Highcharts.Options {
       obj: Highcharts.Options,
       src: Highcharts.Options,
     ): Highcharts.Options | undefined => {
-      if (isArray(obj) && isArray(src)) {
+      if (Array.isArray(obj) && Array.isArray(src)) {
         return src;
       } else {
         return undefined;
