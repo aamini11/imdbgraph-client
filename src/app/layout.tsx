@@ -48,7 +48,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           geistSans.variable,
         )}
       >
-        <ThemeProvider>
+        <ThemeProvider attribute="class">
           <div className="flex flex-col min-h-dvh">
             {/* Header with theme button in top right corner */}
             <div className="ml-auto p-3">
