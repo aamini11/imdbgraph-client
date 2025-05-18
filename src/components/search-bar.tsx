@@ -93,7 +93,7 @@ export function SearchBar() {
         type="text"
         disabled={isRedirecting}
         placeholder="Search for any TV show..."
-        className="rounded-full h-11 px-5"
+        className="placeholder:text-base border-2 rounded-full h-11 px-5 py-4"
         {...getInputProps()}
       />
       {/* Dropdown Menu */}
