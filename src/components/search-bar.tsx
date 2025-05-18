@@ -6,7 +6,6 @@ import { fetchSuggestions } from "@/lib/data/suggestions";
 import { cn, isEmpty } from "@/lib/utils";
 import { useCombobox } from "downshift";
 import { debounce } from "lodash";
-import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { startTransition, useEffect, useMemo, useState } from "react";
 
@@ -94,6 +93,7 @@ export function SearchBar() {
         type="text"
         disabled={isRedirecting}
         placeholder="Search for any TV show..."
+        className="rounded-full h-11 px-5"
         {...getInputProps()}
       />
       {/* Dropdown Menu */}
