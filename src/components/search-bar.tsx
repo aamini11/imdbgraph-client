@@ -6,8 +6,9 @@ import { fetchSuggestions } from "@/lib/data/suggestions";
 import { cn, isEmpty } from "@/lib/utils";
 import { useCombobox } from "downshift";
 import { debounce } from "lodash";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { startTransition, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 const DROPDOWN_LIMIT = 5;
 
@@ -17,15 +18,9 @@ const DROPDOWN_LIMIT = 5;
 export function SearchBar() {
   const router = useRouter();
 
-  const [text, setText] = useState("");
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Show[]>([]);
-
-  // Reset loading spinner when unmounting/navigating
-  useEffect(() => {
-    return () => setIsRedirecting(false);
-  }, []);
 
   // Optimize page navigation by prefetching the ratings page
   useEffect(() => {
@@ -45,86 +40,68 @@ export function SearchBar() {
     [],
   );
 
-  const comboBoxProps = useCombobox({
-    items: suggestions,
-    inputValue: text,
-    itemToString: (show) => show?.title ?? "",
-    onInputValueChange: ({ inputValue }) => {
-      setText(inputValue);
-      if (!isEmpty(inputValue)) {
-        setIsLoading(true);
-        void handleNewQuery(inputValue);
-      }
-    },
-    onSelectedItemChange: ({ selectedItem: show }) => {
-      if (isEmpty(text) || !show) {
-        return;
-      }
-
-      setIsRedirecting(true);
-      if (document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur();
-      }
-      // Go to ratings page
-      // https://buildui.com/posts/global-progress-in-nextjs#introduction
-      startTransition(() => {
-        setIsRedirecting(false);
-        router.push(`/ratings?id=${show.imdbId}`);
-      });
-    },
-    onHighlightedIndexChange: (e) => {
-      const i = e.highlightedIndex;
-      const selectedShow = suggestions[i]?.title;
-      setText(selectedShow ?? text);
-    },
-  });
-
   const {
     isOpen,
+    inputValue,
+    highlightedIndex,
     getLabelProps,
     getInputProps,
     getMenuProps,
-    highlightedIndex,
     getItemProps,
-  } = comboBoxProps;
+  } = useCombobox({
+    items: suggestions,
+    itemToString: (show) => show?.title ?? "",
+    onInputValueChange: ({ inputValue }) => {
+      setIsLoading(true);
+      if (!isEmpty(inputValue)) {
+        void handleNewQuery(inputValue);
+      }
+    },
+  });
 
-  const shouldShowDropdown = isOpen && text.length > 0 && !isLoading;
+  const shouldShowDropdown = isOpen && inputValue.length > 0;
   return (
     <div className="relative w-full">
-      <label className="sr-only" {...getLabelProps()}>
-        TV Show Search Bar
-      </label>
-      <Input
-        type="text"
-        disabled={isRedirecting}
-        placeholder="Search for any TV show..."
-        className="placeholder:text-base border-2 rounded-full h-11 px-5 py-4"
-        {...getInputProps()}
-      />
+      {/* Searchbar */}
+      <div>
+        <label className="sr-only" {...getLabelProps()}>
+          TV Show Search Bar
+        </label>
+        <Input
+          type="text"
+          disabled={isRedirecting}
+          placeholder="Search for any TV show..."
+          className="placeholder:text-base border-2 rounded-full h-11 px-5 py-4"
+          {...getInputProps()}
+        />
+      </div>
       {/* Dropdown Menu */}
       <ul
+        id="tv-search-dropdown"
         className={cn("rounded-xl p-2 border mt-2 w-full", {
           hidden: !shouldShowDropdown,
         })}
-        id="tv-search-dropdown"
         {...getMenuProps()}
       >
         {shouldShowDropdown &&
-          (!suggestions.length ? (
-            <li className="text-sm px-2 py-1.5">No TV Shows found</li>
-          ) : (
-            suggestions.map((show, index) => (
-              <li
-                key={show.imdbId}
+          suggestions.map((show, index) => (
+            <li key={show.imdbId} {...getItemProps({ item: show, index })}>
+              <Link
+                href={`/ratings?id=${show.imdbId}`}
                 className={cn(
-                  "text-sm text-foreground/60 px-2 py-1.5",
-                  "flex gap-2 items-center justify-between cursor-pointer rounded-md",
+                  "text-sm flex w-full items-center justify-between text-foreground/60 px-2 py-1.5 rounded-md",
                   "hover:bg-foreground/5",
                   {
                     "bg-foreground/5": index === highlightedIndex,
                   },
                 )}
-                {...getItemProps({ item: show, index })}
+                prefetch={false} // Prefetch is already handled in useEffect
+                onNavigate={() => {
+                  setIsRedirecting(true);
+                  if (!isEmpty(inputValue)) {
+                    void handleNewQuery(inputValue);
+                  }
+                }}
               >
                 {/* Show Title + Years */}
                 <div className="flex flex-col">
@@ -138,8 +115,8 @@ export function SearchBar() {
                   <StarIcon />
                   <dd>{`${show.showRating.toFixed(1)} / 10.0`}</dd>
                 </div>
-              </li>
-            ))
+              </Link>
+            </li>
           ))}
       </ul>
     </div>
