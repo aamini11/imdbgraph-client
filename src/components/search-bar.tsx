@@ -6,6 +6,7 @@ import { fetchSuggestions } from "@/lib/data/suggestions";
 import { cn, isEmpty } from "@/lib/utils";
 import { useCombobox } from "downshift";
 import { debounce } from "lodash";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { startTransition, useEffect, useMemo, useState } from "react";
 
@@ -72,16 +73,15 @@ export function SearchBar() {
         router.push(`/ratings?id=${show.imdbId}`);
       });
     },
-    onHighlightedIndexChange: (e) => {
-      const i = e.highlightedIndex;
-      const selectedShow = suggestions[i]?.title;
-      setText(selectedShow ?? text);
-    },
+    // onHighlightedIndexChange: (e) => {
+    //   const i = e.highlightedIndex;
+    //   const selectedShow = suggestions[i]?.title;
+    //   setText(selectedShow ?? text);
+    // },
   });
 
   const {
     isOpen,
-    getLabelProps,
     getInputProps,
     getMenuProps,
     highlightedIndex,
@@ -90,10 +90,7 @@ export function SearchBar() {
 
   const shouldShowDropdown = isOpen && text.length > 0 && !isLoading;
   return (
-    <div className="relative w-full">
-      <label className="sr-only" {...getLabelProps()}>
-        TV Show Search Bar
-      </label>
+    <search className="relative w-full">
       <Input
         type="text"
         disabled={isRedirecting}
@@ -126,23 +123,25 @@ export function SearchBar() {
                 )}
                 {...getItemProps({ item: show, index })}
               >
-                {/* Show Title + Years */}
-                <div className="flex flex-col">
-                  <span className="break-words">{show.title}&nbsp;</span>
-                  <span className="text-foreground/40 text-xs">
-                    {formatYears(show)}
-                  </span>
-                </div>
-                {/* 1-10 Rating + Blue Star Icon */}
-                <div className="shrink-0 flex items-center space-x-1 text-sm pl-2">
-                  <StarIcon />
-                  <dd>{`${show.showRating.toFixed(1)} / 10.0`}</dd>
-                </div>
+                <Link href={`/ratings`}>
+                  {/* Show Title + Years */}
+                  <div className="flex flex-col">
+                    <span className="break-words">{show.title}&nbsp;</span>
+                    <span className="text-foreground/40 text-xs">
+                      {formatYears(show)}
+                    </span>
+                  </div>
+                  {/* 1-10 Rating + Blue Star Icon */}
+                  <div className="shrink-0 flex items-center space-x-1 text-sm pl-2">
+                    <StarIcon />
+                    <dd>{`${show.showRating.toFixed(1)} / 10.0`}</dd>
+                  </div>
+                </Link>
               </li>
             ))
           ))}
       </ul>
-    </div>
+    </search>
   );
 }
 
