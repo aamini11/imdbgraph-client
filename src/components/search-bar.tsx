@@ -46,7 +46,13 @@ export function SearchBar() {
     [],
   );
 
-  const comboBoxProps = useCombobox({
+  const {
+    isOpen,
+    getInputProps,
+    getMenuProps,
+    highlightedIndex,
+    getItemProps,
+  } = useCombobox({
     items: suggestions,
     inputValue: text,
     itemToString: (show) => show?.title ?? "",
@@ -79,14 +85,6 @@ export function SearchBar() {
     //   setText(selectedShow ?? text);
     // },
   });
-
-  const {
-    isOpen,
-    getInputProps,
-    getMenuProps,
-    highlightedIndex,
-    getItemProps,
-  } = comboBoxProps;
 
   const shouldShowDropdown = isOpen && text.length > 0 && !isLoading;
   return (
