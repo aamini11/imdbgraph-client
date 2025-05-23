@@ -123,16 +123,16 @@ export function SearchBar() {
                 )}
                 {...getItemProps({ item: show, index })}
               >
-                <Link href={`/ratings`}>
+                <Link href={`/ratings`} className="flex w-full gap-2">
                   {/* Show Title + Years */}
-                  <div className="flex flex-col">
+                  <div className="flex flex-col flex-1">
                     <span className="break-words">{show.title}&nbsp;</span>
                     <span className="text-foreground/40 text-xs">
                       {formatYears(show)}
                     </span>
                   </div>
                   {/* 1-10 Rating + Blue Star Icon */}
-                  <div className="shrink-0 flex items-center space-x-1 text-sm pl-2">
+                  <div className="shrink-0 flex items-center space-x-1 text-sm">
                     <StarIcon />
                     <dd>{`${show.showRating.toFixed(1)} / 10.0`}</dd>
                   </div>
