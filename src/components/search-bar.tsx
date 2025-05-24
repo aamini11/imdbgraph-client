@@ -1,125 +1,122 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { formatYears, Show } from "@/lib/data/show";
-import { fetchSuggestions } from "@/lib/data/suggestions";
-import { cn, isEmpty } from "@/lib/utils";
-import { useCombobox } from "downshift";
-import { debounce } from "lodash";
+import { formatYears } from "@/lib/data/show";
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandItem,
+  CommandEmpty,
+  CommandInput,
+  CommandList,
+} from "cmdk";
+import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { startTransition, useEffect, useMemo, useState } from "react";
+import React, { useEffect } from "react";
 
-const DROPDOWN_LIMIT = 5;
+// MAC: "placeholder:text-base",
+const suggestions = [
+  {
+    imdbId: "tt0369179",
+    title: "Two and a Half Men",
+    startYear: "2003",
+    endYear: "2015",
+    showRating: 7.1,
+    numVotes: 289874,
+  },
+  {
+    imdbId: "tt1843230",
+    title: "Once Upon a Time",
+    startYear: "2011",
+    endYear: "2018",
+    showRating: 7.7,
+    numVotes: 242917,
+  },
+  {
+    imdbId: "tt2395695",
+    title: "Cosmos: A Spacetime Odyssey",
+    startYear: "2014",
+    endYear: "2014",
+    showRating: 9.2,
+    numVotes: 134137,
+  },
+  {
+    imdbId: "tt5189670",
+    title: "Making a Murderer",
+    startYear: "2015",
+    endYear: "2018",
+    showRating: 8.5,
+    numVotes: 105977,
+  },
+  {
+    imdbId: "tt2177461",
+    title: "A Discovery of Witches",
+    startYear: "2018",
+    endYear: "2022",
+    showRating: 7.8,
+    numVotes: 69740,
+  },
+];
 
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
  */
 export function SearchBar() {
   const router = useRouter();
-
-  const [text, setText] = useState("");
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState<Show[]>([]);
-
-  // Reset loading spinner when unmounting/navigating
-  useEffect(() => {
-    return () => setIsRedirecting(false);
-  }, []);
+  const [value, setValue] = React.useState("");
 
   // Optimize page navigation by prefetching the ratings page
   useEffect(() => {
     router.prefetch("/ratings");
   }, [router]);
 
-  const handleNewQuery = useMemo(
-    () =>
-      debounce(async (x: string) => {
-        try {
-          const suggestions = await fetchSuggestions(x);
-          setSuggestions(suggestions.slice(0, DROPDOWN_LIMIT));
-        } finally {
-          setIsLoading(false);
-        }
-      }, 200),
-    [],
-  );
+  const filteredSuggestions =
+    value.length > 0
+      ? suggestions.filter((x) =>
+          x.title.toLowerCase().includes(value.toLowerCase()),
+        )
+      : [];
 
-  const {
-    isOpen,
-    getInputProps,
-    getMenuProps,
-    highlightedIndex,
-    getItemProps,
-  } = useCombobox({
-    items: suggestions,
-    inputValue: text,
-    itemToString: (show) => show?.title ?? "",
-    onInputValueChange: ({ inputValue }) => {
-      setText(inputValue);
-      if (!isEmpty(inputValue)) {
-        setIsLoading(true);
-        void handleNewQuery(inputValue);
-      }
-    },
-    onSelectedItemChange: ({ selectedItem: show }) => {
-      if (isEmpty(text) || !show) {
-        return;
-      }
-
-      setIsRedirecting(true);
-      if (document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur();
-      }
-      // Go to ratings page
-      // https://buildui.com/posts/global-progress-in-nextjs#introduction
-      startTransition(() => {
-        setIsRedirecting(false);
-        router.push(`/ratings?id=${show.imdbId}`);
-      });
-    },
-    // onHighlightedIndexChange: (e) => {
-    //   const i = e.highlightedIndex;
-    //   const selectedShow = suggestions[i]?.title;
-    //   setText(selectedShow ?? text);
-    // },
-  });
-
-  const shouldShowDropdown = isOpen && text.length > 0 && !isLoading;
   return (
     <search className="relative w-full">
-      <Input
-        type="text"
-        disabled={isRedirecting}
-        placeholder="Search for any TV show..."
-        className="placeholder:text-base border-2 rounded-full h-11 px-5 py-4"
-        {...getInputProps()}
-      />
-      {/* Dropdown Menu */}
-      <ul
-        className={cn("rounded-xl p-2 border mt-2 w-full", {
-          hidden: !shouldShowDropdown,
-        })}
-        id="tv-search-dropdown"
-        {...getMenuProps()}
+      <Command
+        className={cn(
+          "flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground",
+          "flex h-full w-full px-3 py-1 bg-background  placeholder:text-muted-foreground text-base md:text-sm",
+          "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        )}
       >
-        {shouldShowDropdown &&
-          (!suggestions.length ? (
-            <li className="text-sm px-2 py-1.5">No TV Shows found</li>
+        {/* Search Bar */}
+        <div className="flex items-center px-3 border border-input rounded-full">
+          <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+          <CommandInput
+            value={value}
+            onValueChange={(value) => setValue(value)}
+            className={cn(
+              "h-10 w-full text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+            )}
+            placeholder="Search for any TV show..."
+          />
+        </div>
+        {/* Dropdown Menu */}
+        <CommandList
+          className={cn("rounded-xl p-2 border mt-2 w-full", {
+            hidden: !value,
+          })}
+          id="tv-search-dropdown"
+        >
+          {!filteredSuggestions.length ? (
+            <CommandEmpty>No TV Shows found</CommandEmpty>
           ) : (
-            suggestions.map((show, index) => (
-              <li
+            filteredSuggestions.map((show) => (
+              <CommandItem
                 key={show.imdbId}
                 className={cn(
+                  "relative flex cursor-default gap-2 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
                   "text-sm text-foreground/60 px-2 py-1.5",
                   "flex gap-2 items-center justify-between cursor-pointer rounded-md",
                   "hover:bg-foreground/5",
-                  {
-                    "bg-foreground/5": index === highlightedIndex,
-                  },
                 )}
-                {...getItemProps({ item: show, index })}
               >
                 <Link href={`/ratings`} className="flex w-full gap-2">
                   {/* Show Title + Years */}
@@ -135,10 +132,11 @@ export function SearchBar() {
                     <dd>{`${show.showRating.toFixed(1)} / 10.0`}</dd>
                   </div>
                 </Link>
-              </li>
+              </CommandItem>
             ))
-          ))}
-      </ul>
+          )}
+        </CommandList>
+      </Command>
     </search>
   );
 }
