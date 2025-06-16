@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import { Geist } from "next/font/google";
-import React from "react";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "IMDB Graph",
@@ -33,7 +33,7 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
 });
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default function RootLayout(props: { children: ReactNode }) {
   return (
     /**
      * SuppressHydrationWarning is necessary because it is impossible for the
