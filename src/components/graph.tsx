@@ -198,7 +198,6 @@ const darkThemeOptions: Highcharts.Options = {
   legend: {
     itemStyle: {
       color: "#d4d4d4",
-      fontFamily: "var(--font-inter)",
     },
     itemHoverStyle: {
       color: "#fafafa",
