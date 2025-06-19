@@ -1,54 +1,49 @@
 "use client";
 
-import { formatYears, Show, ShowSchema } from "@/lib/data/show";
+import { fetchSuggestions } from "@/lib/data/suggestions";
+import { formatYears, Show } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
 import { TRANSITION_VARIANTS } from "@heroui/framer-utils";
 import { Input } from "@heroui/input";
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { Spinner } from "@heroui/spinner";
+import { useQuery } from "@tanstack/react-query";
 import { useCombobox, UseComboboxReturnValue } from "downshift";
 import { AnimatePresence, motion } from "framer-motion";
-import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
-import React, { startTransition, useEffect, useMemo, useState } from "react";
-import { z } from "zod";
-
-const DROPDOWN_LIMIT = 5;
+import React, {
+  startTransition,
+  useDeferredValue,
+  useEffect,
+  useState,
+} from "react";
 
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
  */
 export function SearchBar() {
   const router = useRouter();
-
   const [text, setText] = useState("");
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState<Show[]>([]);
+  const deferredQuery = useDeferredValue(text);
 
-  useEffect(() => {
-    return () => setIsRedirecting(false);
-  }, []);
+  const { isLoading, data } = useQuery({
+    queryKey: ["suggestions", deferredQuery],
+    queryFn: () => fetchSuggestions(deferredQuery),
+  });
 
+  const suggestions = data ?? [];
+  // Show loading when user is typing (value !== deferredValue)
+  const isStale = text !== deferredQuery;
+  const showLoading = isStale || isLoading;
+
+  // Optimize page navigation by prefetching the ratings page
   useEffect(() => {
     router.prefetch("/ratings");
   }, [router]);
 
-  const handleNewQuery = useMemo(
-    () =>
-      debounce(async (x: string) => {
-        try {
-          const suggestions = await fetchSuggestions(x);
-          setSuggestions(suggestions.slice(0, DROPDOWN_LIMIT));
-        } finally {
-          setIsLoading(false);
-        }
-      }, 200),
-    [],
-  );
-
   const comboBoxProps = useCombobox({
-    items: suggestions,
+    items: suggestions ?? [],
     onSelectedItemChange: ({ selectedItem: show }) => {
       if (isEmpty(text)) {
         return;
@@ -72,19 +67,13 @@ export function SearchBar() {
 
   const { isOpen, getInputProps, getMenuProps } = comboBoxProps;
   return (
-    <div className="relative w-full">
+    <search className="relative w-full">
       <Input
         variant="bordered"
         radius="full"
         type="text"
         placeholder="Search for any TV show..."
-        onValueChange={(inputValue: string) => {
-          setText(inputValue);
-          if (!isEmpty(inputValue)) {
-            setIsLoading(true);
-            void handleNewQuery(inputValue);
-          }
-        }}
+        onValueChange={setText}
         classNames={{
           // Reason for text-base. (Auto-zoom on safari. Input text size must be >16px)
           // https://stackoverflow.com/q/2989263
@@ -108,7 +97,7 @@ export function SearchBar() {
         <AnimatePresence>
           {isOpen &&
             text.length > 0 &&
-            (!isLoading || suggestions.length > 0) && (
+            (!showLoading || suggestions.length > 0) && (
               <motion.div
                 animate="enter"
                 exit="exit"
@@ -123,7 +112,7 @@ export function SearchBar() {
             )}
         </AnimatePresence>
       </div>
-    </div>
+    </search>
   );
 }
 
@@ -144,7 +133,7 @@ function DropDown({
           <path d="M7.05 3.691c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.372 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.363-1.118L.98 9.483c-.784-.57-.381-1.81.587-1.81H5.03a1 1 0 00.95-.69L7.05 3.69z" />
         </svg>
       </dt>
-      <dd>{`${show.showRating.toFixed(1)} / 10.0`}</dd>
+      <dd>{`${show.rating.toFixed(1)} / 10.0`}</dd>
     </div>
   );
 
@@ -196,26 +185,6 @@ function DropDown({
 function isEmpty(s: string) {
   return !s || !/\S/.test(s);
 }
-
-const fetchSuggestions = async (query: string): Promise<Show[]> => {
-  const response = await fetch(`/api/search?q=${query}`);
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-
-  const show = await response.json();
-  try {
-    return z.array(ShowSchema).parse(show);
-  } catch (error) {
-    // Just return faulty data but log the error at least.
-    if (error instanceof z.ZodError) {
-      console.error(`Failed to parse show data for: ${show.imdbId}`, error);
-      return show as Show[];
-    } else {
-      throw error;
-    }
-  }
-};
 
 export const SearchIcon = ({
   size = 24,
