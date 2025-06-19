@@ -1,12 +1,21 @@
 {
   "recommendations": [
+    // General
+    "editorconfig.editorconfig",
     "eamodio.gitlens",
     "github.vscode-github-actions",
-    "github.copilot",
-
+    "mikestead.dotenv",
     // JavaScript
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "christian-kohler.npm-intellisense",
+    "orta.vscode-jest",
+    "xabikos.javascriptsnippets",
+    // Tools
+    "humao.rest-client",
+    "ms-azuretools.vscode-docker",
+    "ms-vscode-remote.remote-containers",
+    "redhat.vscode-yaml",
   ]
 }

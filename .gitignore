@@ -46,5 +46,5 @@ next-env.d.ts
 /blob-report/
 /playwright/.cache/
 
-# Sentry Config File
-.env.sentry-build-plugin
+# Config File
+.env*

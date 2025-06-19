@@ -4,10 +4,30 @@ const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
 });
 
-const eslintConfig = [
+export let config = [
   ...compat.config({
-    extends: ["next/core-web-vitals", "next/typescript", "prettier"],
+    extends: [
+      "plugin:@tanstack/eslint-plugin-query/recommended",
+      "next/core-web-vitals",
+      "next/typescript",
+      "prettier",
+    ],
   }),
+  {
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          "patterns": [
+            {
+              "group": ["../**/*"],
+              "message": "Please use absolute imports with '@/'. Example: '@/lib/utils'."
+            }
+          ]
+        }
+      ]
+    },
+  },
 ];
 
-export default eslintConfig;
+export default config;

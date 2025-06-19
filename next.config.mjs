@@ -1,16 +1,10 @@
-/** @type {import('next').NextConfig} */
+/** @type {import("next").NextConfig} */
 const nextConfig = {
+  output: "standalone",
   experimental: {
     ppr: "incremental",
   },
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: `https://api.imdbgraph.org/:path*`,
-      }
-    ];
-  },
+  // For legacy links, we need to redirect them to the new format
   async redirects() {
     return [
       {

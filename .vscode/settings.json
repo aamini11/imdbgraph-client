@@ -5,6 +5,15 @@
     ".next/": true
   },
   "editor.formatOnSave": true,
-  "editor.rulers": [80, 120],
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.rulers": [
+    80,
+    120
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "tailwindCSS.classFunctions": [
+    "tw",
+    "clsx",
+    "cn"
+  ],
+  "typescript.preferences.importModuleSpecifier": "non-relative"
 }
