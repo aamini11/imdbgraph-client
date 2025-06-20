@@ -11,6 +11,7 @@ import {
   CommandInput,
   CommandList,
   CommandLoading,
+  CommandGroup,
 } from "cmdk";
 import { Search } from "lucide-react";
 import Link from "next/link";
@@ -47,7 +48,7 @@ export function SearchBar() {
     <search className="w-full">
       <Command
         className={cn(
-          "flex h-full w-full flex-col rounded-md bg-background text-popover-foreground placeholder:text-muted-foreground",
+          "flex flex-col h-full w-full text-sm bg-background text-popover-foreground",
           "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         )}
       >
@@ -55,57 +56,47 @@ export function SearchBar() {
         <div className="flex items-center px-3 border border-input rounded-full">
           <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
           <CommandInput
-            autoFocus
             value={value}
-            onValueChange={(value) => setValue(value)}
+            onValueChange={setValue}
             className={cn(
-              "h-10 w-full text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+              "h-10 w-full outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
             )}
             placeholder="Search for any TV show..."
           />
         </div>
         {/* Dropdown Menu */}
         <CommandList
-          className={cn("rounded-xl p-2 border mt-2 w-full", {
+          className={cn("rounded-xl p-2 border mt-2", {
             hidden: !value,
           })}
           id="tv-search-dropdown"
         >
-          {showLoading ? (
-            <CommandLoading>Loading...</CommandLoading>
-          ) : !searchResults?.length ? (
-            <CommandEmpty>No TV Shows found</CommandEmpty>
-          ) : isError ? (
-            <CommandEmpty>Error finding shows</CommandEmpty>
-          ) : (
-            searchResults.map((show) => (
-              <CommandItem
-                autoFocus
-                key={show.imdbId}
-                className={cn(
-                  "flex cursor-default gap-2 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-                  "text-sm text-foreground/60 px-2 py-1.5",
-                  "flex gap-2 items-center justify-between cursor-pointer rounded-md",
-                  "hover:bg-foreground/5",
-                )}
-              >
-                <Link href={`/ratings`} className="flex w-full gap-2">
-                  {/* Show Title + Years */}
-                  <div className="flex flex-col flex-1">
-                    <span className="break-words">{show.title}&nbsp;</span>
-                    <span className="text-foreground/40 text-xs">
-                      {formatYears(show)}
-                    </span>
-                  </div>
-                  {/* 1-10 Rating + Blue Star Icon */}
-                  <div className="shrink-0 flex items-center space-x-1 text-sm">
-                    <StarIcon />
-                    <dd>{`${show.rating.toFixed(1)} / 10.0`}</dd>
-                  </div>
-                </Link>
-              </CommandItem>
-            ))
-          )}
+          {showLoading && <CommandLoading>Fetching words…</CommandLoading>}
+          {!showLoading && <CommandEmpty>HI</CommandEmpty>}
+          {searchResults?.map((show) => (
+            <CommandItem
+              value={show.title}
+              key={show.imdbId}
+              className={cn(
+                "flex justify-between text-foreground/60 cursor-pointer hover:bg-foreground/5 gap-2 select-none items-center rounded-sm rounded-md px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+              )}
+            >
+              <Link href={`/ratings`} className="flex w-full gap-2">
+                {/* Show Title + Years */}
+                <div className="flex flex-col flex-1">
+                  <span className="break-words">{show.title}&nbsp;</span>
+                  <span className="text-foreground/40 text-xs">
+                    {formatYears(show)}
+                  </span>
+                </div>
+                {/* 1-10 Rating + Blue Star Icon */}
+                <div className="shrink-0 flex items-center space-x-1 text-sm">
+                  <StarIcon />
+                  <dd>{`${show.rating.toFixed(1)} / 10.0`}</dd>
+                </div>
+              </Link>
+            </CommandItem>
+          ))}
         </CommandList>
       </Command>
     </search>

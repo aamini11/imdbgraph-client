@@ -1,11 +1,9 @@
 "use server";
 
 import { Show } from "./types";
+import { db } from "@/lib/db/drizzle";
 import { show } from "@/lib/db/schema";
 import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-
-const db = drizzle(process.env.DATABASE_URL!);
 
 export async function fetchSuggestions(query: string): Promise<Show[]> {
   return await db
