@@ -29,7 +29,6 @@ export function SearchBar() {
   const {
     isLoading,
     data: searchResults,
-    isError,
   } = useQuery({
     queryKey: ["suggestions", deferredQuery],
     queryFn: () => fetchSuggestions(deferredQuery),
@@ -56,6 +55,7 @@ export function SearchBar() {
         <div className="flex items-center px-3 border border-input rounded-full">
           <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
           <CommandInput
+          autoFocus
             value={value}
             onValueChange={setValue}
             className={cn(
@@ -67,18 +67,27 @@ export function SearchBar() {
         {/* Dropdown Menu */}
         <CommandList
           className={cn("rounded-xl p-2 border mt-2", {
-            hidden: !value,
+            hidden: !value || !isFocused,
           })}
           id="tv-search-dropdown"
         >
-          {showLoading && <CommandLoading>Fetching words…</CommandLoading>}
-          {!showLoading && <CommandEmpty>HI</CommandEmpty>}
+          {showLoading && (
+            <CommandLoading className="px-2 py-1.5 text-foreground/60 text-center">
+              Searching TV Shows…
+            </CommandLoading>
+          )}
+          {!showLoading && (
+            <CommandEmpty className="px-2 py-1.5 text-foreground/60 text-center">
+              No TV Shows Found.
+            </CommandEmpty>
+          )}
           {searchResults?.map((show) => (
             <CommandItem
               value={show.title}
               key={show.imdbId}
               className={cn(
-                "flex justify-between text-foreground/60 cursor-pointer hover:bg-foreground/5 gap-2 select-none items-center rounded-sm rounded-md px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                "flex justify-between text-foreground/60 cursor-pointer hover:bg-foreground/5 gap-2 select-none items-center rounded-md px-2 py-1.5 text-sm outline-none",
+                "data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
               )}
             >
               <Link href={`/ratings`} className="flex w-full gap-2">
