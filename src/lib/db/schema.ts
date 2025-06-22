@@ -21,10 +21,7 @@ export const show = pgTable(
     numVotes: integer("num_votes").default(0).notNull(),
   },
   (table) => [
-    index("rating_index").using(
-      "btree",
-      table.rating.desc().nullsFirst().op("float8_ops"),
-    ),
+    index("show_rating_index").using("btree", table.rating.desc()),
     sql`title_index ON show USING GIN (title gin_trgm_ops)`,
   ],
 );
@@ -41,10 +38,7 @@ export const episode = pgTable(
     numVotes: integer("num_votes").notNull(),
   },
   (table) => [
-    index("episode_index").using(
-      "btree",
-      table.showId.asc().nullsLast().op("text_ops"),
-    ),
+    index("episode_show_id_index").using("btree", table.showId),
     foreignKey({
       columns: [table.showId],
       foreignColumns: [show.imdbId],
