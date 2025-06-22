@@ -126,9 +126,6 @@ importers:
       jest-environment-jsdom:
         specifier: ^30.0.0
         version: 30.0.0
-      jest-when:
-        specifier: ^3.7.0
-        version: 3.7.0(jest@29.7.0(@types/node@24.0.3)(ts-node@10.9.2(@types/node@24.0.3)(typescript@5.8.3)))
       postcss:
         specifier: ^8.5.3
         version: 8.5.3
@@ -3186,11 +3183,6 @@ packages:
   jest-watcher@29.7.0:
     resolution: {integrity: sha512-49Fg7WXkU3Vl2h6LbLtMQ/HyB6rXSIX7SqvBLQmssRBGN9I0PNvPmAmCWSOY6SOvrjhI/F7/bGAv9RtnsPA03g==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-
-  jest-when@3.7.0:
-    resolution: {integrity: sha512-aLbiyxmtksijcrKFir7n+t+XPbqSLV01eDkRyX28WM4VgA/iSc3mG8R8O2evDtOAa6SefrJiTIt/rTqqyrwVZg==}
-    peerDependencies:
-      jest: '>= 25'
 
   jest-worker@29.7.0:
     resolution: {integrity: sha512-eIz2msL/EzL9UFTFFx7jBTkeZfku0yUAyZZZmJ93H2TYEiroIx2PQjEXcwYtYl8zXCxb+PAmA2hLIt/6ZEkPHw==}
@@ -7760,10 +7752,6 @@ snapshots:
       emittery: 0.13.1
       jest-util: 29.7.0
       string-length: 4.0.2
-
-  jest-when@3.7.0(jest@29.7.0(@types/node@24.0.3)(ts-node@10.9.2(@types/node@24.0.3)(typescript@5.8.3))):
-    dependencies:
-      jest: 29.7.0(@types/node@24.0.3)(ts-node@10.9.2(@types/node@24.0.3)(typescript@5.8.3))
 
   jest-worker@29.7.0:
     dependencies:
