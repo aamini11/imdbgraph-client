@@ -11,7 +11,6 @@ import {
   CommandInput,
   CommandList,
   CommandLoading,
-  CommandGroup,
 } from "cmdk";
 import { Search } from "lucide-react";
 import Link from "next/link";
@@ -26,10 +25,7 @@ export function SearchBar() {
   const [value, setValue] = useState("");
   const deferredQuery = useDeferredValue(value);
 
-  const {
-    isLoading,
-    data: searchResults,
-  } = useQuery({
+  const { isLoading, data: searchResults } = useQuery({
     queryKey: ["suggestions", deferredQuery],
     queryFn: () => fetchSuggestions(deferredQuery),
   });
@@ -55,7 +51,7 @@ export function SearchBar() {
         <div className="flex items-center px-3 border border-input rounded-full">
           <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
           <CommandInput
-          autoFocus
+            autoFocus
             value={value}
             onValueChange={setValue}
             className={cn(
@@ -67,7 +63,7 @@ export function SearchBar() {
         {/* Dropdown Menu */}
         <CommandList
           className={cn("rounded-xl p-2 border mt-2", {
-            hidden: !value || !isFocused,
+            hidden: !value,
           })}
           id="tv-search-dropdown"
         >
