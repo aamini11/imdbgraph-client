@@ -9,6 +9,7 @@ import { pipeline } from "node:stream/promises";
 import { PoolClient } from "pg";
 import { from as copyFrom } from "pg-copy-streams";
 
+
 /**
  * Main method that downloads the latest files from IMDB and updates our
  * internal database with the latest data.
@@ -105,7 +106,7 @@ async function transfer(client: PoolClient) {
     FROM temp_title
             LEFT JOIN temp_ratings USING (imdb_id)
     ON CONFLICT (imdb_id) DO UPDATE
-        SET title = excluded.title,
+        SET title = excluded.primary_title,
             start_year = excluded.start_year,
             end_year = excluded.end_year,
             rating = excluded.rating,
@@ -117,12 +118,12 @@ async function transfer(client: PoolClient) {
   await client.query(`
     CREATE TABLE episode_new AS
     SELECT show_id,
-            episode_id,
-            primary_title as title,
-            season_num,
-            episode_num,
-            COALESCE(imdb_rating, 0.0) as rating,
-            COALESCE(num_votes, 0) as num_votes
+           episode_id,
+           title,
+           season_num,
+           episode_num,
+           COALESCE(imdb_rating, 0.0) as rating,
+           COALESCE(num_votes, 0) as num_votes
     FROM temp_episode
             LEFT JOIN temp_title ON (episode_id = imdb_id)
             LEFT JOIN temp_ratings USING (imdb_id)

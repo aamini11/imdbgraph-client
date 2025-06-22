@@ -1,6 +1,6 @@
 import { Graph } from "@/components/graph";
 import { getRatings } from "@/lib/data/ratings";
-import { formatYears, Ratings } from "@/lib/data/types";
+import { formatYears, Ratings } from "@/lib/types";
 import { notFound } from "next/navigation";
 
 export default async function RatingsPage({

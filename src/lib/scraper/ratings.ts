@@ -1,4 +1,4 @@
-import { Episode, Ratings } from "./types";
+import { Episode, Ratings } from "@/lib/types";
 import { show, episode } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -13,6 +13,7 @@ export async function getRatings(showId: string): Promise<Ratings> {
   if (!foundShow) {
     throw new Error("Show not found");
   }
+
   const episodes = await db
     .select()
     .from(episode)

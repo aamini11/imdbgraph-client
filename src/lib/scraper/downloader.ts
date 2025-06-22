@@ -14,13 +14,13 @@ export type ImdbFile =
 
 export async function download(
   file: ImdbFile,
-  output: PathLike,
+  output: string,
 ): Promise<void> {
   const uri = `${baseUri}/${file}`;
   try {
     const { body, ok, status } = await fetch(uri);
     if (!ok) {
-      throw new Error(`HTTP error! status: ${status}`);
+      throw new Error(`HTTP error! status: ${status.toString()}`);
     }
     if (!body) {
       throw new Error("Response body is null");

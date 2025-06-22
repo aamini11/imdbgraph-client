@@ -1,8 +1,8 @@
 "use server";
 
-import { Show } from "./types";
 import { db } from "@/lib/db/drizzle";
 import { show } from "@/lib/db/schema";
+import { Show } from "@/lib/types";
 import { sql } from "drizzle-orm";
 
 export async function fetchSuggestions(query: string): Promise<Show[]> {

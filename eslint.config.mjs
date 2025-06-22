@@ -1,40 +1,46 @@
 import { FlatCompat } from "@eslint/eslintrc";
+import js from "@eslint/js";
+import prettier from "eslint-config-prettier/flat";
+import { defineConfig } from "eslint/config";
+import globals from "globals";
 import tseslint from "typescript-eslint";
 
 const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
 });
 
-export let config = [
-  ...compat.config({
-    extends: [
-      "plugin:@tanstack/eslint-plugin-query/recommended",
-      "next/core-web-vitals",
-      "next/typescript",
-      "prettier",
+const noRelativeImportsRule = {
+  ignores: ["*.test.*", "**/__tests__/**"],
+  rules: {
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: [
+          {
+            group: ["./", "../"],
+            message:
+              "Please use absolute imports with '@/'. Example: '@/lib/utils'.",
+          },
+        ],
+      },
     ],
-  }),
+  },
+};
+
+/** @type {import("eslint").Linter.Config[]} */
+export let config = [
+  {
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    plugins: { js },
+    extends: ["js/recommended"],
+    languageOptions: { globals: { ...globals.browser, ...globals.node } },
+  },
+  tseslint.configs.strictTypeChecked,
+  tseslint.configs.stylisticTypeChecked,
   {
     rules: {
-      "no-restricted-imports": [
-        "error",
-        {
-          patterns: [
-            {
-              group: ["../**/*"],
-              message:
-                "Please use absolute imports with '@/'. Example: '@/lib/utils'.",
-            },
-          ],
-        },
-      ],
+      "@typescript-eslint/no-non-null-assertion": "off",
     },
-  },
-  ...tseslint.config(
-    tseslint.configs.recommendedTypeChecked,
-    tseslint.configs.stylisticTypeChecked,
-  ),
-  {
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -42,6 +48,18 @@ export let config = [
       },
     },
   },
+  {
+    files: ["**/*.js", "**/*.mjs"],
+    extends: [tseslint.configs.disableTypeChecked],
+  },
+  noRelativeImportsRule,
+  ...compat.config({
+    extends: [
+      "plugin:@tanstack/eslint-plugin-query/recommended",
+      "next/core-web-vitals",
+    ],
+  }),
+  prettier,
 ];
 
-export default config;
+export default defineConfig(config);
