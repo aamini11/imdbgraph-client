@@ -62,7 +62,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-jsdoc": "^1.3.2",
     "tailwindcss": "^4.1.6",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
     "tw-animate-css": "^1.2.9",
     "typescript": "5.8.3",
     "typescript-eslint": "^8.32.1"

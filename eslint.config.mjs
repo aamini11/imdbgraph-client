@@ -1,4 +1,5 @@
 import { FlatCompat } from "@eslint/eslintrc";
+import tseslint from "typescript-eslint";
 
 const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
@@ -18,14 +19,27 @@ export let config = [
       "no-restricted-imports": [
         "error",
         {
-          "patterns": [
+          patterns: [
             {
-              "group": ["../**/*"],
-              "message": "Please use absolute imports with '@/'. Example: '@/lib/utils'."
-            }
-          ]
-        }
-      ]
+              group: ["../**/*"],
+              message:
+                "Please use absolute imports with '@/'. Example: '@/lib/utils'.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  ...tseslint.config(
+    tseslint.configs.recommendedTypeChecked,
+    tseslint.configs.stylisticTypeChecked,
+  ),
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
   },
 ];

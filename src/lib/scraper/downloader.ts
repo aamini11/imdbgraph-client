@@ -18,7 +18,6 @@ export async function download(
 ): Promise<void> {
   const uri = `${baseUri}/${file}`;
   try {
-    console.log(`Downloading file: ${file}`);
     const { body, ok, status } = await fetch(uri);
     if (!ok) {
       throw new Error(`HTTP error! status: ${status}`);
@@ -31,7 +30,7 @@ export async function download(
       createGunzip(),
       createWriteStream(output),
     );
-    console.log(`Download completed: ${output}`);
+    console.log(`Download completed: ${output.toString()}`);
   } catch (error) {
     throw new Error(`Failed to download ${uri}`, { cause: error });
   }

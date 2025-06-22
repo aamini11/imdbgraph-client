@@ -1,14 +1,6 @@
 import { sql } from "drizzle-orm";
-import {
-  pgTable,
-  index,
-  integer,
-  varchar,
-  text,
-  char,
-  doublePrecision,
-  foreignKey,
-} from "drizzle-orm/pg-core";
+import { pgTable, index, integer, varchar, text, char, doublePrecision, foreignKey } from "drizzle-orm/pg-core";
+
 
 export const show = pgTable(
   "show",
@@ -42,22 +34,7 @@ export const episode = pgTable(
     foreignKey({
       columns: [table.showId],
       foreignColumns: [show.imdbId],
-      name: "episode_new_show_id_fkey1",
-    }),
-  ],
-);
-
-export const thumbnails = pgTable(
-  "thumbnails",
-  {
-    imdbId: varchar("imdb_id", { length: 10 }).primaryKey().notNull(),
-    thumbnailUrl: text("thumbnail_url"),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.imdbId],
-      foreignColumns: [show.imdbId],
-      name: "thumbnails_show_imdb_id_fk",
+      name: "episode_show_imdb_id_fk",
     }),
   ],
 );
