@@ -1,5 +1,4 @@
 import { createWriteStream } from "fs";
-import { PathLike } from "node:fs";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { ReadableStream } from "node:stream/web";

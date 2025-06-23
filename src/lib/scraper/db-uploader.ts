@@ -1,4 +1,4 @@
-import { db } from "@/lib/db/drizzle";
+import { pool } from "@/lib/db/drizzle";
 import { download } from "@/lib/scraper/downloader";
 import { randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
@@ -9,13 +9,12 @@ import { pipeline } from "node:stream/promises";
 import { PoolClient } from "pg";
 import { from as copyFrom } from "pg-copy-streams";
 
-
 /**
  * Main method that downloads the latest files from IMDB and updates our
  * internal database with the latest data.
  */
 export async function update(): Promise<void> {
-  const client = await db.$client.connect();
+  const client = await pool.connect();
   try {
     await client.query("BEGIN");
     await transfer(client);
@@ -98,15 +97,14 @@ async function transfer(client: PoolClient) {
   await client.query(`
     INSERT INTO show(imdb_id, title, start_year, end_year, rating, num_votes)
     SELECT imdb_id,
-            primary_title,
-            start_year,
-            end_year,
-            COALESCE(imdb_rating, 0.0),
-            COALESCE(num_votes, 0)
-    FROM temp_title
-            LEFT JOIN temp_ratings USING (imdb_id)
+           primary_title,
+           start_year,
+           end_year,
+           COALESCE(imdb_rating, 0.0),
+           COALESCE(num_votes, 0)
+    FROM temp_title LEFT JOIN temp_ratings USING (imdb_id)
     ON CONFLICT (imdb_id) DO UPDATE
-        SET title = excluded.primary_title,
+        SET title = excluded.title,
             start_year = excluded.start_year,
             end_year = excluded.end_year,
             rating = excluded.rating,
@@ -116,34 +114,20 @@ async function transfer(client: PoolClient) {
 
   // Update episode table using new data from temp tables
   await client.query(`
-    CREATE TABLE episode_new AS
-    SELECT show_id,
-           episode_id,
-           title,
-           season_num,
-           episode_num,
-           COALESCE(imdb_rating, 0.0) as rating,
-           COALESCE(num_votes, 0) as num_votes
-    FROM temp_episode
-            LEFT JOIN temp_title ON (episode_id = imdb_id)
-            LEFT JOIN temp_ratings USING (imdb_id)
-    WHERE show_id IN (SELECT imdb_id FROM show)
-    AND season_num >= 0
-    AND episode_num >= 0;
-    
-    ALTER TABLE episode_new ADD PRIMARY KEY (episode_id);
-    ALTER TABLE episode_new ADD FOREIGN KEY (show_id) REFERENCES show(imdb_id);
-    CREATE INDEX ON episode_new (show_id);
-    
-    ALTER TABLE episode_new ALTER COLUMN show_id SET NOT NULL;
-    ALTER TABLE episode_new ALTER COLUMN episode_id SET NOT NULL;
-    ALTER TABLE episode_new ALTER COLUMN season_num SET NOT NULL;
-    ALTER TABLE episode_new ALTER COLUMN episode_num SET NOT NULL;
-    ALTER TABLE episode_new ALTER COLUMN rating SET NOT NULL;
-    ALTER TABLE episode_new ALTER COLUMN num_votes SET NOT NULL;
-    
-    DROP TABLE IF EXISTS episode;
-    ALTER TABLE episode_new RENAME TO episode;
+    INSERT INTO episode(show_id, episode_id, title, season_num, episode_num, rating, num_votes)
+    SELECT e.show_id,
+           e.episode_id,
+           t.primary_title as title,
+           e.season_num,
+           e.episode_num,
+           COALESCE(r.imdb_rating, 0.0) as rating,
+           COALESCE(r.num_votes, 0) as num_votes
+    FROM temp_episode e
+    LEFT JOIN temp_title t ON (e.episode_id = t.imdb_id)
+    LEFT JOIN temp_ratings r ON (e.episode_id = r.imdb_id)
+    WHERE t.title_type = 'tvepisode'
+    AND e.season_num >= 0
+    AND e.episode_num >= 0;
   `);
   console.log("Episodes successfully updated");
 }

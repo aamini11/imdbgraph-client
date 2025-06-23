@@ -1,7 +1,7 @@
 "use client";
 
-import { fetchSuggestions } from "@/lib/scraper/suggestions";
-import { formatYears } from "@/lib/types";
+import { fetchSuggestions } from "@/lib/data/suggestions";
+import { formatYears } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import {
