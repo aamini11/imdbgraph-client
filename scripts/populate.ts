@@ -2,7 +2,7 @@
  * Standalone script to populate the database with IMDB data Usage: pnpm run
  * populate
  */
-import { update } from "@/lib/scraper/db-uploader";
+import { update } from "@/lib/scraper/db-updater";
 
 async function main() {
   console.log("Starting database population...");

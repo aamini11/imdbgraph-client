@@ -1,7 +1,7 @@
 "use server";
 
 import { Show } from "@/lib/data/types";
-import { db } from "@/lib/db/drizzle";
+import { db } from "@/lib/db/connection";
 import { show } from "@/lib/db/schema";
 import { sql } from "drizzle-orm";
 

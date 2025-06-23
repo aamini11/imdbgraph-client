@@ -1,5 +1,5 @@
-import { pool } from "@/lib/db/drizzle";
-import { download } from "@/lib/scraper/downloader";
+import { pool } from "@/lib/db/connection";
+import { download } from "@/lib/scraper/imdb-file-downloader";
 import { randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { mkdir } from "node:fs/promises";

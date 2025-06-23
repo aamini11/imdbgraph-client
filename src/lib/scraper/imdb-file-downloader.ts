@@ -11,10 +11,7 @@ export type ImdbFile =
   | "title.episode.tsv.gz"
   | "title.ratings.tsv.gz";
 
-export async function download(
-  file: ImdbFile,
-  output: string,
-): Promise<void> {
+export async function download(file: ImdbFile, output: string): Promise<void> {
   const uri = `${baseUri}/${file}`;
   try {
     const { body, ok, status } = await fetch(uri);
