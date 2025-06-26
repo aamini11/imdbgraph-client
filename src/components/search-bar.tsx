@@ -1,15 +1,17 @@
 "use client";
 
+import { fetchSuggestions } from "@/lib/data/suggestions";
 import { formatYears, Show } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
 import { TRANSITION_VARIANTS } from "@heroui/framer-utils";
 import { Input } from "@heroui/input";
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { Spinner } from "@heroui/spinner";
+import { useQuery } from "@tanstack/react-query";
 import { useCombobox, UseComboboxReturnValue } from "downshift";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useDeferredValue, useEffect, useState } from "react";
 
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
@@ -18,16 +20,23 @@ export function SearchBar() {
   const router = useRouter();
 
   const [text, setText] = useState("");
-  const {  }
+  const deferredText = useDeferredValue(text);
+
+  const { isLoading, data: searchResults } = useQuery({
+    queryKey: ["suggestions", deferredText],
+    queryFn: () => fetchSuggestions(deferredText),
+  });
+
+  const showLoading = isLoading && text !== deferredText;
 
   useEffect(() => {
     router.prefetch("/ratings");
   }, [router]);
 
   const comboBoxProps = useCombobox({
-    items: suggestions,
+    items: searchResults ?? [],
     onSelectedItemChange: ({ selectedItem: show }) => {
-      if (isEmpty(text)) {
+      if (isEmpty(deferredText)) {
         return;
       }
 
@@ -50,10 +59,6 @@ export function SearchBar() {
         placeholder="Search for any TV show..."
         onValueChange={(inputValue: string) => {
           setText(inputValue);
-          if (!isEmpty(inputValue)) {
-            setIsLoading(true);
-            void handleNewQuery(inputValue);
-          }
         }}
         classNames={{
           // Reason for text-base. (Auto-zoom on safari. Input text size must be >16px)
@@ -68,29 +73,24 @@ export function SearchBar() {
             size={20}
           />
         }
-        endContent={
-          (isLoading || isRedirecting) && <Spinner color="default" size="sm" />
-        }
-        disabled={isRedirecting}
+        endContent={showLoading && <Spinner color="default" size="sm" />}
         {...getInputProps()}
       />
       <div {...getMenuProps()} className="absolute z-10 w-full overflow-clip">
         <AnimatePresence>
-          {isOpen &&
-            text.length > 0 &&
-            (!isLoading || suggestions.length > 0) && (
-              <motion.div
-                animate="enter"
-                exit="exit"
-                initial="exit"
-                variants={TRANSITION_VARIANTS.fade}
-              >
-                <DropDown
-                  suggestions={suggestions}
-                  comboBoxProps={comboBoxProps}
-                />
-              </motion.div>
-            )}
+          {isOpen && searchResults && (
+            <motion.div
+              animate="enter"
+              exit="exit"
+              initial="exit"
+              variants={TRANSITION_VARIANTS.fade}
+            >
+              <DropDown
+                searchResults={searchResults}
+                comboBoxProps={comboBoxProps}
+              />
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
     </div>
@@ -98,10 +98,10 @@ export function SearchBar() {
 }
 
 function DropDown({
-  suggestions,
+  searchResults,
   comboBoxProps,
 }: {
-  suggestions: Show[];
+  searchResults: Show[];
   comboBoxProps: UseComboboxReturnValue<Show>;
 }) {
   const { highlightedIndex, getItemProps } = comboBoxProps;
@@ -118,7 +118,7 @@ function DropDown({
     </div>
   );
 
-  const listItems = suggestions.map((show, index) => (
+  const listItems = searchResults.map((show, index) => (
     <li
       key={show.imdbId}
       className={cn(
@@ -150,7 +150,7 @@ function DropDown({
     <div className="rounded-large border-small border-default-400 dark:border-default-100 bg-background mt-2 p-2">
       <ScrollShadow className="max-h-[320px]">
         <ul id="tv-search-dropdown">
-          {suggestions.length > 0 ? (
+          {searchResults.length > 0 ? (
             listItems
           ) : (
             <li className="text-small text-default-400 pl-2">
