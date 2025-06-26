@@ -21,16 +21,11 @@ export const testWithDb = baseTest.extend<{ db: Database }>({
       client: new Pool({ connectionString: container.getConnectionUri() }),
     });
 
-    try {
-      await setUpSchema(db);
-      await use(db);
-    } catch (e) {
-      console.error(e);
-      throw e;
-    } finally {
-      await db.$client.end();
-      await container.stop();
-    }
+    await setUpSchema(db);
+    await use(db);
+    // Clean up
+    await db.$client.end();
+    await container.stop();
   },
 });
 

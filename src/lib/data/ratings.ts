@@ -14,7 +14,13 @@ export async function getRatings(
   const foundShow = result[0];
 
   const episodes = await db
-    .select()
+    .select({
+      title: episode.title,
+      seasonNum: episode.seasonNum,
+      episodeNum: episode.episodeNum,
+      numVotes: episode.numVotes,
+      rating: episode.rating,
+    })
     .from(episode)
     .where(eq(episode.showId, showId))
     .orderBy(asc(episode.seasonNum), asc(episode.episodeNum));

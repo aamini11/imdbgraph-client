@@ -82,7 +82,7 @@ async function transfer(client: PoolClient) {
   await copy(
     path.join(tempDir, "titles.tsv"),
     `COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE) 
-    WHERE title_type IN ('tvSeries', 'tvShort', 'tvSpecial', 'tvMiniSeries')`,
+    WHERE title_type IN ('tvSeries', 'tvEpisode', 'tvShort', 'tvSpecial', 'tvMiniSeries')`,
   );
   await copy(
     path.join(tempDir, "episodes.tsv"),
@@ -125,7 +125,7 @@ async function transfer(client: PoolClient) {
     FROM temp_episode e
     LEFT JOIN temp_title t ON (e.episode_id = t.imdb_id)
     LEFT JOIN temp_ratings r ON (e.episode_id = r.imdb_id)
-    WHERE t.title_type = 'tvepisode'
+    WHERE t.title_type = 'tvEpisode'
     AND e.season_num >= 0
     AND e.episode_num >= 0;
   `);
