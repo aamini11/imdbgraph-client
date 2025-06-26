@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import {
   pgTable,
   index,
@@ -9,6 +8,7 @@ import {
   doublePrecision,
   foreignKey,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 export const show = pgTable(
   "show",
@@ -22,7 +22,7 @@ export const show = pgTable(
   },
   (table) => [
     index("show_rating_index").using("btree", table.rating.desc()),
-    sql`title_index ON show USING GIN (title gin_trgm_ops)`,
+    index("trigram_index").using("gin", sql`${table.title} gin_trgm_ops`),
   ],
 );
 
