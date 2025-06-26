@@ -1,18 +1,17 @@
-import { Episode, Ratings } from "@/lib/data/types";
 import { show, episode } from "@/db/schema";
+import { Episode, Ratings } from "@/lib/data/types";
 import { eq, asc } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-const db = drizzle(process.env.DATABASE_URL!);
-
-export async function getRatings(showId: string): Promise<Ratings> {
-  const [foundShow] = await db
-    .select()
-    .from(show)
-    .where(eq(show.imdbId, showId));
-  if (!foundShow) {
+export async function getRatings(
+  db: NodePgDatabase,
+  showId: string,
+): Promise<Ratings> {
+  const result = await db.select().from(show).where(eq(show.imdbId, showId));
+  if (!result.length) {
     throw new Error("Show not found");
   }
+  const foundShow = result[0];
 
   const episodes = await db
     .select()
@@ -21,18 +20,14 @@ export async function getRatings(showId: string): Promise<Ratings> {
     .orderBy(asc(episode.seasonNum), asc(episode.episodeNum));
 
   // Group episodes by season and episode number (using string keys)
-  const groupedEpisodes: Record<string, Record<string, Episode>> = {};
-  for (const e of episodes) {
-    const seasonKey = e.seasonNum.toString();
-    const episodeKey = e.episodeNum.toString();
+  const groupedEpisodes: Record<number, Record<number, Episode>> = {};
+  for (const episodeInfo of episodes) {
+    const { seasonNum, episodeNum } = episodeInfo;
 
     // Create season entry if missing
-    if (!groupedEpisodes[seasonKey]) {
-      groupedEpisodes[seasonKey] = {};
-    }
-
+    groupedEpisodes[seasonNum] ??= {};
     // Add episode to season
-    groupedEpisodes[seasonKey][episodeKey] = e;
+    groupedEpisodes[seasonNum][episodeNum] = episodeInfo;
   }
 
   return { show: foundShow, allEpisodeRatings: groupedEpisodes };
