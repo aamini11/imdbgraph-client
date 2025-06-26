@@ -1,4 +1,4 @@
-import { pool } from "@/db/connection";
+import { db } from "@/db/connection";
 import { download } from "@/lib/scraper/imdb-file-downloader";
 import { randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
@@ -6,14 +6,14 @@ import { mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { pipeline } from "node:stream/promises";
-import { PoolClient } from "pg";
+import { Pool, PoolClient } from "pg";
 import { from as copyFrom } from "pg-copy-streams";
 
 /**
  * Main method that downloads the latest files from IMDB and updates our
  * internal database with the latest data.
  */
-export async function update(): Promise<void> {
+export async function update(pool: Pool): Promise<void> {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
