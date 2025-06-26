@@ -2,6 +2,7 @@
  * Standalone script to populate the database with IMDB data Usage: pnpm run
  * populate
  */
+import { db } from "@/db/connection";
 import { update } from "@/lib/scraper/db-updater";
 
 async function main() {
@@ -9,12 +10,12 @@ async function main() {
 
   try {
     const startTime = Date.now();
-    await update();
+    await update(db.$client);
     const endTime = Date.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
 
     console.log(
-      `Database population completed successfully in ${duration} seconds!`,
+      `✅ Database population completed successfully in ${duration} seconds!`,
     );
     process.exit(0);
   } catch (error) {
@@ -24,4 +25,4 @@ async function main() {
   }
 }
 
-await main();
+void main();

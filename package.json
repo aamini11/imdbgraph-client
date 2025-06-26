@@ -14,7 +14,8 @@
     "test:unit": "vitest --project unit",
     "test:integration": "vitest --project integration",
     "playwright": "playwright test",
-    "playwright:update-snapshots": "playwright test --update-snapshots"
+    "playwright:update-snapshots": "playwright test --update-snapshots",
+    "populate": "tsx --env-file=.env scripts/populate.ts"
   },
   "dependencies": {
     "@heroui/framer-utils": "^2.1.15",

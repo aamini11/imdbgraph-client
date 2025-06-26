@@ -78,11 +78,11 @@ async function transfer(client: PoolClient) {
     console.log(`Successfully transferred ${file} to table temp_title`);
   };
 
-  console.log("Starting file to temp table transfers");
+  console.log("Starting file to temp table transfers...");
   await copy(
     path.join(tempDir, "titles.tsv"),
     `COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE) 
-    WHERE title_type IN ('tvSeries', 'tvEpisode', 'tvShort', 'tvSpecial', 'tvMiniSeries')`,
+    WHERE title_type IN ('tvSeries', 'tvEpisode', 'tvShort', 'tvSpecial', 'tvMiniSeries') AND start_year IS NOT NULL;`,
   );
   await copy(
     path.join(tempDir, "episodes.tsv"),
@@ -126,6 +126,9 @@ async function transfer(client: PoolClient) {
     LEFT JOIN temp_title t ON (e.episode_id = t.imdb_id)
     LEFT JOIN temp_ratings r ON (e.episode_id = r.imdb_id)
     WHERE t.title_type = 'tvEpisode'
+    AND e.show_id IN (
+      SELECT id FROM show
+    )
     AND e.season_num >= 0
     AND e.episode_num >= 0;
   `);
