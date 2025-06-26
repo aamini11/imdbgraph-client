@@ -1,4 +1,4 @@
-import { show, episode } from "./schema";
+import { show, episode } from "@/db/schema";
 import { relations } from "drizzle-orm/relations";
 
 export const episodeRelations = relations(episode, ({ one }) => ({

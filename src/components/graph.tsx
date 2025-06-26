@@ -30,11 +30,11 @@ export function Graph({ ratings }: { ratings: Ratings }) {
   );
 }
 
-type Point = {
+interface Point {
   x: number;
   y?: number;
   custom?: { episode: Episode };
-};
+}
 
 /**
  * Transform data into a format that Highcharts understands.
@@ -122,10 +122,10 @@ const commonOptions: Highcharts.Options = {
     valueDecimals: 2,
     // CAN NOT BE AN ARROW FUNCTION BECAUSE OF 'THIS' KEYWORD
     pointFormatter: function (this: Point) {
-      const episode = this?.custom?.episode;
+      const episode = this.custom?.episode;
       if (episode) {
         return `
-                    ${episode.title} (s${episode.seasonNum}e${episode.episodeNum})
+                    ${episode.title} (s${episode.seasonNum.toString()}e${episode.episodeNum.toString()})
                     <br><br>
                     Rating: ${episode.rating.toFixed(1)} (${episode.numVotes.toLocaleString()} votes)
                 `;
