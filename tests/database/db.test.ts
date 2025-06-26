@@ -26,9 +26,9 @@ describe("Test IMDB data scraper", () => {
 
     await update(db.$client);
 
-    expect(await getRatings("tt0417299")).toEqual(avatarRatings);
-    expect(await getRatings("tt0944947")).toEqual(gameOfThronesRatings);
-    expect(await getRatings("tt0096697")).toEqual(simpsonsRatings);
+    expect(await getRatings(db, "tt0417299")).toEqual(avatarRatings);
+    expect(await getRatings(db, "tt0944947")).toEqual(gameOfThronesRatings);
+    expect(await getRatings(db, "tt0096697")).toEqual(simpsonsRatings);
   });
 
   testWithDb("Handling bad files", async ({ db }) => {
