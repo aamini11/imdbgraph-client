@@ -126,6 +126,9 @@ importers:
       '@types/pg':
         specifier: ^8.15.4
         version: 8.15.4
+      '@types/pg-copy-streams':
+        specifier: ^1.2.5
+        version: 1.2.5
       '@types/react':
         specifier: ^19.1.4
         version: 19.1.4
@@ -1647,6 +1650,9 @@ packages:
 
   '@types/node@22.15.33':
     resolution: {integrity: sha512-wzoocdnnpSxZ+6CjW4ADCK1jVmd1S/J3ArNWfn8FDDQtRm8dkDg7TA+mvek2wNrfCgwuZxqEOiB9B1XCJ6+dbw==}
+
+  '@types/pg-copy-streams@1.2.5':
+    resolution: {integrity: sha512-7D6/GYW2uHIaVU6S/5omI+6RZnwlZBpLQDZAH83xX1rjxAOK0f6/deKyyUTewxqts145VIGn6XWYz1YGf50G5g==}
 
   '@types/pg@8.15.4':
     resolution: {integrity: sha512-I6UNVBAoYbvuWkkU3oosC8yxqH21f4/Jc4DK71JLG3dT2mdlGe1z+ep/LQGXaKaOgcvUrsQoPRqfgtMcvZiJhg==}
@@ -5643,6 +5649,11 @@ snapshots:
   '@types/node@22.15.33':
     dependencies:
       undici-types: 6.21.0
+
+  '@types/pg-copy-streams@1.2.5':
+    dependencies:
+      '@types/node': 22.15.33
+      '@types/pg': 8.15.4
 
   '@types/pg@8.15.4':
     dependencies:

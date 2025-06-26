@@ -1,4 +1,4 @@
-import { Ratings } from "@/lib/types";
+import { Ratings } from "@/lib/data/types";
 
 export const avatarRatings: Ratings = {
   show: {

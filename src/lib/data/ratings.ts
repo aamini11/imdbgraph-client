@@ -1,5 +1,5 @@
 import { Episode, Ratings } from "@/lib/data/types";
-import { show, episode } from "@/lib/db/schema";
+import { show, episode } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 

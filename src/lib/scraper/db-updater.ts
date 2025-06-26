@@ -1,4 +1,4 @@
-import { pool } from "@/lib/db/connection";
+import { pool } from "@/db/connection";
 import { download } from "@/lib/scraper/imdb-file-downloader";
 import { randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
