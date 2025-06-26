@@ -8,12 +8,8 @@ import { ScrollShadow } from "@heroui/scroll-shadow";
 import { Spinner } from "@heroui/spinner";
 import { useCombobox, UseComboboxReturnValue } from "downshift";
 import { AnimatePresence, motion } from "framer-motion";
-import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
-import React, { startTransition, useEffect, useMemo, useState } from "react";
-import { z } from "zod";
-
-const DROPDOWN_LIMIT = 5;
+import React, { useEffect, useState } from "react";
 
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
@@ -22,30 +18,11 @@ export function SearchBar() {
   const router = useRouter();
 
   const [text, setText] = useState("");
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState<Show[]>([]);
-
-  useEffect(() => {
-    return () => setIsRedirecting(false);
-  }, []);
+  const {  }
 
   useEffect(() => {
     router.prefetch("/ratings");
   }, [router]);
-
-  const handleNewQuery = useMemo(
-    () =>
-      debounce(async (x: string) => {
-        try {
-          const suggestions = await fetchSuggestions(x);
-          setSuggestions(suggestions.slice(0, DROPDOWN_LIMIT));
-        } finally {
-          setIsLoading(false);
-        }
-      }, 200),
-    [],
-  );
 
   const comboBoxProps = useCombobox({
     items: suggestions,
@@ -55,16 +32,9 @@ export function SearchBar() {
       }
 
       if (show) {
-        setIsRedirecting(true);
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
-        // Go to ratings page
-        // https://buildui.com/posts/global-progress-in-nextjs#introduction
-        startTransition(() => {
-          setIsRedirecting(false);
-          router.push(`/ratings?id=${show.imdbId}`);
-        });
       }
     },
     itemToString: (show) => show?.title ?? "",
@@ -196,26 +166,6 @@ function DropDown({
 function isEmpty(s: string) {
   return !s || !/\S/.test(s);
 }
-
-const fetchSuggestions = async (query: string): Promise<Show[]> => {
-  const response = await fetch(`/api/search?q=${query}`);
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-  let show;
-  try {
-    show = await response.json();
-    return show;
-  } catch (error) {
-    // Just return faulty data but log the error at least.
-    if (error instanceof z.ZodError) {
-      console.error(`Failed to parse show data for: ${show.imdbId}`, error);
-      return show as Show[];
-    } else {
-      throw error;
-    }
-  }
-};
 
 export const SearchIcon = ({
   size = 24,
