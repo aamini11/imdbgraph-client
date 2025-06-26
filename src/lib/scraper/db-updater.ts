@@ -1,4 +1,3 @@
-import { db } from "@/db/connection";
 import { download } from "@/lib/scraper/imdb-file-downloader";
 import { randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
@@ -127,7 +126,7 @@ async function transfer(client: PoolClient) {
     LEFT JOIN temp_ratings r ON (e.episode_id = r.imdb_id)
     WHERE t.title_type = 'tvEpisode'
     AND e.show_id IN (
-      SELECT id FROM show
+      SELECT imdb_id FROM show
     )
     AND e.season_num >= 0
     AND e.episode_num >= 0;
