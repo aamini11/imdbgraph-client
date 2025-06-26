@@ -58,6 +58,7 @@
     "@types/lodash": "^4.17.16",
     "@types/node": "^22.15.17",
     "@types/pg": "^8.15.4",
+    "@types/pg-copy-streams": "^1.2.5",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
     "drizzle-kit": "^0.31.2",

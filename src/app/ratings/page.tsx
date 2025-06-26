@@ -1,9 +1,9 @@
 import { Graph } from "@/components/graph";
-import { RatingsData, validateRatingsData } from "@/lib/data/ratings";
-import { formatYears } from "@/lib/data/show";
+import { getRatings } from "@/lib/data/ratings";
+import { formatYears, Ratings } from "@/lib/data/types";
 import { notFound } from "next/navigation";
 
-export default async function Ratings({
+export default async function RatingsPage({
   searchParams,
 }: {
   searchParams: Promise<{ id?: string }>;
@@ -13,17 +13,7 @@ export default async function Ratings({
     notFound();
   }
 
-  // Call API..
-  const url = `https://api.imdbgraph.org/ratings/${encodeURIComponent(id)}`;
-  const timeout = 60 * 60 * 12; // 12 hours
-  const data = await fetch(url, { next: { revalidate: timeout } });
-  if (!data.ok) {
-    notFound();
-  }
-
-  // Parse JSON response.
-  const jsonResponse = await data.json();
-  const ratings = validateRatingsData(jsonResponse);
+  const ratings = await getRatings(id);
   const show = ratings.show;
 
   return (
@@ -34,7 +24,7 @@ export default async function Ratings({
           {show.title} ({formatYears(show)})
         </h1>
         <h2 className="text-center text-sm">
-          Show rating: {show.showRating.toFixed(1)} (Votes:{" "}
+          Show rating: {show.rating.toFixed(1)} (Votes:{" "}
           {show.numVotes.toLocaleString()})
         </h2>
       </div>
@@ -53,7 +43,7 @@ export default async function Ratings({
   );
 }
 
-function hasRatings(ratings: RatingsData): boolean {
+function hasRatings(ratings: Ratings): boolean {
   for (const seasonRatings of Object.values(ratings.allEpisodeRatings)) {
     for (const episode of Object.values(seasonRatings)) {
       if (episode.numVotes > 0) {

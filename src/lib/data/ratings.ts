@@ -1,22 +1,39 @@
-import { EpisodeSchema } from "@/lib/data/episode";
-import { ShowSchema } from "@/lib/data/show";
-import { z } from "zod";
+import { Episode, Ratings } from "@/lib/data/types";
+import { show, episode } from "@/lib/db/schema";
+import { eq, asc } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
 
-const RatingsDataSchema = z.object({
-  show: ShowSchema,
-  allEpisodeRatings: z.record(z.string(), z.record(z.string(), EpisodeSchema)),
-});
+const db = drizzle(process.env.DATABASE_URL!);
 
-export type RatingsData = z.infer<typeof RatingsDataSchema>;
-
-export function validateRatingsData(ratingsData: unknown): RatingsData {
-  try {
-    return RatingsDataSchema.parse(ratingsData);
-  } catch (error) {
-    // Just return faulty data but log the error at least.
-    if (error instanceof z.ZodError) {
-      console.error(`Failed to parse ratings data`, error.issues);
-    }
-    return ratingsData as RatingsData;
+export async function getRatings(showId: string): Promise<Ratings> {
+  const [foundShow] = await db
+    .select()
+    .from(show)
+    .where(eq(show.imdbId, showId));
+  if (!foundShow) {
+    throw new Error("Show not found");
   }
+
+  const episodes = await db
+    .select()
+    .from(episode)
+    .where(eq(episode.showId, showId))
+    .orderBy(asc(episode.seasonNum), asc(episode.episodeNum));
+
+  // Group episodes by season and episode number (using string keys)
+  const groupedEpisodes: Record<string, Record<string, Episode>> = {};
+  for (const e of episodes) {
+    const seasonKey = e.seasonNum.toString();
+    const episodeKey = e.episodeNum.toString();
+
+    // Create season entry if missing
+    if (!groupedEpisodes[seasonKey]) {
+      groupedEpisodes[seasonKey] = {};
+    }
+
+    // Add episode to season
+    groupedEpisodes[seasonKey][episodeKey] = e;
+  }
+
+  return { show: foundShow, allEpisodeRatings: groupedEpisodes };
 }

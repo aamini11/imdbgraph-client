@@ -1,14 +1,13 @@
 "use client";
 
-import { Theme, useTheme } from "@/components/theme/themed-page";
-import { Episode } from "@/lib/data/episode";
-import { RatingsData } from "@/lib/data/ratings";
+import { Theme, useTheme } from "@/components/theme/theme-provider";
+import { Episode, Ratings } from "@/lib/data/types";
 import { HighchartsReact } from "highcharts-react-official";
 import Highcharts from "highcharts/esm/highcharts";
 import "highcharts/esm/modules/accessibility";
-import { isArray, mergeWith } from "lodash";
+import { mergeWith } from "lodash";
 
-export function Graph({ ratings }: { ratings: RatingsData }) {
+export function Graph({ ratings }: { ratings: Ratings }) {
   const { theme } = useTheme();
   const themeSpecificOptions =
     theme === Theme.LIGHT ? lightThemeOptions : darkThemeOptions;
@@ -40,7 +39,7 @@ type Point = {
 /**
  * Transform data into a format that Highcharts understands.
  */
-function parseRatings(ratings: RatingsData): Highcharts.SeriesSplineOptions[] {
+function parseRatings(ratings: Ratings): Highcharts.SeriesSplineOptions[] {
   let i = 1;
   const allSeries: Highcharts.SeriesSplineOptions[] = [];
   for (const [seasonNumber, seasonRatings] of Object.entries(
@@ -55,7 +54,7 @@ function parseRatings(ratings: RatingsData): Highcharts.SeriesSplineOptions[] {
 
       data.push({
         x: i,
-        y: episode.imdbRating,
+        y: episode.rating,
         custom: {
           episode: episode,
         },
@@ -126,9 +125,9 @@ const commonOptions: Highcharts.Options = {
       const episode = this?.custom?.episode;
       if (episode) {
         return `
-                    ${episode.episodeTitle} (s${episode.season}e${episode.episodeNumber})
+                    ${episode.title} (s${episode.seasonNum}e${episode.episodeNum})
                     <br><br>
-                    Rating: ${episode.imdbRating.toFixed(1)} (${episode.numVotes.toLocaleString()} votes)
+                    Rating: ${episode.rating.toFixed(1)} (${episode.numVotes.toLocaleString()} votes)
                 `;
       } else {
         return "Error: Missing Data";
@@ -199,7 +198,6 @@ const darkThemeOptions: Highcharts.Options = {
   legend: {
     itemStyle: {
       color: "#d4d4d4",
-      fontFamily: "var(--font-inter)",
     },
     itemHoverStyle: {
       color: "#fafafa",
@@ -224,7 +222,7 @@ function mergeOptions<T>(...options: [T, T, T]): Highcharts.Options {
       obj: Highcharts.Options,
       src: Highcharts.Options,
     ): Highcharts.Options | undefined => {
-      if (isArray(obj) && isArray(src)) {
+      if (Array.isArray(obj) && Array.isArray(src)) {
         return src;
       } else {
         return undefined;
