@@ -1,6 +1,14 @@
 import { sql } from "drizzle-orm";
-import { pgTable, index, integer, varchar, text, char, doublePrecision, foreignKey } from "drizzle-orm/pg-core";
-
+import {
+  pgTable,
+  index,
+  integer,
+  varchar,
+  text,
+  char,
+  doublePrecision,
+  foreignKey,
+} from "drizzle-orm/pg-core";
 
 export const show = pgTable(
   "show",

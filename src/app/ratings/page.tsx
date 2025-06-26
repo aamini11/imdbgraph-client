@@ -30,7 +30,7 @@ export default async function RatingsPage({
       </div>
 
       {/* Graph */}
-      <div className="flex-1 min-h-[250px] p-5">
+      <div className="min-h-[250px] flex-1 p-5">
         {!hasRatings(ratings) ? (
           <h1 className="pt-8 text-center text-6xl leading-tight">
             No Ratings Found

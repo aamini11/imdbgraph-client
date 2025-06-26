@@ -13,7 +13,7 @@ export function Graph({ ratings }: { ratings: Ratings }) {
     theme === Theme.LIGHT ? lightThemeOptions : darkThemeOptions;
 
   return (
-    <div className="flex flex-1 relative max-h-[400px] min-h-[250px]">
+    <div className="relative flex max-h-[400px] min-h-[250px] flex-1">
       <HighchartsReact
         highcharts={Highcharts}
         containerProps={{ style: { height: "100%", width: "100%" } }}
