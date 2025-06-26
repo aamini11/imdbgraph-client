@@ -1,4 +1,5 @@
 import { Graph } from "@/components/graph";
+import { db } from "@/db/connection";
 import { getRatings } from "@/lib/data/ratings";
 import { formatYears, Ratings } from "@/lib/data/types";
 import { notFound } from "next/navigation";
@@ -8,12 +9,12 @@ export default async function RatingsPage({
 }: {
   searchParams: Promise<{ id?: string }>;
 }) {
-  const id = (await searchParams)?.id;
+  const id = (await searchParams).id;
   if (!id) {
     notFound();
   }
 
-  const ratings = await getRatings(id);
+  const ratings = await getRatings(db, id);
   const show = ratings.show;
 
   return (
