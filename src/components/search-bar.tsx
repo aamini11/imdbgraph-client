@@ -1,6 +1,6 @@
 "use client";
 
-import { formatYears, Show, ShowSchema } from "@/lib/data/show";
+import { formatYears, Show } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
 import { TRANSITION_VARIANTS } from "@heroui/framer-utils";
 import { Input } from "@heroui/input";
@@ -104,7 +104,7 @@ export function SearchBar() {
         disabled={isRedirecting}
         {...getInputProps()}
       />
-      <div {...getMenuProps()} className="absolute w-full z-10 overflow-clip">
+      <div {...getMenuProps()} className="absolute z-10 w-full overflow-clip">
         <AnimatePresence>
           {isOpen &&
             text.length > 0 &&
@@ -137,14 +137,14 @@ function DropDown({
   const { highlightedIndex, getItemProps } = comboBoxProps;
 
   const rating = (show: Show) => (
-    <div className="shrink-0 flex items-center space-x-1 text-sm pl-2">
+    <div className="flex shrink-0 items-center space-x-1 pl-2 text-sm">
       <dt className="text-sky-500">
         <span className="sr-only">Star rating</span>
         <svg width="16" height="20" fill="currentColor">
           <path d="M7.05 3.691c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.372 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.363-1.118L.98 9.483c-.784-.57-.381-1.81.587-1.81H5.03a1 1 0 00.95-.69L7.05 3.69z" />
         </svg>
       </dt>
-      <dd>{`${show.showRating.toFixed(1)} / 10.0`}</dd>
+      <dd>{`${show.rating.toFixed(1)} / 10.0`}</dd>
     </div>
   );
 
@@ -152,9 +152,9 @@ function DropDown({
     <li
       key={show.imdbId}
       className={cn(
-        "flex gap-2 items-center justify-between px-2 py-1.5 w-full h-full",
+        "flex h-full w-full items-center justify-between gap-2 px-2 py-1.5",
         "rounded-medium text-default-500 transition-opacity",
-        "subpixel-antialiased cursor-pointer tap-highlight-transparent hover:transition-colors",
+        "tap-highlight-transparent cursor-pointer subpixel-antialiased hover:transition-colors",
         {
           "bg-default-200 dark:bg-default-50 text-foreground":
             index === highlightedIndex,
@@ -164,7 +164,7 @@ function DropDown({
       )}
       {...getItemProps({ item: show, index })}
     >
-      <div className="flex justify-between w-full items-center">
+      <div className="flex w-full items-center justify-between">
         <div className="flex flex-col">
           <span className="text-small break-words">{show.title}&nbsp;</span>
           <span className="text-tiny text-default-400">
@@ -177,7 +177,7 @@ function DropDown({
   ));
 
   return (
-    <div className="rounded-large p-2 border-small border-default-400 dark:border-default-100 bg-background mt-2">
+    <div className="rounded-large border-small border-default-400 dark:border-default-100 bg-background mt-2 p-2">
       <ScrollShadow className="max-h-[320px]">
         <ul id="tv-search-dropdown">
           {suggestions.length > 0 ? (
@@ -203,18 +203,7 @@ const fetchSuggestions = async (query: string): Promise<Show[]> => {
     throw new Error("Network response was not ok");
   }
 
-  const show = await response.json();
-  try {
-    return z.array(ShowSchema).parse(show);
-  } catch (error) {
-    // Just return faulty data but log the error at least.
-    if (error instanceof z.ZodError) {
-      console.error(`Failed to parse show data for: ${show.imdbId}`, error);
-      return show as Show[];
-    } else {
-      throw error;
-    }
-  }
+  return await response.json();
 };
 
 export const SearchIcon = ({
