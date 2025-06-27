@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchSuggestions } from "@/lib/data/suggestions";
 import { formatYears, Show } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
 import { TRANSITION_VARIANTS } from "@heroui/framer-utils";
@@ -197,15 +198,6 @@ function DropDown({
 function isEmpty(s: string) {
   return !s || !/\S/.test(s);
 }
-
-const fetchSuggestions = async (query: string): Promise<Show[]> => {
-  const response = await fetch(`/api/search?q=${query}`);
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-
-  return (await response.json()) as Show[];
-};
 
 export const SearchIcon = ({
   size = 24,
