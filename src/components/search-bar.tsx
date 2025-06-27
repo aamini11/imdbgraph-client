@@ -11,7 +11,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
 import React, { startTransition, useEffect, useMemo, useState } from "react";
-import { z } from "zod";
 
 const DROPDOWN_LIMIT = 5;
 
@@ -27,7 +26,9 @@ export function SearchBar() {
   const [suggestions, setSuggestions] = useState<Show[]>([]);
 
   useEffect(() => {
-    return () => setIsRedirecting(false);
+    return () => {
+      setIsRedirecting(false);
+    };
   }, []);
 
   useEffect(() => {
@@ -203,7 +204,7 @@ const fetchSuggestions = async (query: string): Promise<Show[]> => {
     throw new Error("Network response was not ok");
   }
 
-  return await response.json();
+  return (await response.json()) as Show[];
 };
 
 export const SearchIcon = ({

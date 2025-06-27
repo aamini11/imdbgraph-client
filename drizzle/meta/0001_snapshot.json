@@ -73,12 +73,8 @@
           "name": "episode_show_imdb_id_fk",
           "tableFrom": "episode",
           "tableTo": "show",
-          "columnsFrom": [
-            "show_id"
-          ],
-          "columnsTo": [
-            "imdb_id"
-          ],
+          "columnsFrom": ["show_id"],
+          "columnsTo": ["imdb_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

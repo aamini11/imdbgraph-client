@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   pgTable,
   index,
@@ -8,7 +9,6 @@ import {
   doublePrecision,
   foreignKey,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 
 export const show = pgTable(
   "show",
