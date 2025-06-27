@@ -102,6 +102,7 @@ async function transfer(client: PoolClient) {
            COALESCE(imdb_rating, 0.0),
            COALESCE(num_votes, 0)
     FROM temp_title LEFT JOIN temp_ratings USING (imdb_id)
+    WHERE num_votes > 0
     ON CONFLICT (imdb_id) DO UPDATE
         SET title = excluded.title,
             start_year = excluded.start_year,
