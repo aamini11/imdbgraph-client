@@ -3,7 +3,6 @@ import QueryProvider from "@/app/providers";
 import { ThemeButton } from "@/components/theme/theme-button";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { cn } from "@/lib/utils";
-import { HeroUIProvider } from "@heroui/system";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
@@ -51,46 +50,44 @@ export default function RootLayout(props: { children: ReactNode }) {
         )}
       >
         <QueryProvider>
-          <HeroUIProvider>
-            <ThemeProvider attribute="class">
-              <div className="flex min-h-dvh flex-col">
-                {/* Header with theme button in top right corner */}
-                <div className="ml-auto p-3">
-                  <ThemeButton />
-                </div>
-                {/* Main content */}
-                <div className="flex w-full flex-1 flex-col">
-                  {props.children}
-                </div>
-                {/* Footer */}
-                <footer className="w-full px-6 py-6">
-                  <div className="flex flex-col items-center justify-between gap-4">
-                    <p className="text-muted-foreground text-center text-sm leading-loose text-balance">
-                      Built by{" "}
-                      <a
-                        href="https://www.linkedin.com/in/aria-amini/"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-medium underline underline-offset-4"
-                      >
-                        Aria
-                      </a>
-                      . The source code is available on{" "}
-                      <a
-                        href="https://github.com/aamini11?tab=repositories"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-medium underline underline-offset-4"
-                      >
-                        GitHub
-                      </a>
-                      .
-                    </p>
-                  </div>
-                </footer>
+          <ThemeProvider attribute="class">
+            <div className="flex min-h-dvh flex-col">
+              {/* Header with theme button in top right corner */}
+              <div className="ml-auto p-3">
+                <ThemeButton />
               </div>
-            </ThemeProvider>
-          </HeroUIProvider>
+              {/* Main content */}
+              <div className="flex w-full flex-1 flex-col">
+                {props.children}
+              </div>
+              {/* Footer */}
+              <footer className="w-full px-6 py-6">
+                <div className="flex flex-col items-center justify-between gap-4">
+                  <p className="text-muted-foreground text-center text-sm leading-loose text-balance">
+                    Built by{" "}
+                    <a
+                      href="https://www.linkedin.com/in/aria-amini/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-medium underline underline-offset-4"
+                    >
+                      Aria
+                    </a>
+                    . The source code is available on{" "}
+                    <a
+                      href="https://github.com/aamini11?tab=repositories"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-medium underline underline-offset-4"
+                    >
+                      GitHub
+                    </a>
+                    .
+                  </p>
+                </div>
+              </footer>
+            </div>
+          </ThemeProvider>
         </QueryProvider>
         <Analytics />
         <SpeedInsights />
