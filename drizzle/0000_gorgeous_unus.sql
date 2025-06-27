@@ -19,4 +19,5 @@ CREATE TABLE "show" (
 --> statement-breakpoint
 ALTER TABLE "episode" ADD CONSTRAINT "episode_show_imdb_id_fk" FOREIGN KEY ("show_id") REFERENCES "public"."show"("imdb_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "episode_show_id_index" ON "episode" USING btree ("show_id");--> statement-breakpoint
-CREATE INDEX "show_rating_index" ON "show" USING btree ("rating" DESC NULLS LAST);
+CREATE INDEX "show_rating_index" ON "show" USING btree ("rating" DESC NULLS LAST);--> statement-breakpoint
+CREATE EXTENSION pg_trgm;
