@@ -1,17 +1,17 @@
+import { testWithDb } from "../../../../tests/utils/db-setup";
 import {
   avatarRatings,
   gameOfThronesRatings,
   simpsonsRatings,
-} from "./fixtures";
-import { testWithDb } from "../utils/db-test-case";
+} from "./data/ratings";
+import { download, ImdbFile } from "@/lib/data/imdb-file-downloader";
+import { update } from "@/lib/data/imdb-file-parser";
 import { getRatings } from "@/lib/data/ratings";
-import { update } from "@/lib/scraper/db-updater";
-import { download, ImdbFile } from "@/lib/scraper/imdb-file-downloader";
 import fs from "fs/promises";
 import path from "path";
 import { describe, expect, vi } from "vitest";
 
-vi.mock("@/lib/scraper/imdb-file-downloader");
+vi.mock("@/lib/data/imdb-file-downloader");
 
 // =============================================================================
 // Tests
@@ -19,9 +19,9 @@ vi.mock("@/lib/scraper/imdb-file-downloader");
 describe("Test IMDB data scraper", () => {
   testWithDb("Loading sample files into database", async ({ db }) => {
     mockDownloads({
-      "title.basics.tsv.gz": "./sample-files/titles.tsv",
-      "title.episode.tsv.gz": "./sample-files/episodes.tsv",
-      "title.ratings.tsv.gz": "./sample-files/ratings.tsv",
+      "title.basics.tsv.gz": "./data/titles.tsv",
+      "title.episode.tsv.gz": "./data/episodes.tsv",
+      "title.ratings.tsv.gz": "./data/ratings.tsv",
     });
 
     await update(db.$client);
@@ -33,9 +33,9 @@ describe("Test IMDB data scraper", () => {
 
   testWithDb("Handling bad files", async ({ db }) => {
     mockDownloads({
-      "title.basics.tsv.gz": "./sample-files/titles.tsv",
-      "title.episode.tsv.gz": "./sample-files/bad-episodes.tsv",
-      "title.ratings.tsv.gz": "./sample-files/ratings.tsv",
+      "title.basics.tsv.gz": "./data/titles.tsv",
+      "title.episode.tsv.gz": "./data/bad-episodes.tsv",
+      "title.ratings.tsv.gz": "./data/ratings.tsv",
     });
 
     await expect(update(db.$client)).rejects.toThrow("Error updating database");

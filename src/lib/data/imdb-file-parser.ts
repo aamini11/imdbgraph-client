@@ -1,4 +1,4 @@
-import { download } from "@/lib/scraper/imdb-file-downloader";
+import { download } from "@/lib/data/imdb-file-downloader";
 import { randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { mkdir } from "node:fs/promises";
