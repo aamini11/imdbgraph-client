@@ -3,7 +3,7 @@ import {
   gameOfThronesRatings,
   simpsonsRatings,
 } from "./fixtures";
-import { testWithDb } from "./utils/db-test-case";
+import { testWithDb } from "../utils/db-test-case";
 import { getRatings } from "@/lib/data/ratings";
 import { update } from "@/lib/scraper/db-updater";
 import { download, ImdbFile } from "@/lib/scraper/imdb-file-downloader";
