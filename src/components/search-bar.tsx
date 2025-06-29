@@ -5,17 +5,10 @@ import { fetchSuggestions } from "@/lib/data/suggestions";
 import { formatYears } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import {
-  Command,
-  CommandItem,
-  CommandEmpty,
-  CommandInput,
-  CommandList,
-} from "cmdk";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useDeferredValue, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
@@ -23,11 +16,10 @@ import { useState, useDeferredValue, useEffect } from "react";
 export function SearchBar() {
   const router = useRouter();
   const [value, setValue] = useState("");
-  const deferredQuery = useDeferredValue(value);
 
-  const { isLoading, data: searchResults } = useQuery({
-    queryKey: ["suggestions", deferredQuery],
-    queryFn: () => fetchSuggestions(deferredQuery),
+  const { isPending, data: searchResults } = useQuery({
+    queryKey: ["suggestions", value],
+    queryFn: () => fetchSuggestions(value),
     placeholderData: keepPreviousData,
   });
 
@@ -37,42 +29,40 @@ export function SearchBar() {
   }, [router]);
 
   return (
-    <search className="w-full">
-      <Command
-        className={cn(
-          "bg-background text-popover-foreground flex h-full w-full flex-col text-sm",
-          "ring-offset-background focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
-        )}
+    <search
+      className={cn(
+        "bg-background text-popover-foreground flex h-full w-full flex-col text-sm",
+        "ring-offset-background focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+      )}
+    >
+      {/* Search Bar */}
+      <div className="border-input flex items-center rounded-full border px-3">
+        <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+        <input
+          autoFocus
+          value={value}
+          onInput={(e) => {
+            setValue(e.currentTarget.value);
+          }}
+          className="placeholder:text-muted-foreground h-10 w-full outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          placeholder="Search for any TV show..."
+        />
+        {isPending && <LoadingSpinner />}
+      </div>
+
+      {/* Dropdown Menu */}
+      <ul
+        className={cn("mt-2 rounded-xl border p-2", {
+          hidden: !value,
+        })}
       >
-        {/* Search Bar */}
-        <div className="border-input flex items-center rounded-full border px-3">
-          <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-          <CommandInput
-            autoFocus
-            value={value}
-            onValueChange={setValue}
-            className={cn(
-              "placeholder:text-muted-foreground h-10 w-full outline-none disabled:cursor-not-allowed disabled:opacity-50",
-            )}
-            placeholder="Search for any TV show..."
-          />
-          {isLoading && <LoadingSpinner />}
-        </div>
-        {/* Dropdown Menu */}
-        <CommandList
-          className={cn("mt-2 rounded-xl border p-2", {
-            hidden: !value,
-          })}
-          id="tv-search-dropdown"
-        >
-          {!isLoading && (
-            <CommandEmpty className="text-foreground/60 px-2 py-1.5 text-center">
-              No TV Shows Found.
-            </CommandEmpty>
-          )}
-          {searchResults?.map((show) => (
-            <CommandItem
-              value={show.imdbId}
+        {!searchResults?.length ? (
+          <div className="text-foreground/60 px-2 py-1.5 text-center">
+            No TV Shows Found.
+          </div>
+        ) : (
+          searchResults.map((show) => (
+            <li
               key={show.imdbId}
               className={cn(
                 "text-foreground/60 hover:bg-foreground/5 flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm outline-none select-none",
@@ -103,10 +93,10 @@ export function SearchBar() {
                   <dd>{`${show.rating.toFixed(1)} / 10.0`}</dd>
                 </div>
               </Link>
-            </CommandItem>
-          ))}
-        </CommandList>
-      </Command>
+            </li>
+          ))
+        )}
+      </ul>
     </search>
   );
 }
