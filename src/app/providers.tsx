@@ -1,7 +1,8 @@
 "use client";
 
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import { HeroUIProvider } from "@heroui/system";
+// https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#initial-setup
+// Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
 import {
   isServer,
   QueryClient,
@@ -44,12 +45,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
   return (
-    <HeroUIProvider>
-      <ThemeProvider attribute="class">
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      </ThemeProvider>
-    </HeroUIProvider>
+    <ThemeProvider attribute="class">
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </ThemeProvider>
   );
 }
