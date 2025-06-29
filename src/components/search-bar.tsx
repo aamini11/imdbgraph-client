@@ -8,7 +8,7 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useDeferredValue } from "react";
 
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
@@ -16,10 +16,11 @@ import { useState, useEffect } from "react";
 export function SearchBar() {
   const router = useRouter();
   const [value, setValue] = useState("");
+  const deferredValue = useDeferredValue(value);
 
-  const { isPending, data: searchResults } = useQuery({
-    queryKey: ["suggestions", value],
-    queryFn: () => fetchSuggestions(value),
+  const { isFetching, data: searchResults } = useQuery({
+    queryKey: ["suggestions", deferredValue],
+    queryFn: () => fetchSuggestions(deferredValue),
     placeholderData: keepPreviousData,
   });
 
@@ -47,7 +48,7 @@ export function SearchBar() {
           className="placeholder:text-muted-foreground h-10 w-full outline-none disabled:cursor-not-allowed disabled:opacity-50"
           placeholder="Search for any TV show..."
         />
-        {isPending && <LoadingSpinner />}
+        {isFetching && <LoadingSpinner />}
       </div>
 
       {/* Dropdown Menu */}
@@ -56,12 +57,12 @@ export function SearchBar() {
           hidden: !value,
         })}
       >
-        {!searchResults?.length ? (
+        {!isFetching && !searchResults?.length ? (
           <div className="text-foreground/60 px-2 py-1.5 text-center">
             No TV Shows Found.
           </div>
         ) : (
-          searchResults.map((show) => (
+          searchResults?.length && searchResults.map((show) => (
             <li
               key={show.imdbId}
               className={cn(
