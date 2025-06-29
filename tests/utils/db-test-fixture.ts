@@ -5,17 +5,20 @@ import fs from "node:fs/promises";
 import paths from "node:path";
 import { Pool } from "pg";
 import { test as baseTest } from "vitest";
+import { inject } from "vitest";
 
 type Database = NodePgDatabase & {
   $client: Pool;
 };
 
-export const testWithDb = baseTest.extend<{ db: Database }>({
+export const test = baseTest.extend<{ db: Database }>({
   db: async ({}, use) => {
+    const url = inject("dockerDbUrl");
     const db = drizzle({
-      client: new Pool({ connectionString: process.env.DATABASE_URL }),
+      client: new Pool({ connectionString: url }),
     });
 
+    await wipeDb(db);
     await setUpSchema(db);
     await use(db);
     // Clean up
@@ -41,4 +44,9 @@ async function setUpSchema(db: NodePgDatabase) {
       await db.execute(statement);
     }
   }
+}
+
+async function wipeDb(db: NodePgDatabase) {
+  await db.execute("DROP SCHEMA public CASCADE");
+  await db.execute("CREATE SCHEMA public");
 }
