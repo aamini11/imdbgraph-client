@@ -4,6 +4,10 @@ test.beforeEach(async ({ page }) => {
   await page.goto("ratings?id=tt0417299");
 });
 
+test("Screenshot Ratings Page", async ({ page }) => {
+  await expect(page).toHaveScreenshot();
+});
+
 test("Title works", async ({ page }) => {
   await expect(
     page.getByRole("heading", {

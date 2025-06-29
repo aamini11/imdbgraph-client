@@ -1,4 +1,4 @@
-import "./global.css";
+import "@/app/global.css";
 import Providers from "@/app/providers";
 import { ThemeButton } from "@/components/theme/theme-button";
 import { cn } from "@/lib/utils";

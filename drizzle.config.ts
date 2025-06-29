@@ -1,7 +1,7 @@
 import { defineConfig } from "drizzle-kit";
 
 if (!process.env.DATABASE_URL) {
-  throw Error("Env $DATABASE_URL is empty.")
+  throw Error("Env $DATABASE_URL is empty.");
 }
 
 export default defineConfig({
