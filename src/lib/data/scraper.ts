@@ -20,6 +20,7 @@ export async function update(pool: Pool): Promise<void> {
     await client.query("COMMIT");
   } catch (error) {
     await client.query("ROLLBACK");
+    console.error(error);
     throw new Error("Error updating database", { cause: error });
   } finally {
     client.release();

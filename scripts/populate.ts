@@ -3,7 +3,7 @@
  * populate
  */
 import { db } from "@/db/connection";
-import { update } from "@/lib/data/imdb-file-parser";
+import { update } from "@/lib/data/scraper";
 
 async function main() {
   console.log("Starting database population...");

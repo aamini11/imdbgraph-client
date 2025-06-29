@@ -103,8 +103,8 @@ export const simpsonsRatings: Ratings = {
     title: "The Simpsons",
     startYear: "1989",
     endYear: null,
-    rating: 0,
-    numVotes: 0,
+    rating: 9.0,
+    numVotes: 4,
   },
   allEpisodeRatings: {},
 };

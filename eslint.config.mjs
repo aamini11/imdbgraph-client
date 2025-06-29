@@ -18,8 +18,7 @@ const noRelativeImportsRule = {
       {
         patterns: [
           {
-            group: ["./", "../"],
-            allowImportNames: ["global.css"],
+            group: ["./", "../", "!./global.css"],
             message:
               "Please use absolute imports with '@/'. Example: '@/lib/utils'.",
           },
@@ -35,9 +34,7 @@ export let config = [
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     plugins: { js },
-    extends: [
-      "js/recommended",
-    ],
+    extends: ["js/recommended"],
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
   {

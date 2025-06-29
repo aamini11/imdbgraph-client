@@ -1,5 +1,8 @@
+import loader from "@next/env";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
+
+loader.loadEnvConfig(process.cwd());
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
@@ -11,22 +14,22 @@ export default defineConfig({
     },
     projects: [
       {
+        extends: true,
         test: {
           name: "unit",
-          include: ["src/**/*.test.{ts,tsx}"],
-          alias: {
-            "@": "/src",
-          },
+          include: ["src/**/*.unit.test.{ts,tsx}"],
+          environment: "jsdom",
         },
       },
       {
+        extends: true,
         test: {
-          name: "integration",
-          include: ["tests/database/*.test.{ts,tsx}"],
-          alias: {
-            "@": "/src",
-          },
-          testTimeout: 30000, // 30 seconds for database tests
+          name: "db",
+          include: ["src/**/*.db.test.{ts,tsx}"],
+          globalSetup: ["tests/utils/db-setup.ts"],
+          testTimeout: 30000, // Extra time for slower database tests
+          environment: "node",
+          env: process.env,
         },
       },
     ],

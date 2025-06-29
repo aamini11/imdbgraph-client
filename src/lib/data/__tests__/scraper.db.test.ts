@@ -1,12 +1,12 @@
-import { testWithDb } from "../../../../tests/utils/db-setup";
 import {
   avatarRatings,
   gameOfThronesRatings,
   simpsonsRatings,
-} from "./data/ratings";
+} from "./test-files/ratings";
 import { download, ImdbFile } from "@/lib/data/imdb-file-downloader";
-import { update } from "@/lib/data/imdb-file-parser";
 import { getRatings } from "@/lib/data/ratings";
+import { update } from "@/lib/data/scraper";
+import { testWithDb } from "@/tests/utils/db-test-fixture";
 import fs from "fs/promises";
 import path from "path";
 import { describe, expect, vi } from "vitest";
@@ -19,9 +19,9 @@ vi.mock("@/lib/data/imdb-file-downloader");
 describe("Test IMDB data scraper", () => {
   testWithDb("Loading sample files into database", async ({ db }) => {
     mockDownloads({
-      "title.basics.tsv.gz": "./data/titles.tsv",
-      "title.episode.tsv.gz": "./data/episodes.tsv",
-      "title.ratings.tsv.gz": "./data/ratings.tsv",
+      "title.basics.tsv.gz": "./test-files/titles.tsv",
+      "title.episode.tsv.gz": "./test-files/episodes.tsv",
+      "title.ratings.tsv.gz": "./test-files/ratings.tsv",
     });
 
     await update(db.$client);
@@ -33,9 +33,9 @@ describe("Test IMDB data scraper", () => {
 
   testWithDb("Handling bad files", async ({ db }) => {
     mockDownloads({
-      "title.basics.tsv.gz": "./data/titles.tsv",
-      "title.episode.tsv.gz": "./data/bad-episodes.tsv",
-      "title.ratings.tsv.gz": "./data/ratings.tsv",
+      "title.basics.tsv.gz": "./test-files/titles.tsv",
+      "title.episode.tsv.gz": "./test-files/bad-episodes.tsv",
+      "title.ratings.tsv.gz": "./test-files/ratings.tsv",
     });
 
     await expect(update(db.$client)).rejects.toThrow("Error updating database");
