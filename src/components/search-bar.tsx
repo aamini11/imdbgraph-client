@@ -20,10 +20,7 @@ export function SearchBar() {
 
   const { isFetching, data: searchResults } = useQuery({
     queryKey: ["suggestions", deferredValue],
-    queryFn: () => {
-      console.log("FETCH", deferredValue);
-      return fetchSuggestions(deferredValue);
-    },
+    queryFn: () => fetchSuggestions(deferredValue),
     placeholderData: keepPreviousData,
   });
 
