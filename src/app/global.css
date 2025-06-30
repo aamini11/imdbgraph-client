@@ -119,3 +119,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .animate-delayed-fade-in {
+    opacity: 0;
+    animation: delayed-fade-in 0.2s ease-in-out 0.3s forwards;
+  }
+
+  @keyframes delayed-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}

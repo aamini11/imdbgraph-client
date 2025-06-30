@@ -4,7 +4,7 @@ import { LoadingSpinner } from "@/components/icons";
 import { fetchSuggestions } from "@/lib/data/suggestions";
 import { formatYears } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,13 +15,14 @@ import { useState, useEffect, useDeferredValue } from "react";
  */
 export function SearchBar() {
   const router = useRouter();
-  const [value, setValue] = useState("");
-  const deferredValue = useDeferredValue(value);
+  const [text, setText] = useState("");
+  const queryRequest = useDeferredValue(text);
 
   const { isFetching, data: searchResults } = useQuery({
-    queryKey: ["suggestions", deferredValue],
-    queryFn: () => fetchSuggestions(deferredValue),
+    queryKey: ["suggestions", queryRequest],
+    queryFn: () => fetchSuggestions(queryRequest),
     placeholderData: keepPreviousData,
+    enabled: !!queryRequest,
   });
 
   // Optimize page navigation by prefetching the ratings page
@@ -41,28 +42,32 @@ export function SearchBar() {
         <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
         <input
           autoFocus
-          value={value}
+          value={text}
           onInput={(e) => {
-            setValue(e.currentTarget.value);
+            setText(e.currentTarget.value);
           }}
           className="placeholder:text-muted-foreground h-10 w-full outline-none disabled:cursor-not-allowed disabled:opacity-50"
           placeholder="Search for any TV show..."
         />
-        {isFetching && <LoadingSpinner />}
+        {isFetching && <LoadingSpinner className="animate-delayed-fade-in" />}
       </div>
 
       {/* Dropdown Menu */}
       <ul
         className={cn("mt-2 rounded-xl border p-2", {
-          hidden: !value,
+          hidden: !queryRequest,
         })}
       >
-        {!isFetching && !searchResults?.length ? (
+        {isFetching ? (
+          <div className="text-foreground/60 px-2 py-1.5 text-center">
+            Searching...
+          </div>
+        ) : !searchResults?.length ? (
           <div className="text-foreground/60 px-2 py-1.5 text-center">
             No TV Shows Found.
           </div>
         ) : (
-          searchResults?.length && searchResults.map((show) => (
+          searchResults.map((show) => (
             <li
               key={show.imdbId}
               className={cn(
