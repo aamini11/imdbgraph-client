@@ -54,15 +54,15 @@ export function SearchBar() {
       {/* Dropdown Menu */}
       <ul
         className={cn("mt-2 rounded-xl border p-2", {
-          hidden: !value,
+          hidden: !value || searchResults === null,
         })}
       >
-        {!isFetching && !searchResults?.length ? (
+        {searchResults && searchResults.length === 0 ? (
           <div className="text-foreground/60 px-2 py-1.5 text-center">
             No TV Shows Found.
           </div>
         ) : (
-          searchResults?.length && searchResults.map((show) => (
+          searchResults?.map((show) => (
             <li
               key={show.imdbId}
               className={cn(

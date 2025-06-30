@@ -5,7 +5,12 @@ import { show } from "@/db/schema";
 import { Show } from "@/lib/data/types";
 import { desc, sql } from "drizzle-orm";
 
-export async function fetchSuggestions(query: string): Promise<Show[]> {
+export async function fetchSuggestions(
+  query: string,
+): Promise<Show[] | null> {
+  if (!query) {
+    return null;
+  }
   return await db
     .select()
     .from(show)
