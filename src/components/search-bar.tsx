@@ -20,7 +20,10 @@ export function SearchBar() {
 
   const { isFetching, data: searchResults } = useQuery({
     queryKey: ["suggestions", deferredValue],
-    queryFn: () => fetchSuggestions(deferredValue),
+    queryFn: () => {
+      console.log("FETCH", deferredValue);
+      return fetchSuggestions(deferredValue);
+    },
     placeholderData: keepPreviousData,
   });
 
@@ -32,7 +35,7 @@ export function SearchBar() {
   return (
     <search
       className={cn(
-        "bg-background text-popover-foreground flex h-full w-full flex-col text-sm",
+        "bg-background text-popover-foreground relative flex h-full w-full flex-col text-sm",
         "ring-offset-background focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
       )}
     >
@@ -53,9 +56,12 @@ export function SearchBar() {
 
       {/* Dropdown Menu */}
       <ul
-        className={cn("mt-2 rounded-xl border p-2", {
-          hidden: !value || searchResults === null,
-        })}
+        className={cn(
+          "bg-popover absolute top-full right-0 left-0 z-50 mt-2 w-full rounded-xl border p-2 shadow-lg",
+          {
+            hidden: !value || searchResults === null,
+          },
+        )}
       >
         {searchResults && searchResults.length === 0 ? (
           <div className="text-foreground/60 px-2 py-1.5 text-center">
