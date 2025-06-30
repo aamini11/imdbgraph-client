@@ -4,6 +4,10 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
+test("Screenshot Homepage", async ({ page }) => {
+  await expect(page).toHaveScreenshot();
+});
+
 test("Title works", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: /Welcome to IMDB Graph/i }),
