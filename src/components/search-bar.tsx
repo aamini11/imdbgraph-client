@@ -81,11 +81,7 @@ export function SearchBar() {
         className={cn(
           "bg-popover absolute top-full right-0 left-0 z-50 mt-2 w-full rounded-xl border p-2 shadow-lg",
           {
-            hidden:
-              !isOpen ||
-              !inputValue ||
-              !searchResults?.length ||
-              searchResults.length === 0,
+            hidden: !isOpen || !inputValue || !searchResults,
           },
         )}
         {...getMenuProps()}
