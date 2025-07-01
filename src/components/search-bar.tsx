@@ -1,7 +1,6 @@
 "use client";
 
 import { LoadingSpinner } from "@/components/icons";
-import { Input } from "@/components/primitives/input";
 import { fetchSuggestions } from "@/lib/data/suggestions";
 import { formatYears } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
@@ -14,7 +13,7 @@ import { useState, useEffect, useDeferredValue } from "react";
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
  */
-export function SearchBar() {
+export function SearchBar({ autoFocus = true }: { autoFocus: boolean }) {
   const router = useRouter();
   const [inputValue, setInputValue] = useState("");
   const deferredValue = useDeferredValue(inputValue);
@@ -62,28 +61,27 @@ export function SearchBar() {
       {/* Search Bar */}
       <div
         className={cn(
-          "placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm",
-          "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-          "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
+          "placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 items-center rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm",
+          "has-focus-visible:border-ring has-focus-visible:ring-ring/50 has-focus-visible:ring-[3px]",
+          "has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50",
           "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
           "file:text-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium",
-          "flex items-center",
         )}
       >
         <SearchIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
         <input
-          autoFocus
-          className="placeholder:text-muted-foreground h-10 w-full outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          autoFocus={autoFocus}
+          className="flex-1 outline-none"
           placeholder="Search for any TV show..."
           {...getInputProps()}
         />
-        {isFetching && <LoadingSpinner />}
+        <LoadingSpinner className={cn("px-[2px]", { hidden: !isFetching })} />
       </div>
 
       {/* Dropdown Menu */}
       <ul
         className={cn(
-          "bg-popover sticky top-full right-0 left-0 z-50 mt-2 w-full rounded-xl border p-2 shadow-lg",
+          "bg-popover sticky top-full right-0 left-0 z-50 mt-3 w-full rounded-xl border p-2 shadow-lg",
           {
             hidden:
               !isOpen ||
