@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { Command } from "cmdk";
 import { Search } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useDeferredValue } from "react";
 
@@ -16,13 +15,14 @@ import { useState, useEffect, useDeferredValue } from "react";
  */
 export function SearchBar() {
   const router = useRouter();
+
   const [inputValue, setInputValue] = useState("");
   const deferredValue = useDeferredValue(inputValue);
 
   const { isFetching, data: searchResults } = useQuery({
     queryKey: ["suggestions", deferredValue],
     queryFn: () => fetchSuggestions(deferredValue),
-    placeholderData: (prev) => prev,
+    placeholderData: keepPreviousData,
     enabled: !!deferredValue,
   });
 
