@@ -5,6 +5,7 @@ import { fetchSuggestions } from "@/lib/data/suggestions";
 import { formatYears } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useCombobox } from "downshift";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,13 +16,35 @@ import { useState, useEffect, useDeferredValue } from "react";
  */
 export function SearchBar() {
   const router = useRouter();
-  const [value, setValue] = useState("");
-  const deferredValue = useDeferredValue(value);
+  const [inputValue, setInputValue] = useState("");
+  const deferredValue = useDeferredValue(inputValue);
 
   const { isFetching, data: searchResults } = useQuery({
     queryKey: ["suggestions", deferredValue],
     queryFn: () => fetchSuggestions(deferredValue),
     placeholderData: keepPreviousData,
+  });
+
+  const {
+    isOpen,
+    getLabelProps,
+    getMenuProps,
+    getInputProps,
+    highlightedIndex,
+    getItemProps,
+  } = useCombobox({
+    items: searchResults ?? [],
+    inputValue,
+    onInputValueChange: ({ inputValue }) => {
+      setInputValue(inputValue);
+    },
+    onSelectedItemChange: ({ selectedItem }) => {
+      if (selectedItem) {
+        // Navigate to ratings page when an item is selected
+        router.push(`/ratings?id=${selectedItem.imdbId}`);
+      }
+    },
+    itemToString: (item) => item?.title ?? "",
   });
 
   // Optimize page navigation by prefetching the ratings page
@@ -36,17 +59,19 @@ export function SearchBar() {
         "ring-offset-background focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
       )}
     >
+      {/* Hidden label for accessibility */}
+      <label {...getLabelProps()} className="sr-only">
+        Search for TV shows
+      </label>
+
       {/* Search Bar */}
       <div className="border-input flex items-center rounded-full border px-3">
         <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
         <input
           autoFocus
-          value={value}
-          onInput={(e) => {
-            setValue(e.currentTarget.value);
-          }}
           className="placeholder:text-muted-foreground h-10 w-full outline-none disabled:cursor-not-allowed disabled:opacity-50"
           placeholder="Search for any TV show..."
+          {...getInputProps()}
         />
         {isFetching && <LoadingSpinner />}
       </div>
@@ -56,22 +81,37 @@ export function SearchBar() {
         className={cn(
           "bg-popover absolute top-full right-0 left-0 z-50 mt-2 w-full rounded-xl border p-2 shadow-lg",
           {
-            hidden: !value || searchResults === null,
+            hidden:
+              !isOpen ||
+              !inputValue ||
+              !searchResults?.length ||
+              searchResults.length === 0,
           },
         )}
+        {...getMenuProps()}
       >
-        {searchResults && searchResults.length === 0 ? (
+        {isOpen && inputValue && searchResults?.length === 0 && (
           <div className="text-foreground/60 px-2 py-1.5 text-center">
             No TV Shows Found.
           </div>
-        ) : (
-          searchResults?.map((show) => (
+        )}
+        {isOpen &&
+          searchResults?.map((show, index) => (
             <li
               key={show.imdbId}
               className={cn(
                 "text-foreground/60 hover:bg-foreground/5 flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm outline-none select-none",
                 "data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                {
+                  "bg-accent text-accent-foreground":
+                    highlightedIndex === index,
+                  "hover:bg-foreground/5": highlightedIndex !== index,
+                },
               )}
+              {...getItemProps({
+                item: show,
+                index,
+              })}
             >
               <Link href={`/ratings`} className="flex w-full gap-2">
                 {/* Show Title + Years */}
@@ -98,8 +138,7 @@ export function SearchBar() {
                 </div>
               </Link>
             </li>
-          ))
-        )}
+          ))}
       </ul>
     </search>
   );
