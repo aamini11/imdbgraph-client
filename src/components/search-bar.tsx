@@ -106,10 +106,7 @@ export function SearchBar() {
                 "hover:bg-foreground/5": highlightedIndex !== index,
               },
             )}
-            {...getItemProps({
-              item: show,
-              index,
-            })}
+            {...getItemProps({ item: show, index })}
           >
             {/* Show Title + Years */}
             <div className="flex flex-1 flex-col">
