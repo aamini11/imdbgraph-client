@@ -52,19 +52,19 @@ export function SearchBar() {
   }, [router]);
 
   return (
-    <search
-      className={cn(
-        "bg-background text-popover-foreground relative flex h-full w-full flex-col text-sm",
-        "ring-offset-background focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
-      )}
-    >
+    <search className="bg-background text-popover-foreground relative flex h-full w-full flex-col text-sm">
       {/* Hidden label for accessibility */}
       <label {...getLabelProps()} className="sr-only">
         Search for TV shows
       </label>
 
       {/* Search Bar */}
-      <div className="border-input flex items-center rounded-full border px-3">
+      <div
+        className={cn(
+          "border-input flex items-center rounded-full border px-3",
+          "ring-offset-background has-focus-visible:ring-ring has-focus-visible:ring-2 has-focus-visible:ring-offset-2 has-focus-visible:outline-none",
+        )}
+      >
         <SearchIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
         <input
           autoFocus
@@ -97,10 +97,11 @@ export function SearchBar() {
           <li
             key={show.imdbId}
             className={cn(
-              "text-foreground/60 hover:bg-foreground/5 flex w-full cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm outline-none select-none",
-              "data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50",
+              "text-foreground/60 flex w-full cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm outline-none select-none",
+              "disabled:pointer-events-none disabled:opacity-50",
               "[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
               {
+                "opacity-50": isFetching,
                 "bg-accent text-accent-foreground": highlightedIndex === index,
                 "hover:bg-foreground/5": highlightedIndex !== index,
               },
