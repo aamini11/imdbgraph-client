@@ -5,6 +5,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("Screenshot Ratings Page", async ({ page }) => {
+  await page.getByRole("img", { name: "Interactive chart" }).isVisible();
   await expect(page).toHaveScreenshot();
 });
 
