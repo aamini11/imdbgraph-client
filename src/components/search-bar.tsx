@@ -13,7 +13,7 @@ import { useState, useEffect, useDeferredValue } from "react";
 /**
  * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
  */
-export function SearchBar({ autoFocus = true }: { autoFocus: boolean }) {
+export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
   const router = useRouter();
   const [inputValue, setInputValue] = useState("");
   const deferredValue = useDeferredValue(inputValue);
@@ -83,7 +83,7 @@ export function SearchBar({ autoFocus = true }: { autoFocus: boolean }) {
       {/* Dropdown Menu */}
       <ul
         className={cn(
-          "bg-popover sticky top-full right-0 left-0 z-50 mt-3 w-full rounded-xl border p-2 shadow-lg",
+          "bg-popover absolute top-full right-0 left-0 z-50 mt-3 w-full rounded-xl border p-2 shadow-lg",
           {
             hidden:
               !isOpen ||

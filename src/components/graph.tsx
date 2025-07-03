@@ -96,6 +96,7 @@ const commonOptions: Highcharts.Options = {
 
   plotOptions: {
     spline: {
+      animation: false,
       dataLabels: {
         enabled: true,
       },

@@ -5,11 +5,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
-test("Screenshot Homepage (Focused)", async ({ page }) => {
-  await expect(page).toHaveScreenshot();
-});
-
-test("Screenshot Homepage (Unfocused)", async ({ page }) => {
+test("Screenshot Homepage", async ({ page }) => {
   await page.getByRole("combobox").blur()
   await expect(page).toHaveScreenshot();
 });

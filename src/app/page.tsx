@@ -7,7 +7,7 @@ export default function Home() {
         Welcome to IMDB Graph
       </h1>
       <div className="flex w-full max-w-md min-w-lg justify-center px-8">
-        <SearchBar />
+        <SearchBar autoFocus/>
       </div>
     </div>
   );
