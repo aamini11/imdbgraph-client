@@ -22,6 +22,7 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
     queryKey: ["suggestions", deferredValue],
     queryFn: () => fetchSuggestions(deferredValue),
     placeholderData: keepPreviousData,
+    enabled: !!inputValue,
   });
 
   const {
