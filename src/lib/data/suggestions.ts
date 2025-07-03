@@ -9,7 +9,7 @@ export async function fetchSuggestions(query: string): Promise<Show[] | null> {
   if (!query) {
     return null;
   }
-  console.log(process.env.DATABASE_URL);
+  console.log("DATABASE_URL", process.env.DATABASE_URL);
   return await db
     .select()
     .from(show)
