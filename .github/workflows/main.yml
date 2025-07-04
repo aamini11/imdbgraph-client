@@ -41,6 +41,8 @@ jobs:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
+      - name: test
+        run: echo $DATABASE_URL
       # Setup
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
