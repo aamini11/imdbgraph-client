@@ -38,6 +38,8 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 10
     needs: [build]
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       # Setup
       - uses: actions/checkout@v4
@@ -47,8 +49,6 @@ jobs:
         run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
         run: pnpm run playwright
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       # Report
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
